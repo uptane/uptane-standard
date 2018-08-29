@@ -1,4 +1,4 @@
-.PHONY: clean help html kramdown open xml2rfc
+.PHONY: clean help html xml open plaintext html-docker xml-docker open-docker plaintext-docker
 .DEFAULT_GOAL := help
 
 OPEN=$(word 1, $(wildcard /usr/bin/xdg-open /usr/bin/open /bin/echo))
@@ -18,23 +18,23 @@ help: ## Print this message and exit
 open: html ## Create an HTML version from the markdown, then open it in a browser
 	@$(OPEN) $(HTML)
 
-html: kramdown ## Create an HTML version from the markdown
+html: xml ## Create an HTML version from the markdown
 	@xml2rfc --html $(XML) $(HTML)
 
 xml: ## Create an XML version from the markdown
 	@kramdown-rfc2629 $(MKD) > $(XML)
 
-plaintext: kramdown ## Create an RFC plaintext version from the markdown
+plaintext: xml ## Create an RFC plaintext version from the markdown
 	@xml2rfc $(XML) $(TXT)
 
 open-docker: html-docker ## Create an HTML version from the markdown using docker, then open it in a browser
 	@$(OPEN) $(HTML)
 
-html-docker: kramdown-docker ## Create an HTML version from the markdown, using docker
+html-docker: xml-docker ## Create an HTML version from the markdown, using docker
 	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 xml2rfc --html $(XML) $(HTML)
 
 xml-docker: ## Create an XML version from the markdown, using docker
 	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 kramdown-rfc2629 $(MKD) > $(XML)
 
-plaintext-docker: kramdown-docker ## Create an RFC plaintext version from the markdown, using docker
+plaintext-docker: xml-docker ## Create an RFC plaintext version from the markdown, using docker
 	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 xml2rfc $(XML) $(TXT)
