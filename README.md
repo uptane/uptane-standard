@@ -1,6 +1,6 @@
 # Uptane IEEE-ISTO Standard
 
-[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. Beginning in 2018, a working group has begun the process of describing the system's design, implementation, and deployment considerations as a formal standard. This repository is the public home of that standardization work.
+[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. Beginning in 2018, a working group has begun the process of describing the system's design, implementation, and deployment considerations as a formal standard, working as an [IEEE-ISTO](https://ieee-isto.org/) industry group. This repository is the public home of that standardization work.
 
 ## Existing documentation
 
@@ -14,6 +14,16 @@ Several documents are already available which describe Uptane's design and imple
 ## Contributing
 
 The standard is being written in [RFC 2629](https://tools.ietf.org/html/rfc2629)/[RFC 7749](https://tools.ietf.org/html/rfc7749) format, using markdown as a source. Comments, issues, and pull requests are welcome.
+
+We use [GitHub Flow](https://guides.github.com/introduction/flow/) for contributing content. When you are working on a section, make a branch off the current master, and submit a pull request when it's ready to merge. If github reports any merge conflicts in the PR, please rebase until the merge can be done cleanly.
+
+### Commit messages and squashes
+
+Use clear, informative commit messages, and squash any minor commits that do not represent an actual contribution of content (e.g. typo fixes). It is not necessary to squash all your commits when submitting a PR, but please try to keep the commit history reasonably clean.
+
+### Text formatting
+
+Don't use fixed-width columns. The `plaintext` rendering target will produce a text file with fixed-width columns; using fixed-width columns in the markdown source just makes the diffs harder to read.
 
 ## Building/rendering the document
 
