@@ -98,9 +98,27 @@ TODO
 
 # Detailed Design of Uptane
 
-## Repositories and Servers
+## Server side
+
+An Uptane implementation SHALL make the following services available to vehicles:
+
+* Image repository
+* Director repository
+* Time server
 
 ### Image Repository
+
+The Image repository exists to allow the OEM and/or its suppliers to upload images and their associated metadata. It makes these images and their metadata available to vehicles. The Image repository is designed to be primarily controlled by human actors, and updated relatively infrequently.
+
+The Image repository SHALL expose an interface permitting the download of metadata and images. This interface SHOULD be public.
+
+The Image repository SHALL require authorization for writing metadata and images.
+
+The Image repository SHALL provide a method for authorized users to upload images and their associated metadata. It SHALL check that a user writing metadata and images is authorized to do so for that specific image by checking the chain of delegations for the image as described in {{delegations}}.
+
+The Image repository SHALL implement storage which permits authorized users to write an image file using a unique filename, and later read the same file using the same name. It MAY use any filesystem, key-value store, or database that fulfills this requirements.
+
+The Image repository MAY require authentication for read access.
 
 ### Director Repository
 
@@ -120,7 +138,7 @@ TODO
 
 #### Multi-Role Delegation
 
-### Delegated Targets Roles
+### Delegated Targets Roles {#delegations}
 
 #### The Supplier Roles
 
@@ -154,15 +172,15 @@ TODO
 
 ### Repository Tools for Writing Metadata
 
-# Image Repository
+# Image Repository {#image_repo}
 
-# Director Repository
+# Director Repository {#director_repo}
 
 ## Directing Installation of Images on Vehicles
 
 ## Inventory Database 
 
-# Time server
+# Time server {#time_server}
 
 # Downloading, verifying, and installing updates on the vehicle
 
