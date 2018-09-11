@@ -124,6 +124,12 @@ The Image repository MAY require authentication for read access.
 
 ### Time Server
 
+The Time Server exists to inform vehicles about the current time in cryptographically secure way, since many ECUs in a vehicle will not have a reliable source of time. It receives lists of tokens from vehicles, and returns back a signed sequence that includes the token and the current time.
+
+The Time Server SHALL receive a sequence of tokens from a vehicle representing all of its ECUs. In reponse, it SHALL sign each token together with the current time.
+
+The Time Server SHALL expose a public interface allowing primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.
+
 ## Primary vs. Secondary Verification
 
 ## Roles
@@ -185,6 +191,8 @@ The Image repository MAY require authentication for read access.
 # Downloading, verifying, and installing updates on the vehicle
 
 ## Primary ECU Download Process Overview, including Verification and Distribution to Secondaries
+
+### Downloading and checking time {#checking_time}
 
 ## How an ECU Installs a New Image
 
