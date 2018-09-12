@@ -167,9 +167,9 @@ A Director repository MUST conform to the following six-step process for directi
     * Each ECU recorded in the inventory database is also represented in the manifest.
     * The signature of the manifest matches the ECU key of the primary that sent it.
     * The signature of each secondary's contribution to the manifest matches the ECU key of that secondary.
-1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines which images should be installed next. The exact process by which this determination takes place is out of scope of this standard. However, it MUST take into account *dependencies* and *conflicts* between images, and SHOULD consult well-established techniques for dependency resolution.
+1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this standard. However, it MUST take into account *dependencies* and *conflicts* between images, and SHOULD consult well-established techniques for dependency resolution.
 1. The Director MAY encrypt images for ECUs that require it.
-1. The Director generates and returns new metadata based on the dependency resolution in step 4. This includes targets ({{targets_meta}}), snapshot ({{snapshot_meta}}), and timestamp ({{timestamp_meta}}) metadata.
+1. The Director generates new metadata representing the desired set of images to be installed in the vehicle, based on the dependency resolution in step 4. This includes targets ({{targets_meta}}), snapshot ({{snapshot_meta}}), and timestamp ({{timestamp_meta}}) metadata. It then sends this metadata to the primary as described in {{download_meta}}.
 
 #### Inventory Database {#inventory_db}
 
@@ -204,7 +204,7 @@ The Time Server SHALL expose a public interface allowing primaries to communicat
 
 #### Download and check current time {#check_time}
 
-#### Download and verify metadata
+#### Download and verify metadata {#download_meta}
 
 #### Download and verify images
 
