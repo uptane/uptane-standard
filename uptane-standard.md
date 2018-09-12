@@ -104,6 +104,8 @@ TODO
 
 ### The Targets role {#targets_role}
 
+ <!-- TODO sub-headings about delegations -->
+
 ### The Snapshot role {#snapshot_role}
 
 ### The Timestamp role {#timestamp_role}
@@ -118,13 +120,13 @@ TODO
 
 #### Metadata about Images
 
-#### Metadata about Delegations
+#### Metadata about Delegations {#delegations}
 
 ### Snapshot Metadata {#snapshot_meta}
 
 ### Timestamp Metadata {#timestamp_meta}
 
-## Server side requirements
+## Server / repository implementation requirements
 
 An Uptane implementation SHALL make the following services available to vehicles:
 
@@ -194,82 +196,30 @@ The Time Server SHALL receive a sequence of tokens from a vehicle representing a
 
 The Time Server SHALL expose a public interface allowing primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.
 
+## In-vehicle implementation requirements
 
-## Primary vs. Secondary Verification
+### Downloading and distributing updates on a primary ECU
 
-## Roles
+#### Construct and send vehicle version manifest {#construct_manifest}
 
-### The Root Role
+#### Download and check current time {#check_time}
 
-### The Targets Role and Delegations
+#### Download and verify metadata
 
-#### Prioritized Delegations
+#### Download and verify images
 
-#### Terminating Delegations
+#### Send latest time to secondaries
 
-#### Multi-Role Delegation
+#### Send metadata to secondaries
 
-### Delegated Targets Roles {#delegations}
+#### Send images to secondaries
 
-#### The Supplier Roles
+### Installing images on ECUs
 
-### The Snapshot Role
+### Metadata verification
 
-### The Timestamp Role
+#### Full verification
 
-### The Map File
+#### Partial verification
 
-# Metadata
-
-## Common Metadata Structures and Formats
-
-## Root Metadata
-
-## Targets Metadata
-
-### Metadata about Images
-
-### Metadata about Delegations
-
-### Example: Targets Metadata on Image and Director Repositories
-
-### Snapshot Metadata
-
-### Timestamp Metadata
-
-### Filename Conventions for Metadata or ECUs vs. repositories
-
-### The Map File
-
-### Repository Tools for Writing Metadata
-
-# Image Repository {#image_repo}
-
-# Director Repository {#director_repo}
-
-## Directing Installation of Images on Vehicles
-
-## Inventory Database 
-
-# Time server {#time_server}
-
-# Downloading, verifying, and installing updates on the vehicle
-
-## Primary ECU Download Process Overview, including Verification and Distribution to Secondaries
-
-### Construct vehicle version manifest {#construct_manifest}
-
-### Download and check time {#check_time}
-
-### Send manifest a and download metadata
-
-## How an ECU Installs a New Image
-
-## How an ECU Verifies Metadata
-
-### Partial Verification 
-
-### Full Verification 
-
-## Notes about Implementation Details
 
