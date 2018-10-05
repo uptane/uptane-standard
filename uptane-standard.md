@@ -33,6 +33,8 @@ normative:
   RFC3280:
   # PKCS:RSA
   RFC3447:
+  # X.509 PKI spec
+  RFC3647:
   # SHA
   RFC4634:
   # base64
@@ -98,19 +100,59 @@ TODO
 
 # Detailed Design of Uptane
 
-## Roles on repositories
+Uptane is a secure software update framework for automobiles. We do not specify implementation details. Instead, we describe the components necessary for a compliant implementation, and leave it up to individual implementors to make their own technological choices within those requirements.
+
+At a high level, Uptane requires:
+
+* Two software repositories:
+    * An image repository containing binary images for install, and signed metadata about those images
+    * A director repository connected to an inventory database that can sign metadata on demand for images in the image repository
+* Repository tools for generating Uptane-specific metadata about images
+* A public key infrastructure supporting the required metadata production/signing roles on each repository:
+    * Root - Certificate authority for the repo. Distributes public keys for verifying all the other roles' metadata
+    * Timestamp - Indicates whether there are new metadata or images
+    * Snapshot - Indicates images released by the repository at a point in time, via signing metadata about targets metadata
+    * Targets - Indicates metadata about images, such as hashes and file sizes
+* A time server to deliver cryptographically verifiable time to ECUs
+* An in-vehicle client on a primary ECU capable of verifying the signatures on all update metadata, handling all server communication, and downloading updates on behalf of secondary ECUs
+* A client or library on each secondary ECU capable of performing either full or partial verification of metadata
+
+## Roles on repositories {#roles}
+
+A repository contains images and metadata. Each role has a particular type of metadata associated with it, as described in {{meta_syntax}}.
 
 ### The Root role {#root_role}
 
+The Root role SHALL be responsible for a Certificate Authority as defined in {{RFC3647}}.
+The Root role SHALL produce and sign Root metadata as described in {{root_meta}}.
+The Root role SHALL sign the public keys used to verfy the metadata produced by the Timestamp, Snapshot, and Targets roles.
+The Root role SHALL revoke keys for the other roles, in case of compromise.
+
 ### The Targets role {#targets_role}
 
- <!-- TODO sub-headings about delegations -->
+The Targets role SHALL produce and sign metadata about images and delegations as described in {{targets_meta}}.
+
+#### Delegations
+
+The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles. If it does, it MUST do so as specified in {{delegations_meta}}.
+
+Responsibility for signing images or a subset of images MAY be delegated to more than one role, and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.
+
+A particular delegation for a subset of images MAY be designated as **terminating**. For terminating delegations, the client SHALL NOT search the any further if it does not find validly signed metadata about those images in the terminating delegation. Delegations SHOULD NOT be terminating by default; terminating delegations SHOULD only be used when there is a compelling technical reason to do so.
+
+A delegation for a subset of images MAY be a multi-role delegation. A multi-role delegation indicates that each of the delegatee roles MUST sign the same metadata.
+
+Delegations only apply to the Image repository. The Targets role on the Director repository MUST NOT delegate metadata signing responsibility.
 
 ### The Snapshot role {#snapshot_role}
 
+The Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the main Targets metadata and the version numbers and hashes of all delegated targets metadata, as described in {{snapshot_meta}}.
+
 ### The Timestamp role {#timestamp_role}
 
-## Metadata abstract syntax
+The Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.
+
+## Metadata abstract syntax {#meta_syntax}
 
 ### Common Metadata Structures and Formats
 
@@ -120,7 +162,7 @@ TODO
 
 #### Metadata about Images
 
-#### Metadata about Delegations {#delegations}
+#### Metadata about Delegations {#delegations_meta}
 
 ### Snapshot Metadata {#snapshot_meta}
 
@@ -142,7 +184,7 @@ The Image repository SHALL expose an interface permitting the download of metada
 
 The Image repository SHALL require authorization for writing metadata and images.
 
-The Image repository SHALL provide a method for authorized users to upload images and their associated metadata. It SHALL check that a user writing metadata and images is authorized to do so for that specific image by checking the chain of delegations for the image as described in {{delegations}}.
+The Image repository SHALL provide a method for authorized users to upload images and their associated metadata. It SHALL check that a user writing metadata and images is authorized to do so for that specific image by checking the chain of delegations for the image as described in {{delegations_meta}}.
 
 The Image repository SHALL implement storage which permits authorized users to write an image file using a unique filename, and later read the same file using the same name. It MAY use any filesystem, key-value store, or database that fulfills this requirement.
 
