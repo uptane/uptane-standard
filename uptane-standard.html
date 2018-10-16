@@ -585,24 +585,58 @@
 <h1 id="rfc.section.4">
 <a href="#rfc.section.4">4.</a> <a href="#detailed-design-of-uptane" id="detailed-design-of-uptane">Detailed Design of Uptane</a>
 </h1>
+<p id="rfc.section.4.p.1">Uptane is a secure software update framework for automobiles. We do not specify implementation details. Instead, we describe the components necessary for a compliant implementation, and leave it up to individual implementors to make their own technological choices within those requirements.</p>
+<p id="rfc.section.4.p.2">At a high level, Uptane requires:</p>
+<p></p>
+
+<ul>
+<li>Two software repositories: <ul>
+<li>An image repository containing binary images for install, and signed metadata about those images</li>
+<li>A director repository connected to an inventory database that can sign metadata on demand for images in the image repository</li>
+</ul>
+</li>
+<li>Repository tools for generating Uptane-specific metadata about images</li>
+<li>A public key infrastructure supporting the required metadata production/signing roles on each repository: <ul>
+<li>Root - Certificate authority for the repo. Distributes public keys for verifying all the other roles&#8217; metadata</li>
+<li>Timestamp - Indicates whether there are new metadata or images</li>
+<li>Snapshot - Indicates images released by the repository at a point in time, via signing metadata about targets metadata</li>
+<li>Targets - Indicates metadata about images, such as hashes and file sizes</li>
+</ul>
+</li>
+<li>A time server to deliver cryptographically verifiable time to ECUs</li>
+<li>An in-vehicle client on a primary ECU capable of verifying the signatures on all update metadata, handling all server communication, and downloading updates on behalf of secondary ECUs</li>
+<li>A client or library on each secondary ECU capable of performing either full or partial verification of metadata</li>
+</ul>
 <h1 id="rfc.section.4.1">
-<a href="#rfc.section.4.1">4.1.</a> <a href="#roles-on-repositories" id="roles-on-repositories">Roles on repositories</a>
+<a href="#rfc.section.4.1">4.1.</a> <a href="#roles" id="roles">Roles on repositories</a>
 </h1>
+<p id="rfc.section.4.1.p.1">A repository contains images and metadata. Each role has a particular type of metadata associated with it, as described in <a href="#meta_syntax" class="xref">Section 4.2</a>.</p>
 <h1 id="rfc.section.4.1.1">
 <a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#root_role" id="root_role">The Root role</a>
 </h1>
+<p id="rfc.section.4.1.1.p.1">The Root role SHALL be responsible for a Certificate Authority as defined in <a href="#RFC3647" class="xref">[RFC3647]</a>.  The Root role SHALL produce and sign Root metadata as described in <a href="#root_meta" class="xref">Section 4.2.2</a>.  The Root role SHALL sign the public keys used to verfy the metadata produced by the Timestamp, Snapshot, and Targets roles.  The Root role SHALL revoke keys for the other roles, in case of compromise.</p>
 <h1 id="rfc.section.4.1.2">
 <a href="#rfc.section.4.1.2">4.1.2.</a> <a href="#targets_role" id="targets_role">The Targets role</a>
 </h1>
-<p></p>
+<p id="rfc.section.4.1.2.p.1">The Targets role SHALL produce and sign metadata about images and delegations as described in <a href="#targets_meta" class="xref">Section 4.2.3</a>.</p>
+<h1 id="rfc.section.4.1.2.1">
+<a href="#rfc.section.4.1.2.1">4.1.2.1.</a> <a href="#delegations" id="delegations">Delegations</a>
+</h1>
+<p id="rfc.section.4.1.2.1.p.1">The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles. If it does, it MUST do so as specified in <a href="#delegations_meta" class="xref">Section 4.2.3.2</a>.</p>
+<p id="rfc.section.4.1.2.1.p.2">Responsibility for signing images or a subset of images MAY be delegated to more than one role, and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.</p>
+<p id="rfc.section.4.1.2.1.p.3">A particular delegation for a subset of images MAY be designated as <strong>terminating</strong>. For terminating delegations, the client SHALL NOT search the any further if it does not find validly signed metadata about those images in the terminating delegation. Delegations SHOULD NOT be terminating by default; terminating delegations SHOULD only be used when there is a compelling technical reason to do so.</p>
+<p id="rfc.section.4.1.2.1.p.4">A delegation for a subset of images MAY be a multi-role delegation. A multi-role delegation indicates that each of the delegatee roles MUST sign the same metadata.</p>
+<p id="rfc.section.4.1.2.1.p.5">Delegations only apply to the Image repository. The Targets role on the Director repository MUST NOT delegate metadata signing responsibility.</p>
 <h1 id="rfc.section.4.1.3">
 <a href="#rfc.section.4.1.3">4.1.3.</a> <a href="#snapshot_role" id="snapshot_role">The Snapshot role</a>
 </h1>
+<p id="rfc.section.4.1.3.p.1">The Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the main Targets metadata and the version numbers and hashes of all delegated targets metadata, as described in <a href="#snapshot_meta" class="xref">Section 4.2.4</a>.</p>
 <h1 id="rfc.section.4.1.4">
 <a href="#rfc.section.4.1.4">4.1.4.</a> <a href="#timestamp_role" id="timestamp_role">The Timestamp role</a>
 </h1>
+<p id="rfc.section.4.1.4.p.1">The Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.</p>
 <h1 id="rfc.section.4.2">
-<a href="#rfc.section.4.2">4.2.</a> <a href="#metadata-abstract-syntax" id="metadata-abstract-syntax">Metadata abstract syntax</a>
+<a href="#rfc.section.4.2">4.2.</a> <a href="#meta_syntax" id="meta_syntax">Metadata abstract syntax</a>
 </h1>
 <h1 id="rfc.section.4.2.1">
 <a href="#rfc.section.4.2.1">4.2.1.</a> <a href="#common-metadata-structures-and-formats" id="common-metadata-structures-and-formats">Common Metadata Structures and Formats</a>
@@ -617,7 +651,7 @@
 <a href="#rfc.section.4.2.3.1">4.2.3.1.</a> <a href="#metadata-about-images" id="metadata-about-images">Metadata about Images</a>
 </h1>
 <h1 id="rfc.section.4.2.3.2">
-<a href="#rfc.section.4.2.3.2">4.2.3.2.</a> <a href="#delegations" id="delegations">Metadata about Delegations</a>
+<a href="#rfc.section.4.2.3.2">4.2.3.2.</a> <a href="#delegations_meta" id="delegations_meta">Metadata about Delegations</a>
 </h1>
 <h1 id="rfc.section.4.2.4">
 <a href="#rfc.section.4.2.4">4.2.4.</a> <a href="#snapshot_meta" id="snapshot_meta">Snapshot Metadata</a>
@@ -642,7 +676,7 @@
 <p id="rfc.section.4.3.1.p.1">The Image repository exists to allow an OEM and/or its suppliers to upload images and their associated metadata. It makes these images and their metadata available to vehicles. The Image repository is designed to be primarily controlled by human actors, and updated relatively infrequently.</p>
 <p id="rfc.section.4.3.1.p.2">The Image repository SHALL expose an interface permitting the download of metadata and images. This interface SHOULD be public.</p>
 <p id="rfc.section.4.3.1.p.3">The Image repository SHALL require authorization for writing metadata and images.</p>
-<p id="rfc.section.4.3.1.p.4">The Image repository SHALL provide a method for authorized users to upload images and their associated metadata. It SHALL check that a user writing metadata and images is authorized to do so for that specific image by checking the chain of delegations for the image as described in <a href="#delegations" class="xref">Section 4.2.3.2</a>.</p>
+<p id="rfc.section.4.3.1.p.4">The Image repository SHALL provide a method for authorized users to upload images and their associated metadata. It SHALL check that a user writing metadata and images is authorized to do so for that specific image by checking the chain of delegations for the image as described in <a href="#delegations_meta" class="xref">Section 4.2.3.2</a>.</p>
 <p id="rfc.section.4.3.1.p.5">The Image repository SHALL implement storage which permits authorized users to write an image file using a unique filename, and later read the same file using the same name. It MAY use any filesystem, key-value store, or database that fulfills this requirement.</p>
 <p id="rfc.section.4.3.1.p.6">The Image repository MAY require authentication for read access.</p>
 <h1 id="rfc.section.4.3.2">
@@ -759,6 +793,11 @@
 <td class="reference"><b id="RFC3447">[RFC3447]</b></td>
 <td class="top">
 <a>Jonsson, J.</a> and <a>B. Kaliski</a>, "<a href="https://tools.ietf.org/html/rfc3447">Public-Key Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.1</a>", RFC 3447, DOI 10.17487/RFC3447, February 2003.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC3647">[RFC3647]</b></td>
+<td class="top">
+<a>Chokhani, S.</a>, <a>Ford, W.</a>, <a>Sabett, R.</a>, <a>Merrill, C.</a> and <a>S. Wu</a>, "<a href="https://tools.ietf.org/html/rfc3647">Internet X.509 Public Key Infrastructure Certificate Policy and Certification Practices Framework</a>", RFC 3647, DOI 10.17487/RFC3647, November 2003.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC4634">[RFC4634]</b></td>
