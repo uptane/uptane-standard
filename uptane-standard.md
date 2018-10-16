@@ -72,35 +72,68 @@ This document describes a framework for securing automotive software update syst
 --- middle
 
 
-# Introduction
+# **1. Introduction**
+Uptane is a secure software update framework
+for automobiles. This document describes procedures to enable
+programmers for OEMs and suppliers to design and implement this
+framework to better protect connected units on cars. Integrating
+Uptane as outlined in the sections that follow can reduce
+the ability of attackers to conpromise critical systems. It also
+assures a faster and easier recovery process should a 
+compromise occur.
 
-TODO
+These instructions specify the  the components necessary for a 
+compliant implementation. Individual 
+implementors can make their own technological choices within those
+requirements. This flexibility makes Uptane adaptable to the
+many customized update solutions used by manufacturers.
 
-# Terminology
 
-## Conformance Terminology
+# **2. Terminology**
 
-## Automotive Terminology
+## **2.1 Conformance Terminology**
 
-## Uptane Role Terminology
+The keywords "MUST," "MUST NOT," "REQUIRED," "SHALL," "SHALL NOT," "SHOULD," "
+SHOULD NOT," "RECOMMENDED," "MAY," and "OPTIONAL" in this document are to be 
+interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+In order to be considered “Uptane-compliant,” an 
+implementation MUST follow all of these rules as specified in the document.
 
-## Acronyms and Abbreviation
+## **2.2 Automotive Terminology**
 
-# Requirements for Uptane
+## **2.3. Uptane Role Terminology**
 
-## Rationale
 
-## Use Cases
+## **2.4 Acronyms and Abbreviations**
+*ECUs*: Electronic Control Units
 
-## Exceptions
+# **3.Requirements for Uptane**
 
-## Out of Scope
+## **3.1 Rationale**
 
-## Design Requirements
+## **3.2 Use Cases**
 
-# Detailed Design of Uptane
+## **3.3 Exceptions**
 
-Uptane is a secure software update framework for automobiles. We do not specify implementation details. Instead, we describe the components necessary for a compliant implementation, and leave it up to individual implementors to make their own technological choices within those requirements.
+## **3.4 Out of Scope**
+The following types of attacks are considered outside the scope of the project:
+* Physical attacks, such as manual tampering with ECUs outside the
+vehicle.
+* Compromise of the supply chain (e.g., build system, version control system, 
+packaging process). A number of strategies already (e.g., git signing, TPMs, in-toto)
+exist to address this problem. Therefore, there is no need duplicate those
+techniques here. 
+* Solving problems associated with OBD or UDS programming of ECUs.
+For example, we do not aim to authenticate communications between ECUs.
+
+
+
+## **3.5 Design Requirements**
+
+## **4. Threat Model and Attack S
+
+# **4. Detailed Design of Uptane**
+
 
 At a high level, Uptane requires:
 
