@@ -101,38 +101,86 @@ implementation MUST follow all of these rules as specified in the document.
 
 ## **2.2 Automotive Terminology**
 
+*Image*: (delta)
+
+*Metadata*:
+
+*Primary ECUs*:
+
+*Repository*:
+
+*Secondary ECUs*:
+
+*Telematics Systems*:
+
+*Tier-1 Suppliers*:
+
+*Vehicle Version Manifest*:
+
+
 ## **2.3. Uptane Role Terminology**
+
+These terms are defined in greater detail in Section 4.
+
+*Delegations*:
+*Root Role*:
+*Snapshot Role*:
+*Targets Role*:
+*Timestamp Role*: 
 
 
 ## **2.4 Acronyms and Abbreviations**
+*CAN Bus*:
+
 *ECUs*: Electronic Control Units
 
-# **3.Requirements for Uptane**
+*LIN Bus*:
 
-## **3.1 Rationale**
+*SOTA*: Software Over-the-Air
+
+*VIN*: Vehicle identification Number
+
+# **3.Rationale and Scope of Uptane**
+TO DO: Answer the question of why this documentation is needed
 
 ## **3.2 Use Cases**
 
 ## **3.3 Exceptions**
 
 ## **3.4 Out of Scope**
-The following types of attacks are considered outside the scope of the project:
+The following topics will not be addressed in this document, as they
+represent threats outside the scope of Uptane:
+
 * Physical attacks, such as manual tampering with ECUs outside the
 vehicle.
+
 * Compromise of the supply chain (e.g., build system, version control system, 
 packaging process). A number of strategies already (e.g., git signing, TPMs, in-toto)
 exist to address this problem. Therefore, there is no need duplicate those
 techniques here. 
-* Solving problems associated with OBD or UDS programming of ECUs.
-For example, we do not aim to authenticate communications between ECUs.
 
-
+* Problems associated with OBD or UDS programming of ECUs, such as
+authentication of communications between ECUs.
 
 ## **3.5 Design Requirements**
 
-## **4. Threat Model and Attack S
+The design requirements for this document are: 
 
-# **4. Detailed Design of Uptane**
+* to successfully distinguish between design and inmplementation steps that are security critical
+and must be followed as is, and those in which users can adapt to support different use models
+and deployment scenarios. 
+
+* to delineate best practices to ensure that should a vehicle be attacked, defense in depth
+can be employed to force an attacker to compromise many different systems.
+
+* to ensure that the security practices mandated or suggested in this document do not 
+interfere with the functionality of the ECUs, the vehicles as a whole, or the
+manufacturing systems on which they run.
+
+# **4. Threat Model and Attack Strategies**
+
+
+# **5. Detailed Design of Uptane**
 
 
 At a high level, Uptane requires:
