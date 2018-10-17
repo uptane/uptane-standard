@@ -82,7 +82,7 @@ the ability of attackers to conpromise critical systems. It also
 assures a faster and easier recovery process should a 
 compromise occur.
 
-These instructions specify the  the components necessary for a 
+These instructions specify the components necessary for a 
 compliant implementation. Individual 
 implementors can make their own technological choices within those
 requirements. This flexibility makes Uptane adaptable to the
@@ -101,47 +101,95 @@ implementation MUST follow all of these rules as specified in the document.
 
 ## **2.2 Automotive Terminology**
 
-*Image*: (delta)
+*Bus*: An internal communications network that interconnects components within
+a vehicle. A car can have a number of buses that will vary in terms of power,
+speed and resources.
 
-*Metadata*:
+*Image*: File containing all the relevant data and metadata for an ECU. Each 
+ECU holds only one image.
 
-*Primary ECUs*:
+*Metadata*: Data about a file that can be used to verify its authenticity. Generally, metadata
+contains cryptographic hashes and file lengths. This information can be used to verify that
+images are up-to-date and have not been altered since being uploaded to the repository.
 
-*Repository*:
+*Primary/Secondary ECUs*: Terms used to describe the control units within an automobile.
+A primary control unit has more resources than a secondary, in terms of memory, storage
+space, connection to the internet, and access to a time source. Primary units are updated
+directly, while secondary units are generally updated by a primary.
 
-*Secondary ECUs*:
+*Repository*: 
+
+
+*Suppliers*: Indepedent companies to which auto manufacturers may outsource the production of
+ECUs. Tier-1 suppliers directly serve the manufacturers, and may, in turn, outsource
+work to Tier -2 suppliers.
 
 *Telematics Systems*:
 
-*Tier-1 Suppliers*:
 
-*Vehicle Version Manifest*:
+*Vehicle Version Manifest*: 
 
 
 ## **2.3. Uptane Role Terminology**
 
-These terms are defined in greater detail in Section 4.
+These terms are defined in greater detail in Section 5.
 
-*Delegations*:
-*Root Role*:
-*Snapshot Role*:
-*Targets Role*:
-*Timestamp Role*: 
+*Delegations*: 
+
+*Roles*: The roles mechanism allows the system to distribute
+aigning responsibilities so compromise of one key does not
+impact other parts of the system.
+
+  * *Root Role*: Distributes and revokes public keys used to 
+  verify the root, timestamp, release, and targets role metadata.
+
+  * *Snapshot Role*: Indicates which images the repository has released at the
+  same time.
+  
+  * *Targets Role*: Hold the metadata used to verify the image 
+  
+  *Timestamp Role*: 
 
 
 ## **2.4 Acronyms and Abbreviations**
-*CAN Bus*:
+*CAN Bus*: Controller Area Network bus standard.
 
-*ECUs*: Electronic Control Units
 
-*LIN Bus*:
+*ECUs*: Electronic Control Units, the computing units on vehicle.
+
+*LIN Bus*: Local Interconnect Bus
 
 *SOTA*: Software Over-the-Air
 
 *VIN*: Vehicle identification Number
 
-# **3.Rationale and Scope of Uptane**
-TO DO: Answer the question of why this documentation is needed
+# **3. Rationale for and Scope of Uptane Standards**
+
+A standards document that can guide the safe design, integration and deployment of
+Uptane in cars is needed at this time because:
+
+* The number of connected units on the average vehicle continues to grow, with 
+mainstream cars now containing up to [10 million lines](https://www.usatoday.com/story/tech/columnist/2016/06/28/your-average-car-lot-more-code-driven-than-you-think/86437052/) of code.
+
+* The [expanded use of software over-the-air](https://www.consumerreports.org/automotive-technology/automakers-embrace-over-the-air-updates-can-we-trust-digital-car-repair/) strategies creates new attack surfaces for
+malicious parties.
+
+* Legacy update strategies, such as SSL/TLS or GPG/RSA are not feasible for use on automotive
+ECUs because they force manufacturers to chose between enhanced security and customizability.
+
+* Conventional strategies are also complicated by the differing resources of the ECUs, which can
+vary greatly in memory, storage space, and Internet connectivity.
+
+* The design of Uptane makes it possible to offer improved design flexibility, without
+sacrificing security. 
+
+* This added design flexibility, however, could be a liability if the framework is
+implemented incorrectly.
+
+This Standards document clarifies the essential components and best practices for the
+secure adoption of Uptane by OEMs and suppliers. It distinguishes An emphasis on compromise resiliencecompromise-resilience, 
+or the ability to minimize the extent of the threat posed by any given attack.
+
 
 ## **3.2 Use Cases**
 
@@ -164,14 +212,17 @@ authentication of communications between ECUs.
 
 ## **3.5 Design Requirements**
 
-The design requirements for this document are: 
+The design requirements for this document are goverened by three principal
+parameters: 
 
-* to successfully distinguish between design and inmplementation steps that are security critical
-and must be followed as is, and those in which users can adapt to support different use models
-and deployment scenarios. 
+* to clearly mandate the design and implementation steps that are 
+security critical and must be followed as is, while offering flexibility
+in the implementation of non-critical steps so users can adapt
+to support different use models and deployment scenarios. 
 
-* to delineate best practices to ensure that should a vehicle be attacked, defense in depth
-can be employed to force an attacker to compromise many different systems.
+* to delineate best practices to ensure that, should a vehicle be attacked,
+defense in depth can be employed to force an attacker to compromise many 
+different systems before 
 
 * to ensure that the security practices mandated or suggested in this document do not 
 interfere with the functionality of the ECUs, the vehicles as a whole, or the
@@ -179,15 +230,57 @@ manufacturing systems on which they run.
 
 # **4. Threat Model and Attack Strategies**
 
+The connnected units on automobiles are vulnerable to a number of threats, which
+canbe organized into four categories. These categories are presented below 
+in order of increasing severity. Proper implementation of Uptane is designed 
+to prevent or minimize the impact of these attack strategies.
+
+* Read updates: The goal here is intellectual property theft, where attackers
+aim to read the contents of software updates. This is generally achieved with
+an Eavesdrop attack, where attackers can read unencrypted updates sent from
+the repository to the vehicles.
+
+* Deny updates: In this group of attacks, the goal is to prevent vehicles from
+fixing software problems by using one of several attack strategies to deny access
+to updates.
+
+  * *Drop-request attack:* blocks network traffic outside or inside the 
+  vehicle to prevent an ECU from receiving any updates.
+  * *Slow retrieval attack:* slows delivery time of updates to ECUs so a 
+  known security vulnerability can be exploited before a corrective patch
+  is received.
+  * *Freeze attack:* continues to send the last known update to an ECU, 
+  even if a newer update exists.
+  * *Partial bundle installation attack:* Allows only part of an update to install
+  by dropping traffic to selected ECUs.
+  
+* Deny functionality: This grouping of attacks interferes with the actual
+functioning of vehicle ECUs in one of the following ways:
+
+  * *Rollback attack:* tricks an ECU into installing outdated software with
+  known vulnerabilities.
+  * Endless data attack: causes an ECU to crash by sending it an infinite amount
+  of data until it runs out of storage.
+  * *Mixed-bundles attack:* shuts down an ECU by causing it to install incompatible
+  versions of software updates that must not be installed at the same time. 
+  Attackers can accomplish this by showing different bundles to different 
+  ECUs at the same time.
+  * *Mix-and-match attack:* If attackers have compromised repository keys, 
+  they can use these keys to release arbitrary combinations of new versions of images.
+  
+* Control: The last and most severe threat is if an ECU can be forced to install software
+of the attacker’s choosing, thus ceding control of that unit. This means an attacker
+can arbitrarily modify the vehicle’s performance through an arbitrary software
+attack, in which the software on an ECU is overwritten with a malicious software program.
 
 # **5. Detailed Design of Uptane**
-
 
 At a high level, Uptane requires:
 
 * Two software repositories:
     * An image repository containing binary images for install, and signed metadata about those images
-    * A director repository connected to an inventory database that can sign metadata on demand for images in the image repository
+    * A director repository connected to an inventory database that can sign metadata on demand for images
+    in the image repository
 * Repository tools for generating Uptane-specific metadata about images
 * A public key infrastructure supporting the required metadata production/signing roles on each repository:
     * Root - Certificate authority for the repo. Distributes public keys for verifying all the other roles' metadata
