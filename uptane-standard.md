@@ -230,7 +230,7 @@ The inventory database MUST record the following pieces of information:
 
 The inventory database MAY record other information about ECUs and vehicles.
 
-### Time Server
+### Time Server {#time_server}
 
 The Time Server exists to inform vehicles about the current time in cryptographically secure way, since many ECUs in a vehicle will not have a reliable source of time. It receives lists of tokens from vehicles, and returns back a signed sequence that includes the token and the current time.
 
@@ -240,28 +240,71 @@ The Time Server SHALL expose a public interface allowing primaries to communicat
 
 ## In-vehicle implementation requirements
 
+An Uptane-compliant ECU SHALL be able to download and verify the time, metadata, and image binaries before installing a new image.
+
+Each ECU in a vehicle receiving over-the-air updates is either a primary or a secondary ECU. A primary ECU collects and delivers to the Director vehicle manifests containing information about which images have been installed on ECUs in the vehicle. It also downloads and verifies the latest time, metadata, and images for itself and for its secondaries. A secondary ECU downloads and verifies the latest time, metadata, and images for itself from its associated primary ECU. It also sends signed information about its installed images to its associated primary.
+
+All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A primary ECU MUST perform full verification ({{full_verification}}). A secondary ECU SHOULD perform full verification if possible, and MUST perform full verification if it is safety-critical. If it is not safety-critical, it MAY perform partial verification ({{partial_verification}}) instead.
+
 ### Downloading and distributing updates on a primary ECU
+
+A primary downloads, verifies, and distributes the latest time, metadata and images. To do so, it SHALL perform the following seven steps:
+
+1. {{construct_manifest}}
+1. {{check_time}}
+1. {{download_meta}}
+1. {{download_images}}
+1. {{send_time}}
+1. {{send_metadata}}
+1. {{send_images}}
+
 
 #### Construct and send vehicle version manifest {#construct_manifest}
 
+The primary SHALL build a *vehicle version manifest*, a signed record of what versions of images are installed on all of the ECUs in the vehicle.
+
+Once it has the complete manifest built, it MAY send the manifest to the director repository. However, it is not strictly required that the primary send the manifest until step three.
+
+Secondaries MAY send their version report at any time, so that it is stored on the primary already when it wishes to check for updates. Alternatively, the Primary MAY request a version report from each secondary at the time of the update check.
+
 #### Download and check current time {#check_time}
+
+The primary SHALL download the current time from the time server, for distribution to its secondaries.
+
+The version report from each secondary ECU contains a nonce, plus a signed ECU version manifest. The primary SHALL gather each of these nonces from the secondary ECUs, then send them to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time. The primary SHALL verify that the signatures are valid, and that the time the server attests is greater than the previous attested time.
 
 #### Download and verify metadata {#download_meta}
 
-#### Download and verify images
+The primary SHALL download metadata for all targets and perform a full verification on it as specified in {{full_verification}}.
 
-#### Send latest time to secondaries
+#### Download and verify images {#download_images}
 
-#### Send metadata to secondaries
+The primary SHALL download and verify images for itself and for all of its associated secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the director's targets metadata for that image.
 
-#### Send images to secondaries
+There may be several different filenames that all refer to the same image binary, as described in {{targets_meta}}. The primary SHALL associate each image binary with each of its possible filenames.
+
+#### Send latest time to secondaries {#send_time}
+
+The primary SHALL send the time server's latest attested time to each ECU. The secondary SHALL verify the time message, then overwrite its current time with the received time.
+
+#### Send metadata to secondaries {#send_metadata}
+
+The primary SHALL send the latest metadata it has downloaded to all of its associated secondaries.
+
+Full verification secondaries SHALL keep a complete copy of all metadata. A partial verification secondary SHALL keep *only* the targets metadata file from the director repository.
+
+#### Send images to secondaries {#send_images}
+
+The primary SHALL send the latest image to each of its associated secondaries that have storage to receive it.
+
+For secondaries without storage, the primary SHOULD wait for a request from the secondary to stream the new image file to it. The secondary will send the request once it has verified the metadata sent in the previous step.
 
 ### Installing images on ECUs
 
-### Metadata verification
+### Metadata verification {#metadata_verification}
 
-#### Full verification
+#### Full verification {#full_verification}
 
-#### Partial verification
+#### Partial verification {#partial_verification}
 
 
