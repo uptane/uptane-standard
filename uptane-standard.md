@@ -105,7 +105,7 @@ a vehicle. A car can have a number of buses that will vary in terms of power,
 speed and resources.
 
 *Image*: File containing all the relevant data and metadata for an ECU. Each 
-ECU holds only one image.
+ECU typically holds only one image, although this may vary in case to case.
 
 *Metadata*: Data about a file that can be used to verify its authenticity
 and currency, and to assure that it has not been tampered with or altered
