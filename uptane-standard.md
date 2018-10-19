@@ -149,7 +149,7 @@ of one key does not necessarily impact the security of the entire system.
   * *Snapshot Role*: Indicates which images the repository has released at the
   same time.
   
-  * *Targets Role*: Holda the metadata used to verify the image 
+  * *Targets Role*: Holds the metadata used to verify the image, such as cryptographic hashes and file size.
   
   * *Timestamp Role*: Indicates if there are any new metadata or image 
   on the repository
