@@ -203,7 +203,7 @@ Uptane can assure that customizability does not impact security or functionality
 TODO
 
 ### **3.2.1. Use Cases**
-TO DO
+TODO
 ## **3.2.2. Exceptions**
 To DO
 
