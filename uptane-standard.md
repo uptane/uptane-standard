@@ -164,7 +164,7 @@ of one key does not necessarily impact the security of the entire system.
 
 *SOTA*: Software Updates Over-the-Air.
 
-*VIN*: Vehicle identification Number
+*VIN*: Vehicle Identification Number.
 
 # **3. Rationale for and Scope of Uptane Standards**
 This Standards document clarifies the essential components and best practices 
