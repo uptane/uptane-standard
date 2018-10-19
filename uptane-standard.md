@@ -113,7 +113,7 @@ being uploaded to the repository. Metadata information is generally
 cryptographic hashes and file lengths.
 
 *Primary/Secondary ECUs*: Terms used to describe the control units within
-an automobile.A primary control unit has more resources than a secondary,
+an automobile. A primary control unit has more resources than a secondary,
 in terms of memory, storage space, connection to the internet, and 
 access to a time source. Primary units are updated
 directly, while secondary units are generally updated by a primary.
