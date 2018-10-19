@@ -137,7 +137,7 @@ running on alll ECUs in the vehcile.
 
 These terms are defined in greater detail in Section 5.
 
-*Delegations*: Designating the responsibility of signing metadata to another entity. 
+*Delegations*: Designating the responsibility of signing metadata about images to another party. 
 
 *Roles*: The roles mechanism of Uptane allows
 the system to distribute signing responsibilities so compromise
