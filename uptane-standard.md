@@ -128,7 +128,7 @@ from Tier-1 suppliers.
 *Telematics Systems*: Electronic system that can remotely monitor a vehicle
 or its individual components.
 
-*Vehicle Version Manifest*: A compliation of manifests from all ECUs on
+*Vehicle Version Manifest*: A compilation of all ECU version manifests on
 a vehicle. It serves as a master list of all programs currretly
 running on alll ECUs in the vehcile.
 
