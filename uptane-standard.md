@@ -168,6 +168,12 @@ The Timestamp role SHALL produce and sign metadata indicating whether there are 
 
 ### Timestamp Metadata {#timestamp_meta}
 
+### Rules for filenames in repositories and metadata {#metadata_filename_rules}
+
+### Vehicle version manifest {#vehicle_version_manifest}
+
+#### ECU version report {#version_report}
+
 ## Server / repository implementation requirements
 
 An Uptane implementation SHALL make the following services available to vehicles:
@@ -194,7 +200,7 @@ The Image repository MAY require authentication for read access.
 
 The Director repository instructs ECUs as to which images should be installed by producing signed metadata on demand. Unlike the Image repository, it is mostly controlled by automated, online processes. It also consults a private inventory database containing information on vehicles, ECUs, and software revisions.
 
-The Directory repository SHALL expose an interface for primaries to upload vehicle version manifests and download metadata. This interface SHOULD be public.
+The Directory repository SHALL expose an interface for primaries to upload vehicle version manifests ({{vehicle_version_manifest}}) and download metadata. This interface SHOULD be public.
 The Director MAY encrypt images for ECUs that require it, either by encrypting on-the-fly or by storing encrypted images in the repository.
 
 The Director repository SHALL implement storage which permits an automated service to write generated metadata files. It MAY use any filesystem, key-value store, or database that fulfills this requirement.
@@ -203,7 +209,7 @@ The Director repository SHALL implement storage which permits an automated servi
 
 A Director repository MUST conform to the following six-step process for directing the installation of software images on a vehicle.
 
-1. When the Director receives a vehicle version manifest sent by a primary (as described in {{construct_manifest}}), it decodes the manifest, and determines the unique vehicle identifier.
+1. When the Director receives a vehicle version manifest sent by a primary (as described in {{construct_manifest_primary}}), it decodes the manifest, and determines the unique vehicle identifier.
 1. Using the vehicle identifier, the Director queries its inventory database (as described in {{inventory_db}}) for relevant information about each ECU in the vehicle.
 1. The Director checks the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director drops the request. An implementor MAY make whatever additional checks they wish. At a minimum, the following checks are required:
     * Each ECU recorded in the inventory database is also represented in the manifest.
@@ -211,7 +217,7 @@ A Director repository MUST conform to the following six-step process for directi
     * The signature of each secondary's contribution to the manifest matches the ECU key of that secondary.
 1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this standard. However, it MUST take into account *dependencies* and *conflicts* between images, and SHOULD consult well-established techniques for dependency resolution.
 1. The Director MAY encrypt images for ECUs that require it.
-1. The Director generates new metadata representing the desired set of images to be installed in the vehicle, based on the dependency resolution in step 4. This includes targets ({{targets_meta}}), snapshot ({{snapshot_meta}}), and timestamp ({{timestamp_meta}}) metadata. It then sends this metadata to the primary as described in {{download_meta}}.
+1. The Director generates new metadata representing the desired set of images to be installed in the vehicle, based on the dependency resolution in step 4. This includes targets ({{targets_meta}}), snapshot ({{snapshot_meta}}), and timestamp ({{timestamp_meta}}) metadata. It then sends this metadata to the primary as described in {{download_meta_primary}}.
 
 #### Inventory Database {#inventory_db}
 
@@ -242,7 +248,7 @@ The Time Server SHALL expose a public interface allowing primaries to communicat
 
 An Uptane-compliant ECU SHALL be able to download and verify the time, metadata, and image binaries before installing a new image.
 
-Each ECU in a vehicle receiving over-the-air updates is either a primary or a secondary ECU. A primary ECU collects and delivers to the Director vehicle manifests containing information about which images have been installed on ECUs in the vehicle. It also downloads and verifies the latest time, metadata, and images for itself and for its secondaries. A secondary ECU downloads and verifies the latest time, metadata, and images for itself from its associated primary ECU. It also sends signed information about its installed images to its associated primary.
+Each ECU in a vehicle receiving over-the-air updates is either a primary or a secondary ECU. A primary ECU collects and delivers to the Director vehicle manifests ({{vehicle_version_manifest}}) containing information about which images have been installed on ECUs in the vehicle. It also downloads and verifies the latest time, metadata, and images for itself and for its secondaries. A secondary ECU downloads and verifies the latest time, metadata, and images for itself from its associated primary ECU. It also sends signed information about its installed images to its associated primary.
 
 All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A primary ECU MUST perform full verification ({{full_verification}}). A secondary ECU SHOULD perform full verification if possible, and MUST perform full verification if it is safety-critical. If it is not safety-critical, it MAY perform partial verification ({{partial_verification}}) instead.
 
@@ -250,56 +256,117 @@ All ECUs MUST verify image metadata as specified in {{metadata_verification}} be
 
 A primary downloads, verifies, and distributes the latest time, metadata and images. To do so, it SHALL perform the following seven steps:
 
-1. {{construct_manifest}}
-1. {{check_time}}
-1. {{download_meta}}
-1. {{download_images}}
-1. {{send_time}}
-1. {{send_metadata}}
-1. {{send_images}}
+1. Construct and send vehicle version manifest ({{construct_manifest_primary}})
+1. Download and check current time ({{check_time_primary}})
+1. Download and verify metadata ({{download_meta_primary}})
+1. Download and verify images ({{download_images_primary}})
+1. Send latest time to secondaries ({{send_time_primary}})
+1. Send metadata to secondaries ({{send_metadata_primary}})
+1. Send images to secondaries ({{send_images_primary}})
 
 
-#### Construct and send vehicle version manifest {#construct_manifest}
+#### Construct and send vehicle version manifest {#construct_manifest_primary}
 
-The primary SHALL build a *vehicle version manifest*, a signed record of what versions of images are installed on all of the ECUs in the vehicle.
+The primary SHALL build a *vehicle version manifest* as described in {{vehicle_version_manifest}}.
 
 Once it has the complete manifest built, it MAY send the manifest to the director repository. However, it is not strictly required that the primary send the manifest until step three.
 
 Secondaries MAY send their version report at any time, so that it is stored on the primary already when it wishes to check for updates. Alternatively, the Primary MAY request a version report from each secondary at the time of the update check.
 
-#### Download and check current time {#check_time}
+#### Download and check current time {#check_time_primary}
 
 The primary SHALL download the current time from the time server, for distribution to its secondaries.
 
-The version report from each secondary ECU contains a nonce, plus a signed ECU version manifest. The primary SHALL gather each of these nonces from the secondary ECUs, then send them to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time. The primary SHALL verify that the signatures are valid, and that the time the server attests is greater than the previous attested time.
+The version report from each secondary ECU (as described in {{version_report}}) contains a nonce, plus a signed ECU version report. The primary SHALL gather each of these nonces from the secondary ECUs, then send them to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time. The primary SHALL verify that the signatures are valid, and that the time the server attests is greater than the previous attested time.
 
-#### Download and verify metadata {#download_meta}
+#### Download and verify metadata {#download_meta_primary}
 
 The primary SHALL download metadata for all targets and perform a full verification on it as specified in {{full_verification}}.
 
-#### Download and verify images {#download_images}
+#### Download and verify images {#download_images_primary}
 
 The primary SHALL download and verify images for itself and for all of its associated secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the director's targets metadata for that image.
 
 There may be several different filenames that all refer to the same image binary, as described in {{targets_meta}}. The primary SHALL associate each image binary with each of its possible filenames.
 
-#### Send latest time to secondaries {#send_time}
+#### Send latest time to secondaries {#send_time_primary}
 
 The primary SHALL send the time server's latest attested time to each ECU. The secondary SHALL verify the time message, then overwrite its current time with the received time.
 
-#### Send metadata to secondaries {#send_metadata}
+#### Send metadata to secondaries {#send_metadata_primary}
 
 The primary SHALL send the latest metadata it has downloaded to all of its associated secondaries.
 
 Full verification secondaries SHALL keep a complete copy of all metadata. A partial verification secondary SHALL keep *only* the targets metadata file from the director repository.
 
-#### Send images to secondaries {#send_images}
+#### Send images to secondaries {#send_images_primary}
 
 The primary SHALL send the latest image to each of its associated secondaries that have storage to receive it.
 
 For secondaries without storage, the primary SHOULD wait for a request from the secondary to stream the new image file to it. The secondary will send the request once it has verified the metadata sent in the previous step.
 
 ### Installing images on ECUs
+
+Before installing a new image, an ECU SHALL perform the following five steps:
+
+1. Verify latest attested time ({{verify_time}})
+1. Verify metadata ({{verify_metadata}})
+1. Download latest image ({{download_image}})
+1. Verify image ({{verify_image}})
+1. Create and send version report ({{create_version_report}})
+
+
+#### Verify latest attested time {#verify_time}
+
+The ECU SHALL verify the latest downloaded time. To do so, it must:
+
+1. Verify that the signatures on the downloaded time are valid,
+2. Verify that the list of nonces/tokens in the downloaded time includes the token that the ECU sent in its previous version report
+3. Verify that the time downloaded is greater than the previous time
+
+If all three steps complete without error, the ECU SHALL overwrite its current attested time with the time it has just downloaded and generate a new nonce/token for the next request to the time server.
+
+If any check fails, the ECU SHALL NOT overwrite its current attested time, and SHALL jump to the fifth step ({{create_version_report}}). The ECU SHOULD reuse its previous token for the next request to the time server.
+
+#### Verify metadata {#verify_metadata}
+
+The ECU SHALL verify the latest downloaded metadata ({{metadata_verification}}) using either full or partial verification. If the metadata verification fails for any reason, the ECU SHALL jump to the fifth step ({{create_version_report}}).
+
+#### Download latest image {#download_image}
+
+If the ECU does not have secondary storage, it SHALL download the latest image from the primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in {{send_images_primary}}, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the primary).
+
+The filename used to identify the latest known image (i.e., the file to request from the primary) SHALL be determined as follows: 
+
+1. Load the targets metadata file from the director repository.
+2. Find the targets metadata associated with this ECU identifier.
+3. Construct the image filename using the rule in {{metadata_filename_rules}}.
+
+When the primary responds to the download request, the ECU SHALL overwrite its current image with the downloaded image from the primary.
+
+If any part of this step fails, the ECU SHALL jump to the fifth step ({{create_version_report}}).
+
+#### Verify image {#verify_image}
+
+The ECU SHALL verify that the latest image matches the latest metadata as follows:
+
+1. Load the latest targets metadata file from the director.
+2. Find the target metadata associated with this ECU identifier.
+3. Check that the hardware identifier in the metadata matches the ECUs hardware identifier.
+4. Check that the release counter of the image in the previous metadata, if it exists, is less than or equal to the release counter in the latest metadata.
+5. If the image is encrypted, decrypt the image with a decryption key to be chosen as follows:
+    * If the ECU key is a symmetric key, the ECU SHALL use the ECU key for image decryption.
+    * If the ECU key is asymmetric, the ECU SHALL check the target metadata for an encrypted symmetric key. If such a key is found, the ECU SHALL decrypt the symmetric key using its ECU key, and use the decrypted symmetric key for image decryption.
+    * If the ECU key is asymmetric and there is no symmetric key in the target metadata, the ECU SHALL use its ECU key for image decryption.
+6. Check that the hash of the image matches the hash in the metadata.
+
+If the ECU has secondary storage, the checks SHOULD be performed on the image in secondary storage, before it is installed.
+
+If any step fails, the ECU SHALL jump to the fifth step ({{create_version_report}}). If the ECU does not have secondary storage, a step fails, and the ECU created a backup of its previous working image, the ECU SHOULD now install the backup image.
+
+#### Create and send version report {#create_version_report}
+
+The ECU SHALL create a version report as described in {{version_report}}, and send it to the primary (or simply save it to disk, if the ECU is a primary). The primary SHOULD write the version reports it receives to disk and associate them with the secondary that sent them.
 
 ### Metadata verification {#metadata_verification}
 
