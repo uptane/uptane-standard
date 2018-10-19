@@ -152,7 +152,7 @@ of one key does not necessarily impact the security of the entire system.
   * *Targets Role*: Holds the metadata used to verify the image, such as cryptographic hashes and file size.
   
   * *Timestamp Role*: Indicates if there are any new metadata or image 
-  on the repository
+  on the repository.
 
 
 ## **2.4 Acronyms and Abbreviations**
