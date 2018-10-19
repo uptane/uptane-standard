@@ -162,7 +162,7 @@ of one key does not impact other parts of the system.
 
 *LIN Bus*: Local Interconnect Bus
 
-*SOTA*: Software Over-the-Air
+*SOTA*: Software Updates Over-the-Air.
 
 *VIN*: Vehicle identification Number
 
