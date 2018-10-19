@@ -140,7 +140,7 @@ These terms are defined in greater detail in Section 5.
 *Delegations*: Designating the responsibility of signing metadata about images to another party. 
 
 *Roles*: The roles mechanism of Uptane allows
-the system to distribute signing responsibilities so compromise
+the system to distribute signing responsibilities so that the compromise
 of one key does not impact other parts of the system.
 
   * *Root Role*: Distributes and revokes public keys used to 
