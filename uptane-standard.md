@@ -129,7 +129,7 @@ from Tier-1 suppliers.
 or its individual components.
 
 *Vehicle Version Manifest*: A compilation of all ECU version manifests on
-a vehicle. It serves as a master list of all programs currretly
+a vehicle. It serves as a master list of all images currently
 running on alll ECUs in the vehcile.
 
 
