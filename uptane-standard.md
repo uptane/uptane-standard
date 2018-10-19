@@ -200,7 +200,7 @@ implemented incorrectly.
 Uptane can assure that customizability does not impact security or functionality.
 
 ## **3.2. Scope of Standards Coverage**
-TO DO
+TODO
 
 ### **3.2.1. Use Cases**
 TO DO
