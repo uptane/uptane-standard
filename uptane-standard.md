@@ -251,7 +251,7 @@ prevent or minimize the impact of these strategies.
 
 ## **4.1. Read updates to steal intellectual property**
 
-This is generally achieved with an Eavesdrop attack, where attackers are 
+This is generally achieved with an *Eavesdrop attack*, where attackers are 
 able to intercept and read unencrypted updates sent from the repository
 to the vehicles.
 
