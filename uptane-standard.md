@@ -144,7 +144,7 @@ the system to distribute signing responsibilities so that the compromise
 of one key does not necessarily impact the security of the entire system.
 
   * *Root Role*: Distributes and revokes public keys used to 
-  verify the root, timestamp, release, and targets role metadata.
+  verify the root, timestamp, snapshot, and targets role metadata.
 
   * *Snapshot Role*: Indicates which images the repository has released at the
   same time.
