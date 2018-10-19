@@ -252,6 +252,17 @@ Each ECU in a vehicle receiving over-the-air updates is either a primary or a se
 
 All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A primary ECU MUST perform full verification ({{full_verification}}). A secondary ECU SHOULD perform full verification if possible, and MUST perform full verification if it is safety-critical. If it is not safety-critical, it MAY perform partial verification ({{partial_verification}}) instead.
 
+### Build-time prerequisite requirements for ECUs
+
+For an ECU to be capable of receiving Uptane-secured updates, it MUST have the following data provisioned at the time it is manufactured or installed in the vehicle:
+
+1. The latest copy of required Uptane metadata at the time of manufacture or install.
+    * Partial verification ECUs MUST have the root and targets metadata from the director repository.
+    * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository map file.
+2. The public key(s) of the time server.
+3. An attestation of time downloaded from the time server.
+4. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
+
 ### Downloading and distributing updates on a primary ECU
 
 A primary downloads, verifies, and distributes the latest time, metadata and images. To do so, it SHALL perform the following seven steps:
