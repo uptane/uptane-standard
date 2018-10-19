@@ -160,7 +160,7 @@ of one key does not necessarily impact the security of the entire system.
 
 *ECUs*: Electronic Control Units, the computing units on vehicle.
 
-*LIN Bus*: Local Interconnect Bus
+*LIN Bus*: Local Interconnect Bus.
 
 *SOTA*: Software Updates Over-the-Air.
 
