@@ -74,7 +74,7 @@ This document describes a framework for securing automotive software update syst
 
 # Introduction
 
-Uptane is a secure software update framework for automobiles. This document describes procedures to enable programmers for OEMs and suppliers to design and implement this framework to better protect connected units on cars. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to conpromise critical systems. It also assures a faster and easier recovery process should a compromise occur.
+Uptane is a secure software update framework for automobiles. This document describes procedures to enable programmers for OEMs and suppliers to design and implement this framework to better protect connected units on cars. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to compromise critical systems. It also assures a faster and easier recovery process should a compromise occur.
 
 These instructions specify the components necessary for a compliant implementation. Individual implementors can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers.
 
@@ -91,9 +91,9 @@ The keywords "MUST," "MUST NOT," "REQUIRED," "SHALL," "SHALL NOT," "SHOULD," "SH
 *Metadata*: Data about a file that can be used to verify its authenticity and currency, and to assure that it has not been tampered with or altered being uploaded to the repository. Metadata information is generally cryptographic hashes and file lengths.
 *Primary/Secondary ECUs*: Terms used to describe the control units within an automobile. A primary control unit has more resources than a secondary, in terms of memory, storage space, connection to the internet, and access to a time source. Primary units are updated directly, while secondary units are generally updated by a primary.
 *Repository*: Designated server containing images and metadata.
-*Suppliers*: Indepedent companies to which auto manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that receive outsourced work from Tier-1 suppliers.
+*Suppliers*: Independent companies to which auto manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that receive outsourced work from Tier-1 suppliers.
 *Telematics Systems*: Electronic system that can remotely monitor a vehicle or its individual components.
-*Vehicle Version Manifest*: A compilation of all ECU version manifests on a vehicle. It serves as a master list of all images currently running on alll ECUs in the vehcile.
+*Vehicle Version Manifest*: A compilation of all ECU version manifests on a vehicle. It serves as a master list of all images currently running on all ECUs in the vehicle.
 
 ## Uptane Role Terminology
 
@@ -117,7 +117,7 @@ These terms are defined in greater detail in Section 5.
 
 # Rationale for and Scope of Uptane Standards
 
-This Standards document clarifies the essential components and best practices for the secure design implentation and deployment of Uptane by OEMs and suppiers. These practices contribute to compromise resilience, or the ability to minimize the extent of the threat posed by any given attack.
+This Standards document clarifies the essential components and best practices for the secure design implementation and deployment of Uptane by OEMs and suppliers. These practices contribute to compromise resilience, or the ability to minimize the extent of the threat posed by any given attack.
 
 ## Why Uptane requires standards
 
@@ -153,7 +153,7 @@ The following topics will not be addressed in this document, as they represent t
 
 ## Design Requirements
 
-The design requirements for this document are goverened by three principal parameters:
+The design requirements for this document are governed by three principal parameters:
 
 * to clearly mandate the design and implementation steps that are security critical and must be followed as is, while offering flexibility in the implementation of non-critical steps. In this manner, users can adapt to support different use models and deployment scenarios.
 * to delineate best practices to ensure that, should a vehicle be attacked, an attacker is forced to compromise many different systems.
@@ -161,7 +161,7 @@ The design requirements for this document are goverened by three principal param
 
 # Threat Model and Attack Strategies
 
-The connnected units on automobiles are vulnerable to a number of threats, which can be organized by attacker goals into four categories. These categories are presented below in order of increasing severity of the threat. Proper implementation of Uptane is designed to prevent or minimize the impact of these strategies.
+The connected units on automobiles are vulnerable to a number of threats, which can be organized by attacker goals into four categories. These categories are presented below in order of increasing severity of the threat. Proper implementation of Uptane is designed to prevent or minimize the impact of these strategies.
 
 ## Read updates to steal intellectual property
 
@@ -169,7 +169,7 @@ This is generally achieved with an *Eavesdrop attack*, where attackers are able 
 
 ## Deny updates to prevent vehicles from fixing software problems
 
-Attackers seeking to limit or prevent access to updates may employ anumber of strategies, including the following.
+Attackers seeking to limit or prevent access to updates may employ a number of strategies, including the following.
 
 * *Drop-request attack:* blocks network traffic outside or inside the vehicle.
 * *Slow retrieval attack:* slows down delivery of updates to ECUs so a known security vulnerability can be exploited before a corrective patch is received.
