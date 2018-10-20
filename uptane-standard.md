@@ -112,7 +112,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 ## Uptane Role Terminology
 
-These terms are defined in greater detail in Section 5.
+These terms are defined in greater detail in {{roles}}.
 
 *Delegations*: Designating the responsibility of signing metadata about images to another party.
 *Roles*: The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
