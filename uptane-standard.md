@@ -82,7 +82,9 @@ These instructions specify the components necessary for a compliant implementati
 
 ## Conformance Terminology
 
-The keywords "MUST," "MUST NOT," "REQUIRED," "SHALL," "SHALL NOT," "SHOULD," "SHOULD NOT," "RECOMMENDED," "MAY," and "OPTIONAL" in this document are to be  interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119). In order to be considered “Uptane-compliant,” an implementation MUST follow all of these rules as specified in the document.
+The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be  interpreted as described in {{RFC2119}}.
+
+In order to be considered “Uptane-compliant,” an implementation MUST follow all of these rules as specified in the document.
 
 ## Automotive Terminology
 
