@@ -64,6 +64,19 @@ informative:
     date: 2017-01-01
   # TODO add TUF
   # TODO add DER
+  USATODAY:
+    target: https://www.usatoday.com/story/tech/columnist/2016/06/28/your-average-car-lot-more-code-driven-than-you-think/86437052/
+    title: Your average car is a lot more code-driven than you think
+    author:
+      - ins: B. O'Donnell
+    date: 2016-06-28
+  CR-OTA:
+    target: https://www.consumerreports.org/automotive-technology/automakers-embrace-over-the-air-updates-can-we-trust-digital-car-repair/
+    title: Automakers Embrace Over-the-Air Updates, but Can We Trust Digital Car Repair?
+    author:
+      - ins: K. Barry
+    date: 2018-04-20
+
 
 --- abstract
 
@@ -125,8 +138,8 @@ This Standards document clarifies the essential components and best practices fo
 
 A standards document that can guide the safe design, integration and deployment of Uptane in cars is needed at this time because:
 
-* The number of connected units on the average vehicle continues to grow, with mainstream cars now containing up to [10 million lines](https://www.usatoday.com/story/tech/columnist/2016/06/28/your-average-car-lot-more-code-driven-than-you-think/86437052/) of code.
-* The [expanded use of software over-the-air](https://www.consumerreports.org/automotive-technology/automakers-embrace-over-the-air-updates-can-we-trust-digital-car-repair/) strategies creates new attack surfaces for malicious parties.
+* The number of connected units on the average vehicle continues to grow, with mainstream cars now containing up to 100 million lines of code. {{USATODAY}}
+* The expanded use of software over-the-air strategies creates new attack surfaces for malicious parties. {{CR-OTA}}
 * Legacy update strategies, such as SSL/TLS or GPG/RSA, are not feasible for use on automotive ECUs because they force manufacturers to chose between enhanced security and customizability.
 * Conventional strategies are also complicated by the differing resources of the ECUs, which can vary greatly in memory, storage space, and Internet connectivity.
 * The design of Uptane makes it possible to offer improved design flexibility, without sacrificing security.
