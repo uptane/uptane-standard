@@ -101,34 +101,35 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 ## Automotive Terminology
 
-*Bus*: An internal communications network that interconnects components within a vehicle. A car can have a number of buses that will vary in terms of power, speed and resources.
-*Image*: File containing all the relevant data and metadata for an ECU. Each ECU typically holds only one image, although this may vary in case to case.
-*Metadata*: Data about a file that can be used to verify its authenticity and currency, and to assure that it has not been tampered with or altered being uploaded to the repository. Metadata information is generally cryptographic hashes and file lengths.
-*Primary/Secondary ECUs*: Terms used to describe the control units within an automobile. A primary control unit has more resources than a secondary, in terms of memory, storage space, connection to the internet, and access to a time source. Primary units are updated directly, while secondary units are generally updated by a primary.
-*Repository*: Designated server containing images and metadata.
-*Suppliers*: Independent companies to which auto manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that receive outsourced work from Tier-1 suppliers.
-*Telematics Systems*: Electronic system that can remotely monitor a vehicle or its individual components.
-*Vehicle Version Manifest*: A compilation of all ECU version manifests on a vehicle. It serves as a master list of all images currently running on all ECUs in the vehicle.
+*Bus*: An internal communications network that interconnects components within a vehicle. A car can have a number of buses that will vary in terms of power, speed and resources.  
+*Image*: File containing all the relevant data and metadata for an ECU. Each ECU typically holds only one image, although this may vary in case to case.  
+*Metadata*: Data about a file that can be used to verify its authenticity and currency, and to assure that it has not been tampered with or altered being uploaded to the repository. Metadata information is generally cryptographic hashes and file lengths.  
+*Primary/Secondary ECUs*: Terms used to describe the control units within an automobile. A primary control unit has more resources than a secondary, in terms of memory, storage space, connection to the internet, and access to a time source. Primary units are updated directly, while secondary units are generally updated by a primary.  
+*Repository*: Designated server containing images and metadata.  
+*Suppliers*: Independent companies to which auto manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that receive outsourced work from Tier-1 suppliers.  
+*Telematics Systems*: Electronic system that can remotely monitor a vehicle or its individual components.  
+*Vehicle Version Manifest*: A compilation of all ECU version manifests on a vehicle. It serves as a master list of all images currently running on all ECUs in the vehicle.  
 
 ## Uptane Role Terminology
 
 These terms are defined in greater detail in {{roles}}.
 
-*Delegations*: Designating the responsibility of signing metadata about images to another party.
+*Delegations*: Designating the responsibility of signing metadata about images to another party.  
 *Roles*: The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
-    * *Root Role*: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
-    * *Snapshot Role*: Indicates which images the repository has released at the same time.
-    * *Targets Role*: Holds the metadata used to verify the image, such as cryptographic hashes and file size.
-    * *Timestamp Role*: Indicates if there are any new metadata or image on the repository.
+
+* *Root Role*: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
+* *Snapshot Role*: Indicates which images the repository has released at the same time.
+* *Targets Role*: Holds the metadata used to verify the image, such as cryptographic hashes and file size.
+* *Timestamp Role*: Indicates if there are any new metadata or image on the repository.
 
 
 ## Acronyms and Abbreviations
 
-*CAN Bus*: Controller Area Network bus standard.
-*ECUs*: Electronic Control Units, the computing units on vehicle.
-*LIN Bus*: Local Interconnect Bus.
-*SOTA*: Software Updates Over-the-Air.
-*VIN*: Vehicle Identification Number.
+*CAN Bus*: Controller Area Network bus standard.  
+*ECUs*: Electronic Control Units, the computing units on vehicle.  
+*LIN Bus*: Local Interconnect Bus.  
+*SOTA*: Software Updates Over-the-Air.  
+*VIN*: Vehicle Identification Number.  
 
 # Rationale for and Scope of Uptane Standards
 
