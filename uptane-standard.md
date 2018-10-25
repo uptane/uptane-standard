@@ -175,33 +175,59 @@ The design requirements for this document are governed by three principal parame
 
 # Threat Model and Attack Strategies
 
-The connected units on automobiles are vulnerable to a number of threats, which can be organized by attacker goals into four categories. These categories are presented below in order of increasing severity of the threat. Proper implementation of Uptane is designed to prevent or minimize the impact of these strategies.
+The overarching goal of Uptane is to provide a system that is resilient in the face of various types of compromise. In this section, we describe the goals that an attacker may have ({{attacker_goals}}) and the capabilities they may have or develop ({{capabilities}}). We then describe and classify types of attack on the system according to the attacker's goals ({{threats}}).
 
-## Read updates to steal intellectual property
+## Attacker goals {#attacker_goals}
 
-This is generally achieved with an *Eavesdrop attack*, where attackers are able to intercept and read unencrypted updates sent from the repository to the vehicles.
+We assume that attackers may want to achieve one or more of the following goals, in increasing order of severity:
 
-## Deny updates to prevent vehicles from fixing software problems
+* Read the contents of updates to discover confidential information or reverse-engineer firmware
+* Deny installation of updates to prevent vehicles from fixing software problems
+* Cause one or more ECUs in the vehicle to fail, denying use of the vehicle or of certain functions
+* Control the vehicle or ECUs within the vehicle
 
-Attackers seeking to limit or prevent access to updates may employ a number of strategies, including the following.
+## Attacker capabilities {#capabilities}
 
-* *Drop-request attack:* blocks network traffic outside or inside the vehicle.
-* *Slow retrieval attack:* slows down delivery of updates to ECUs so a known security vulnerability can be exploited before a corrective patch is received.
-* *Freeze attack:* continues to send the last known update to an ECU, even if a newer update exists.
-* *Partial bundle installation attack:* Allows only part of an update to install by dropping traffic to selected ECUs.
+Uptane is designed with resilience to compromise in mind. We assume that attackers may develop one or more of the following capabilities:
+
+* Read and analyze the contents of previous and/or current versions of software, as well as the update sequence and instructions
+* Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability may be developed in two domains:
+    * Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories
+    * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g. via an OBD port or using a compromised ECU as a vector)
+* Compromise and control one or more ECUs within a vehicle
+* Compromise signing or encryption keys
+* Compromise and control software repository servers (and any keys stored on the repository)
+
+## Description of threats {#threats}
+
+Uptane's threat model considers the following types of attack, organized according to the attacker goals listed in {{attacker_goals}}.
+
+### Read updates {#read_updates}
+
+* *Eavesdrop attack:* Read the unencrypted contents of an update sent from a repository to a vehicle.
+
+### Deny installation of updates {#deny_updates}
+
+An attacker seeking to deny installation of updates may attempt one or more of the following strategies:
+
+* *Drop-request attack:* Block network traffic outside or inside the vehicle.
+* *Slow retrieval attack:* Slow down network traffic, in the extreme case sending barely enough packets to avoid a timeout. Similar to a drop-request attack, except that both the sender and receiver of the traffic still think network traffic is unimpeded.
+* *Freeze attack:* Continue to send a previously known update to an ECU, even if a newer update exists.
+* *Partial bundle installation attack:* Install updates to some ECUs, but freeze updates on others.
+
+### Interfere with ECU functionality {#change_functionality}
+
+Attackers seeking to interfere with the functionality of vehicle ECUs in order to cause an operational failure or unexpected behaviour may do so in one of the following ways:
+
+* *Rollback attack:* Cause an ECU to install a previously-valid software revision that is older than the currently-installed version.
+* *Endless data attack:* Send a large amount of data to an ECU, until it runs out of storage, possibly causing the ECU to fail to operate.
+* *Mix-and-match attack:* Install a set of images on ECUs in the vehicle that are incompatible with each other. This may be accomplished even if all of the individual images being installed are valid, as long as there exist valid versions that are mutually incompatible.
  
-## Interfere with ECU functionality
+### Control an ECU or vehicle {#control_ecu}
 
-Attackers seeking to change the actual functionality of vehicle ECUs may do so in one of the following ways:
+Full control of a vehicle, or one or more ECUs within a vehicle, is the most severe threat.
 
-* *Rollback attack:* tricks an ECU into installing outdated software with known vulnerabilities.
-* *Endless data attack:* causes an ECU to crash by sending it an infinite amount of data until it runs out of storage.
-* *Mixed-bundles attack:* shuts down an ECU by causing it to install incompatible versions of software updates that must not be installed at the same time. Attackers can accomplish this by showing different bundles to different ECUs at the same time.
-* *Mix-and-match attack:* If attackers have compromised repository keys, they can use these keys to release arbitrary combinations of new versions of images.
- 
-## Control the ECU:
-
-The last and most severe threat is if an attack seeks to remotely control the ECU. The attacker can modify the vehicle’s performance through an arbitrary software attack, in which the software on an ECU is overwritten with a malicious software program.
+* *Arbitrary software attack:* Cause an ECU to install and run arbitrary code of the attacker's choice.
 
 # Detailed Design of Uptane
 
