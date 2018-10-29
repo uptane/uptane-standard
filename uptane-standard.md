@@ -43,6 +43,18 @@ normative:
   RFC5756:
   # JSON
   RFC7159:
+  # TAP 3 at rev d0818e5
+  TAP-3:
+    target: https://github.com/theupdateframework/taps/commit/d0818e580c322815a473520f2e8cc5f5eb8df499
+    title: The Update Framework TAP 3 - Multi-role delegations
+    author:
+      - ins: T.K. Kuppusamy
+      - ins: S. Awwad
+      - ins: E. Cordell
+      - ins: V. Diaz
+      - ins: J. Moshenko
+      - ins: J. Cappos
+    date: 2018-01-18
   # TAP 4 at rev 2cb67d9
   TAP-4:
     target: https://github.com/theupdateframework/taps/commit/2cb67d913ec19424d1e354b38f862886fbfd4105
@@ -81,7 +93,6 @@ informative:
       - ins: B-Y. Yang
     date: 2011-09-26
   MERCURY:
-    # TODO
     target: https://www.usenix.org/system/files/conference/atc17/atc17-kuppusamy.pdf
     title: "Mercury: Bandwidth-Effective Prevention of Rollback Attacks Against Community Repositories"
     author:
@@ -169,7 +180,7 @@ Responsibility for signing images or a subset of images MAY be delegated to more
 
 A particular delegation for a subset of images MAY be designated as **terminating**. For terminating delegations, the client SHALL NOT search the any further if it does not find validly signed metadata about those images in the terminating delegation. Delegations SHOULD NOT be terminating by default; terminating delegations SHOULD only be used when there is a compelling technical reason to do so.
 
-A delegation for a subset of images MAY be a multi-role delegation. A multi-role delegation indicates that each of the delegatee roles MUST sign the same metadata.
+A delegation for a subset of images MAY be a multi-role delegation {{TAP-3}}. A multi-role delegation indicates that each of the delegatee roles MUST sign the same metadata.
 
 Delegations only apply to the Image repository. The Targets role on the Director repository MUST NOT delegate metadata signing responsibility.
 
@@ -289,7 +300,7 @@ For an ECU to be capable of receiving Uptane-secured updates, it MUST have the f
 
 1. The latest copy of required Uptane metadata at the time of manufacture or install.
     * Partial verification ECUs MUST have the root and targets metadata from the director repository.
-    * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository map file.
+    * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository map file {{TAP-4}}.
 2. The public key(s) of the time server.
 3. An attestation of time downloaded from the time server.
 4. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
@@ -306,14 +317,13 @@ A primary downloads, verifies, and distributes the latest time, metadata and ima
 1. Send metadata to secondaries ({{send_metadata_primary}})
 1. Send images to secondaries ({{send_images_primary}})
 
-
 #### Construct and send vehicle version manifest {#construct_manifest_primary}
 
 The primary SHALL build a *vehicle version manifest* as described in {{vehicle_version_manifest}}.
 
 Once it has the complete manifest built, it MAY send the manifest to the director repository. However, it is not strictly required that the primary send the manifest until step three.
 
-Secondaries MAY send their version report at any time, so that it is stored on the primary already when it wishes to check for updates. Alternatively, the Primary MAY request a version report from each secondary at the time of the update check.
+Secondaries MAY send their version report at any time, so that it is stored on the primary already when it wishes to check for updates. Alternatively, the primary MAY request a version report from each secondary at the time of the update check.
 
 #### Download and check current time {#check_time_primary}
 
@@ -339,7 +349,7 @@ The primary SHALL send the time server's latest attested time to each ECU. The s
 
 The primary SHALL send the latest metadata it has downloaded to all of its associated secondaries.
 
-Full verification secondaries SHALL keep a complete copy of all metadata. A partial verification secondary SHALL keep *only* the targets metadata file from the director repository.
+Full verification secondaries SHALL keep a complete copy of all metadata. A partial verification secondary MAY keep *only* the targets metadata file from the director repository.
 
 #### Send images to secondaries {#send_images_primary}
 
@@ -368,7 +378,7 @@ The ECU SHALL verify the latest downloaded time. To do so, it must:
 
 If all three steps complete without error, the ECU SHALL overwrite its current attested time with the time it has just downloaded and generate a new nonce/token for the next request to the time server.
 
-If any check fails, the ECU SHALL NOT overwrite its current attested time, and SHALL jump to the fifth step ({{create_version_report}}). The ECU SHOULD reuse its previous token for the next request to the time server.
+If any check fails, the ECU SHALL NOT overwrite its current attested time, and SHALL jump to the fifth step ({{create_version_report}}). The ECU MUST reuse its previous token for the next request to the time server.
 
 #### Verify metadata {#verify_metadata}
 
@@ -378,7 +388,7 @@ The ECU SHALL verify the latest downloaded metadata ({{metadata_verification}}) 
 
 If the ECU does not have secondary storage, it SHALL download the latest image from the primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in {{send_images_primary}}, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the primary).
 
-The filename used to identify the latest known image (i.e., the file to request from the primary) SHALL be determined as follows: 
+The filename used to identify the latest known image (i.e., the file to request from the primary) SHALL be determined as follows:
 
 1. Load the targets metadata file from the director repository.
 2. Find the targets metadata associated with this ECU identifier.
@@ -437,25 +447,25 @@ A primary ECU SHALL download metadata and images following the rules specified i
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
-1. If the ECU is a primary ECU, load the map file, and use the information therein to determine where to download metadata from.
+1. Load the map file {{TAP-4}}. If necessary, use the information therein to determine where to download metadata from.
 2. Load the latest attested time from the time server.
 3. Download and check the root metadata file from the director repository:
     1. Check that the metadata file has been signed by a threshold of keys specified in the previous root metadata file. (Checks for an arbitrary software attack.)
-    2. Check that the version number in the previous targets metadata file, if any, is less than or equal to the version number in this targets metadata file. (Checks for a rollback attack.)
+    2. Check that the version number in the previous root metadata file, if any, is less than or equal to the version number in this root metadata file. (Checks for a rollback attack.)
     3. Check that the latest attested time is lower than the expiration timestamp in this metadata file. (Checks for a freeze attack.)
-    4. If the the timestamp and / or snapshot keys have been rotated, delete the previous timestamp and snapshot metadata files.
+    4. If the the timestamp and / or snapshot keys have been rotated, delete the previous timestamp and snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
 4. Download and check the timestamp metadata file from the director repository:
-    1. Check that it has been signed by the threshold of keys specified in the root metadata file.
+    1. Check that it has been signed by the threshold of keys specified in the latest root metadata file.
     2. Check that the version number of the previous timestamp metadata file, if any, is less than or equal to the version number of this timestamp metadata file. (Checks for a rollback attack.)
     3. Check that the latest attested time is lower than the expiration timestamp in this metadata file. (Checks for a freeze attack.)
 5. Download and check the snapshot metadata file from the director repository:
-    1. Check that it has been signed by the threshold of keys specified in the root metadata file.
+    1. Check that it has been signed by the threshold of keys specified in the latest root metadata file.
     2. Check that the version number of the previous snapshot metadata file, if any, is less than or equal to the version number of this snapshot metadata file. (Checks for a rollback attack.)
-    3. Check that the version number the previous snapshot metadata file lists for each targets metadata file is less than or equal to the its version number in this snapshot metadata file.
-    4. Check that each targets metadata filename listed in the previous snapshot metadata file is also listed in this snapshot metadata file.
+    3. Check that the version number the previous snapshot metadata file lists for each targets metadata file is less than or equal to the its version number in this snapshot metadata file. (Checks for a rollback attack.)
+    4. Check that each targets metadata filename listed in the previous snapshot metadata file is also listed in this snapshot metadata file. (Checks for a rollback attack.)
     5. Check that the latest attested time is lower than the expiration timestamp in this metadata file. (Checks for a freeze attack.)
 6. Download and check the targets metadata file from the director repository:
-    1. Check that it has been signed by the threshold of keys specified in the root metadata file.
+    1. Check that it has been signed by the threshold of keys specified in the latest root metadata file. (Checks for an arbitrary software attack.)
     2. Check that the version number of the previous targets metadata file, if any, is less than or equal to the version number of this targets metadata file. (Checks for a rollback attack.)
     3. Check that the latest attested time is lower than the expiration timestamp in this metadata file. (Checks for a freeze attack.)
     4. Check that the version number in this targets metadata file matches the version number given for it in the snapshot metadata file. (Checks for a mix-and-match attack.)
@@ -463,34 +473,34 @@ In order to perform full verification, an ECU SHALL perform the following steps:
     6. Check that no ECU identifier is represented more than once.
 7. Download and check the root metadata file from the image repository:
     1. Check that the metadata file has been signed by a threshold of keys specified in the previous root metadata file. (Checks for an arbitrary software attack.)
-    2. Check that the version number in the previous targets metadata file, if any, is less than or equal to the version number in this targets metadata file. (Checks for a rollback attack.)
+    2. Check that the version number in the previous root metadata file, if any, is less than or equal to the version number in this root metadata file. (Checks for a rollback attack.)
     3. Check that the latest attested time is lower than the expiration timestamp in this metadata file. (Checks for a freeze attack.)
-    4. If the the timestamp and / or snapshot keys have been rotated, delete the previous timestamp and snapshot metadata files.
+    4. If the the timestamp and / or snapshot keys have been rotated, delete the previous timestamp and snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
 8. Download and check the timestamp metadata file from the image repository:
-    1. Check that it has been signed by the threshold of keys specified in the root metadata file.
+    1. Check that it has been signed by the threshold of keys specified in the latest root metadata file.
     2. Check that the version number of the previous timestamp metadata file, if any, is less than or equal to the version number of this timestamp metadata file. (Checks for a rollback attack.)
     3. Check that the latest attested time is lower than the expiration timestamp in this metadata file. (Checks for a freeze attack.)
 9. Download and check the snapshot metadata file from the image repository:
-    1. Check that it has been signed by the threshold of keys specified in the root metadata file.
+    1. Check that it has been signed by the threshold of keys specified in the latest root metadata file.
     2. Check that the version number of the previous snapshot metadata file, if any, is less than or equal to the version number of this snapshot metadata file. (Checks for a rollback attack.)
-    3. Check that the version number the previous snapshot metadata file lists for each targets metadata file is less than or equal to the its version number in this snapshot metadata file.
-    4. Check that each targets metadata filename listed in the previous snapshot metadata file is also listed in this snapshot metadata file.
+    3. Check that the version number the previous snapshot metadata file lists for each targets metadata file is less than or equal to the its version number in this snapshot metadata file. (Checks for a rollback attack.)
+    4. Check that each targets metadata filename listed in the previous snapshot metadata file is also listed in this snapshot metadata file. (Checks for a rollback attack.)
     5. Check that the latest attested time is lower than the expiration timestamp in this metadata file. (Checks for a freeze attack.)
 10. Download and check the top-level targets metadata file from the image repository:
-    1. Check that it has been signed by the threshold of keys specified in the root metadata file.
-    2. Check that the version number of the previous targets metadata file, if any, is less than or equal to the version number of this targets metadata file. (Checks for a rollback attack.) {#test}
+    1. Check that it has been signed by the threshold of keys specified in the latest root metadata file.
+    2. Check that the version number of the previous targets metadata file, if any, is less than or equal to the version number of this targets metadata file. (Checks for a rollback attack.)
     3. Check that the latest attested time is lower than the expiration timestamp in this metadata file. (Checks for a freeze attack.)
     4. Check that the version number in this targets metadata file matches the version number given for it in the snapshot metadata file. (Checks for a mix-and-match attack.)
 11. For each image listed in the targets metadata file from the director repository, locate a targets metadata file that contains an image with exactly the same file name. For each delegated targets metadata file that is found to contain metadata for the image currently being processed, perform all of the checks in step 10. Use the following process to locate image metadata:
     1. If the top-level targets metadata file contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.
     2. Recursively search the list of delegations, in order of appearance:
-        1. If it is a multi-role delegation, recursively visit each role, and check that each has signed exactly the same non-custom metadata (i.e., length and hashes) about the image. If it is all the same, return the metadata to be checked and skip to step 11.3.
+        1. If it is a multi-role delegation {{TAP-3}}, recursively visit each role, and check that each has signed exactly the same non-custom metadata (i.e., length and hashes) about the image. If it is all the same, return the metadata to be checked and skip to step 11.3.
         2. If it is a terminating delegation and it contains signed metadata about the image, return the metadata to be checked and skip to step 11.3. If metadata about an image is not found in a terminating delegation, return an error code indicating that the image is missing.
-        3. Otherwise, continue processing the next delegation, if any. As soon as a delegation is found that contains signed metadata about the image, return the metadata to be checked and skip to step 11.3. 
-        4. If no signed metadata about the image can be found anywhere in the delegation tree, return an error code indicating that the image is missing.
+        3. Otherwise, continue processing the next delegation, if any. As soon as a delegation is found that contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.
+        4. If no signed metadata about the image can be found anywhere in the delegation graph, return an error code indicating that the image is missing.
     3. Check that the targets metadata from the image repository matches the targets metadata from the director repository:
-        1. Check that the length and hash of the image are the same in both sets of metadata.
-        2. Check that the hardware identifier and release counter are the same in both sets of metadata.
+        1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.
+        2. Check that the custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
