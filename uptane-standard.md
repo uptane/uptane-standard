@@ -76,6 +76,10 @@ informative:
     author:
       - ins: K. Barry
     date: 2018-04-20
+  IN-TOTO:
+    target: https://in-toto.github.io/
+    title: "in-toto: A framework to secure the integrity of software supply chains"
+    date: 2018-10-29
 
 
 --- abstract
@@ -162,7 +166,7 @@ To DO
 The following topics will not be addressed in this document, as they represent threats outside the scope of Uptane:
 
 * Physical attacks, such as manual tampering with ECUs outside the vehicle.
-* Compromise of the supply chain (e.g., build system, version control system, packaging process). A number of strategies already (e.g., git signing, TPMs, in-toto) exist to address this problem. Therefore, there is no need duplicate those techniques here.
+* Compromise of the supply chain (e.g., build system, version control system, packaging process). A number of strategies already (e.g., git signing, TPMs, in-toto {{IN-TOTO}}) exist to address this problem. Therefore, there is no need duplicate those techniques here.
 * Problems associated with OBD or UDS programming of ECUs, such as authentication of communications between ECUs.
 
 ## Design Requirements
