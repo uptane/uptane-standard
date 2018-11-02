@@ -147,7 +147,7 @@ A standards document that can guide the safe design, integration and deployment 
 
 ## Scope of Standards Coverage
 
-This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in cars. In this section, we set the scope of that applicability by providing sample use cases and possible exceptions, aspects of update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
+This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in cars. In this section, we define the scope of that applicability by providing sample use cases and possible exceptions, aspects of update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
 
 ### Use Cases
 
@@ -155,7 +155,11 @@ The following use cases provide a number of scenarios illustrating the manner in
 
 #### OEMs initializing Uptane at the factory using SOTA
 
-Bob, who works for an OEM, is overseeing the installation of Uptane on new vehicles at a manufacturing plant. He starts by preparing the ECUs by adding the following things: code to perform full/partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server. His implementation would be considered Uptane-compliant if: a) all primaries perform full verification; b) all secondaries that are updated via OTA perform full / partial verification; and c) all other ECUs that perform no verification cannot be updated via OTA.
+Bob, who works for an OEM, is overseeing the installation of Uptane on new vehicles at a manufacturing plant. He starts with preparing the ECUs by adding the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server. His implementation would be considered Uptane-compliant if:
+
+1. all primaries perform full verification; 
+1. all secondaries that are updated via OTA perform full or partial verification; and 
+1. all other ECUs that do not perform verification cannot be updated via OTA.
 
 #### Updating one ECU with a complete image
 
@@ -167,12 +171,12 @@ Dana runs a dealership for a major OEM. The OEM has issued a recall to address a
 
 #### Update one ECU with multiple deltas
 
-Frances needs to update an On-Board Diagnostics port and has several new images to download. To save bandwidth costs, she uses delta images that contain only the code and / or data that has changed from the previous image installed by the ECU. To do so, she must first modify the director repository, using the vehicle version manifest and dependency resolution to determine the differences between the previous and latest images. Frances then adds the following to the custom targets metadata used by the director repository (1) the algorithm used to apply a delta image, and (2) the targets metadata about the delta image. Frances would also check whether the delta images match the targets metadata from the director repository.
+Frances needs to update an On-Board Diagnostics port and has several new images to download. To save bandwidth costs, she uses delta images that contain only the code and/or data that has changed from the previous image installed by the ECU. To do so, she must first modify the director repository using the vehicle version manifest and dependency resolution to determine the differences between the previous and latest images. Frances then adds the following to the custom targets metadata used by the director repository: (1) the algorithm used to apply a delta image and (2) the targets metadata about the delta image. Frances would also check whether the delta images match the targets metadata from the director repository.
 
 ## Exceptions
 
 There are a number of factors that could impede the completion of the above scenarios:
-* ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that prevent performance of public key cryptography; or it may lack sufficient storage to undo installation of bad software; or it simply may reside on a low-speed network (e.g., LIN)
+* ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that prevent performance of public key cryptography; or they may lack sufficient storage to undo installation of bad software; or they simply may reside on a low-speed network (e.g., LIN)
 * ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.
 * A user may replace OEM-installed ECUs with aftermarket ECUs instead.
 * A vehicle may be able to download only a limited amount of data via a cellular channel (due to limits on a data plan).
