@@ -226,7 +226,7 @@ Attackers seeking to interfere with the functionality of vehicle ECUs in order t
 * *Rollback attack:* Cause an ECU to install a previously-valid software revision that is older than the currently-installed version.
 * *Endless data attack:* Send a large amount of data to an ECU, until it runs out of storage, possibly causing the ECU to fail to operate.
 * *Mix-and-match attack:* Install a set of images on ECUs in the vehicle that are incompatible with each other. This may be accomplished even if all of the individual images being installed are valid, as long as there exist valid versions that are mutually incompatible.
- 
+
 ### Control an ECU or vehicle {#control_ecu}
 
 Full control of a vehicle, or one or more ECUs within a vehicle, is the most severe threat.
@@ -289,19 +289,466 @@ The Timestamp role SHALL produce and sign metadata indicating whether there are 
 
 ## Metadata abstract syntax {#meta_syntax}
 
+Metadata files on a repository SHOULD be written using the ASN.1 abstract syntax specified in this section.  These files MAY be encoded and decoded using any transfer syntax that an OEM desires (e.g., BER, CER, DER, JSON, OER, PER, XER).
+
 ### Common Metadata Structures and Formats
+
+Metadata files SHOULD share the data structures in this section. These data structures specify how information, such as cryptographic hashes, digital signatures, and public keys, should be encoded.
+
+This is An ASN.1 module that defines common data structures used by metadata files.
+
+```
+CommonModule DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+  EXPORTS ALL;
+
+  RoleType        ::= ENUMERATED {root, targets, snapshot, timestamp}
+
+  -- String types.
+  Filename        ::= VisibleString (SIZE(1..32))
+  -- No known path separator allowed in a strict filename.
+  StrictFilename  ::= VisibleString (SIZE(1..32))
+                                    (PATTERN "[^/\\]+")
+  BitString       ::= BIT STRING    (SIZE(1..1024))
+  OctetString     ::= OCTET STRING  (SIZE(1..1024))
+  HexString       ::= VisibleString (SIZE(1..1024))
+                                    (PATTERN "[0-9a-f]+")
+  -- Table 1 of RFC 4648.
+  Base64String    ::= VisibleString (SIZE(1..1024))
+                                    (PATTERN "[A-Za-z0-9\+/=]+")
+  -- Adjust length of SEQUENCE OF to your needs.
+  Paths           ::= SEQUENCE (SIZE(1..8)) OF Path
+  Path            ::= VisibleString (SIZE(1..32))
+                                    (PATTERN "[\w\*\\/]+")
+  -- Adjust length of SEQUENCE OF to your needs.
+  URLs            ::= SEQUENCE (SIZE(0..8)) OF URL
+  URL             ::= VisibleString (SIZE(1..1024))
+  -- A generic identifier for vehicles, primaries, secondaries.
+  Identifier      ::= VisibleString (SIZE(1..32))
+
+  Natural         ::= INTEGER (0..MAX)
+  Positive        ::= INTEGER (1..MAX)
+  Length          ::= Positive
+  Threshold       ::= Positive
+  Version         ::= Positive
+  -- The date and time in UTC encoded as a UNIX timestamp.
+  UTCDateTime     ::= Positive
+
+  BinaryData      ::= CHOICE {
+    bitString     BitString,
+    octetString   OctetString,
+    hexString     HexString,
+    base64String  Base64String
+  }
+
+  -- Adjust length of SEQUENCE OF to your needs.
+  Hashes          ::= SEQUENCE (SIZE(1..8)) OF Hash
+  Hash            ::= SEQUENCE {
+    function      HashFunction,
+    digest        BinaryData
+  }
+  HashFunction ::= ENUMERATED {sha224, sha256, sha384, sha512, sha512-224,
+                               sha512-256, ...}
+
+  -- Adjust length of SEQUENCE OF to your needs.
+  Keyids          ::= SEQUENCE (SIZE(1..8)) OF Keyid
+  -- Usually, a hash of a public key.
+  Keyid           ::= HexString
+
+  -- Adjust length of SEQUENCE OF to your needs.
+  Signatures      ::= SEQUENCE (SIZE(1..8)) OF Signature
+  Signature       ::= SEQUENCE {
+    keyid         Keyid,
+    method        SignatureMethod,
+    -- For efficient checking, sign the hash of the message instead of the
+    -- message itself.
+    hash          Hash,
+    -- The signature itself.
+    value         HexString
+  }
+  SignatureMethod ::= ENUMERATED {rsassa-pss, ed25519, ...}
+
+  -- Adjust length of SEQUENCE OF to your needs.
+  PublicKeys      ::= SEQUENCE (SIZE(1..8)) OF PublicKey
+  PublicKey       ::= SEQUENCE {
+    publicKeyid     Keyid,
+    publicKeyType   PublicKeyType,
+    publicKeyValue  BinaryData
+  }
+  PublicKeyType   ::= ENUMERATED {rsa, ed25519, ...}
+
+END
+```
+An OEM MAY use any hash function (`Hash.function`; e.g., SHA-2) and signature scheme (`Signature.method`; e.g., [RSASSA-PSS](https://tools.ietf.org/html/rfc3447#page-29), [Ed25519](https://ed25519.cr.yp.to/)).
+
+A hash digest (`Hash.digest`), signature (`Signature.sig`), or public key (`PublicKey.keyval`) SHOULD be encoded as either a bit, octet, hexadecimal, or Base64 string. For example, an RSA public key MAY be encoded using the PEM format, whereas an Ed25519 public key MAY be encoded as a hexadecimal string.
+
+Every public key has a unique identifier (`PublicKey.keyid`). This identifier MAY be, for example, the SHA-256 hash of the public key.
+
+An ECU SHOULD verify that each `Keyids`, `Hashes`, `Signatures`, and `PublicKeys` sequence contains unique `KeyId`, `Hash.function`, `Signature.keyid`, and `PublicKey.keyid` values, respectively. The ECU MAY reject a sequence containing duplicate values, or simply ignore such values.
+
+Every metadata file contains three parts: a signed message (`Signed`), the number of signatures on the following message (`numberOfSignatures`), and a sequence of signatures for the message (`Signatures`).
+
+The signed message is a sequence of four attributes: (1) `type`, an enumerated type of the metadata (i.e., root, targets, snapshot, or timestamp), (2) `expires`, an expiration date and time for the metadata (specified using the ISO 8601 format), (3) `version`, a version number, and (4) `body`, the role-specific metadata. The version number SHOULD be incremented every time the metadata file is updated. The attributes of role-specific metadata will be discussed in the rest of this section.
+
+Signatures SHOULD be computed over the hash of the signed message, instead of the signed message itself.
+
+Below is an example of the metadata format common to all metadata. All metadata SHOULD follow this format.
+```
+MetadataModule DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+  EXPORTS Metadata;
+
+  -- https://sourceforge.net/p/asn1c/discussion/357921/thread/aced2512/
+  IMPORTS Length,
+          Positive,
+          RoleType,
+          Signatures,
+          UTCDateTime       FROM CommonModule
+          RootMetadata      FROM RootModule
+          TargetsMetadata   FROM TargetsModule
+          SnapshotMetadata  FROM SnapshotModule
+          TimestampMetadata FROM TimestampModule;
+
+  Metadata      ::= SEQUENCE {
+    signed              Signed,
+    numberOfSignatures  Length,
+    signatures          Signatures
+  }
+  Signed        ::= SEQUENCE {
+    type        RoleType,
+    expires     UTCDateTime,
+    version     Positive,
+    body        SignedBody
+  }
+  SignedBody    ::= CHOICE {
+    rootMetadata      RootMetadata,
+    targetsMetadata   TargetsMetadata,
+    snapshotMetadata  SnapshotMetadata,
+    timestampMetadata TimestampMetadata
+  }
+
+END
+```
 
 ### Root Metadata {#root_meta}
 
+The root metadata distributes and revokes the public keys of the top-level root, targets, snapshot, and timestamp roles. These keys are revoked and replaced by changing the public keys specified in the root metadata. This metadata is signed using the root role’s private keys.
+
+The root metadata contains two important attributes. First, the `keys` attribute lists the public keys used by the root, targets, snapshot, and timestamp roles. Second, the `roles` attribute maps each of the four roles to: (1) the URL pointing to its metadata file, (2) its public keys, and (3) the threshold number of keys required to sign the metadata file. An empty sequence of URLs denotes that the metadata file SHALL NOT be updated. An ECU SHOULD verify that each of the four roles has been defined exactly once in the metadata.
+
+Here is the ASN.1 definition for the body of the root metadata.
+```
+RootModule DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+  EXPORTS RootMetadata;
+
+  IMPORTS Keyids,
+          Length,
+          PublicKeys,
+          RoleType,
+          Threshold,
+          URLs FROM CommonModule;
+
+  RootMetadata ::= SEQUENCE {
+    numberOfKeys  Length,
+    keys          PublicKeys,
+    numberOfRoles Length,
+    roles         TopLevelRoles,
+    -- https://tools.ietf.org/html/rfc6025#section-2.4.2
+    ...
+  }
+  -- Adjust length of SEQUENCE OF to your needs.
+  TopLevelRoles ::= SEQUENCE (SIZE(4)) OF TopLevelRole
+  TopLevelRole  ::= SEQUENCE {
+    role            RoleType,
+    -- TAP 5: The URLs pointing to the metadata file for this role.
+    numberOfURLs    Length OPTIONAL,
+    urls            URLs OPTIONAL,
+    numberOfKeyids  Length,
+    keyids          Keyids,
+    threshold       Threshold,
+    ...
+  }
+
+END
+```
+
 ### Targets Metadata {#targets_meta}
+
+At a minimum, a targets metadata file contains metadata (i.e., filename, hashes, length) about unencrypted images on a repository. The file MAY also contain two optional pieces of information: (1) custom metadata about which images should be installed by which ECUs, and whether encrypted images are available, and / or (2) other delegated targets roles that have been entrusted to sign images. This file is signed using the private keys of either the top-level targets role or a delegated targets role.
+
+The following example specifies all of the REQUIRED as well as all of the RECOMMENDED attributes for the body of targets metadata.
+```
+TargetsModule DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+  EXPORTS TargetsMetadata, Target;
+
+  IMPORTS BinaryData,
+          Filename,
+          Hashes,
+          Identifier,
+          Keyids,
+          Length,
+          Natural,
+          Paths,
+          Positive,
+          PublicKeys,
+          StrictFilename,
+          Threshold FROM CommonModule;
+
+  TargetsMetadata ::= SEQUENCE {
+    -- Allowed to have no targets at all.
+    numberOfTargets Natural,
+    -- Metadata about unencrypted images on a repository.
+    targets         Targets,
+    -- Delegations are optional.
+    delegations     TargetsDelegations OPTIONAL,
+    -- https://tools.ietf.org/html/rfc6025#section-2.4.2
+    ...
+  }
+
+  -- Adjust length of SEQUENCE OF to your needs.
+  Targets           ::= SEQUENCE (SIZE(1..128)) OF TargetAndCustom
+  TargetAndCustom   ::= SEQUENCE {
+    -- The filename, length, and hashes of unencrypted images on a repository.
+    target  Target,
+    -- This attribute is used to specify additional information, such as which
+    -- images should be installed by which ECUs, and metadata about encrypted
+    -- images.
+    custom  Custom OPTIONAL
+  }
+  Target ::= SEQUENCE {
+    fileDownloadUrl URL,
+    filename        Filename,
+    length          Length,
+    numberOfHashes  Length,
+    hashes          Hashes
+  }
+  Custom ::= SEQUENCE {
+    -- NOTE: The following attributes are specified by both the image and
+    -- director repositories.
+    -- The release counter is used to prevent rollback attacks on images when
+    -- only the director repository is compromised.
+    -- Every ECU should check that the release counter of its latest image is
+    -- greater than or equal to the release counter of its previous image.
+    releaseCounter        Natural OPTIONAL,
+    -- The hardware identifier is used to prevent the director repository,
+    -- when it is compromised, from choosing images for an ECU that were not
+    -- meant for it.
+    -- Every ECU should check that the hardware ID of its latest image matches
+    -- its hardware ID.
+    -- An OEM MAY define other types of information to further restrict the
+    -- choices that can be made by a compromised director repository.
+    hardwareIdentifier    Identifier OPTIONAL,
+    -- NOTE: The following attributes are specified only by the director
+    -- repository.
+    -- The ECU identifier specifies information, e.g., serial numbers, that the
+    -- director uses to point ECUs as to which images they should install.
+    -- Every ECU should check that the ECU ID of its latest image matches its
+    -- own ECU ID.
+    ecuIdentifier         Identifier OPTIONAL,
+    -- This attribute MAY be used by the director to encrypt images per ECU.
+    encryptedTarget       Target OPTIONAL,
+    -- This attribute MAY be used if ECU keys are asymmetric, and a per-image
+    -- symmetric encryption key is desired for faster decryption of images.
+    -- In that case, the director would use the asymmetric ECU key to encrypt
+    -- this symmetric key.
+    encryptedSymmetricKey EncryptedSymmetricKey OPTIONAL,
+    ...
+  }
+  EncryptedSymmetricKey ::= SEQUENCE {
+    -- This is the symmetric key type.
+    encryptedSymmetricKeyType   EncryptedSymmetricKeyType,
+    -- This is the symmetric key encrypted using the asymmetric ECU key.
+    encryptedSymmetricKeyValue  BinaryData
+  }
+  EncryptedSymmetricKeyType ::= ENUMERATED {aes128, aes192, aes256, ...}
+
+  -- https://github.com/theupdateframework/taps/blob/master/tap3.md
+  TargetsDelegations  ::= SEQUENCE {
+    -- The public keys of all delegatees.
+    numberOfKeys        Length,
+    keys                PublicKeys,
+    -- The role name, filename, public keys, and threshold of a delegatee.
+    numberOfDelegations Length,
+    -- A list of paths to roles, listed in order of priority.
+    delegations         PrioritizedPathsToRoles
+  }
+
+  -- Adjust length of SEQUENCE OF to your needs.
+  PrioritizedPathsToRoles ::= SEQUENCE (SIZE(1..8)) OF PathsToRoles
+  PathsToRoles ::= SEQUENCE {
+    -- A list of image/target paths entrusted to these roles.
+    numberOfPaths   Length,
+    paths           Paths,
+    -- A list of roles required to sign the same metadata about the matching
+    -- targets/images.
+    numberOfRoles   Length,
+    roles           MultiRoles,
+    -- Whether or not this delegation is terminating.
+    terminating     BOOLEAN DEFAULT FALSE
+  }
+
+  -- Adjust length of SEQUENCE OF to your needs.
+  MultiRoles ::= SEQUENCE (SIZE(1..8)) OF MultiRole
+  MultiRole ::= SEQUENCE {
+    -- The rolename (e.g., "supplierA-dev").
+    -- No known path separator allowed in a rolename.
+    rolename        StrictFilename,
+    -- The public keys used by this role.
+    numberOfKeyids  Length,
+    keyids          Keyids,
+    -- The threshold number of these keys.
+    threshold       Threshold
+  }
+
+END
+```
 
 #### Metadata about Images
 
+At the very least, a targets metadata file MUST contain the `TargetsMetadata.targets` attribute, which specifies a sequence of unencrypted images. An empty sequence is used to indicate that no targets/images are available. For every unencrypted image, its filename, version number, length, and hashes are listed using the `Target` sequence. An ECU SHOULD verify that each unencrypted image has been defined exactly once in the metadata file.
+
+The unencrypted image SHOULD also be associated with additional information using the `Custom` sequence. The following attributes SHOULD be specified by both the image and director repositories. The `Custom.releaseCounter` attribute is used to prevent rollback attacks when the director repository is compromised. The director repository cannot choose images for an ECU with a release counter that is lower than the release counter of the image it has currently installed. The `Custom.hardwareIdentifier` attribute is used to prevent a compromised director repository from causing ECUs to install images that were not intended for them. For example, this attribute MAY be the ECU part number. The OEM and its suppliers MAY define other attributes that can be used by ECUs to further restrict which types of images they are allowed to install.
+
+The following attributes SHOULD be specified by the director repository. The `Custom.ecuIdentifier` attribute specifies the identifier (e.g., serial number) of the ECU that should install this image. An ECU SHOULD verify that each ECU identifier has been defined exactly once in the metadata file. If the director repository wishes to publish per-ECU encrypted images, then the `Custom.encryptedTarget` attribute MAY be used to specify metadata about the encrypted images. An ECU MUST then download the encrypted image, check its metadata, decrypt the image, and check its metadata again. Finally, if an ECU key is an asymmetric public key, the director repository MAY use a *symmetric* private key to reduce the time used to decrypt the image. To do so, the director repository MAY use the *asymmetric* ECU key to encrypt, e.g., a private AES symmetric key, and place the encrypted key in the `Custom.encryptedSymmetricKey` attribute.
+
+
 #### Metadata about Delegations {#delegations_meta}
+
+Besides directly signing metadata about images, the targets role MAY delegate this responsibility to delegated targets roles. To do so, the targets role uses the OPTIONAL `TargetsMetadata.delegations` attribute. If this attribute is not used, then it means that there are no delegations.
+
+The `TargetsDelegations.keys` attribute lists all of the public keys used by the delegated targets roles in the current targets metadata file. An ECU SHOULD verify that each public key (identified by its `Keyid`) has been defined exactly once in the metadata file.
+
+The `TargetsDelegations.delegations` attribute lists all of the delegations in the current targets metadata file.  All delegations are prioritized: a sequence is used to list delegations in order of appearance, so that the earlier the appearance of a delegation, the higher its priority. Every delegation contains three important attributes.
+
+The `PathsToRoles.paths` attribute describes a sequence of target/image paths that the delegated roles are trusted to provide. A desired target/image needs to match only one of these paths for the delegation to apply. A path MAY be either to a single file, or to a directory to indicate all files and / or subdirectories under that directory. A path to a directory is used to indicate all possible targets sharing that directory as a prefix; e.g. if the directory is "targets/A," then targets which match that directory include "targets/A/B.img" and "targets/A/B/C.img."
+
+The `PathsToRoles.roles` attribute describes all of the roles that SHALL sign the same non-custom metadata (i.e., filename, length, and hashes of unencrypted images) about delegated targets/images. Every delegated targets role has (1) a name, (2) a set of public keys, and (3) a threshold of these keys required to verify its metadata file.
+
+Note that a role name SHOULD follow the filename restrictions of the underlying file storage mechanism. For example, it may be “director” or "targets/director." As discussed in Section 3.7, the role name will determine part of the actual metadata filename of the delegated targets role. If it is “director” or “targets/director,” then its delegated targets metadata file MAY use the filename “director.ext” or “targets/director.ext,” respectively. However, the role name SHALL NOT use the path separator (e.g., “/” or “\”) if it is a character used to separate directories on the underlying file storage mechanism. In other words, all targets metadata files are implicitly assumed to reside in the same directory. It is safe to use this character in key-value databases or stores that do not have a notion of directories (e.g., Amazon S3).
+
+Finally, the `PathsToRoles.terminating` attribute determines whether or not a backtracking search for a target/image should be terminated.
+
+The metadata file for a delegated targets role SHALL have exactly the same format as for the top-level targets role. For example, the metadata file for a supplier role has precisely the same format as the the top-level targets role.
 
 ### Snapshot Metadata {#snapshot_meta}
 
+The snapshot metadata lists the version numbers of all targets metadata files on the repository. It is signed using the snapshot role keys, and follows the format specified here.
+```
+SnapshotModule DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+  EXPORTS SnapshotMetadata;
+
+  IMPORTS Length,
+          Hashes,
+          StrictFilename,
+          Version FROM CommonModule;
+
+  -- Adjust length of SEQUENCE OF to your needs.
+  SnapshotMetadata ::= SEQUENCE {
+    numberOfSnapshotMetadataFiles Length,
+    snapshotMetadataFiles         SnapshotMetadataFiles
+  }
+  SnapshotMetadataFiles ::= SEQUENCE (SIZE(1..128)) OF SnapshotMetadataFile
+  SnapshotMetadataFile ::= SEQUENCE {
+    filename  StrictFilename,
+    version   Version,
+    -- https://tools.ietf.org/html/rfc6025#section-2.4.2
+    ...
+  }
+
+END
+```
+The `filename` attribute specifies a metadata file's relative path from the metadata root of a repository, and SHALL NOT contain a path separator.
+
+An ECU SHOULD verify that each filename has been defined exactly once in the snapshot metadata file.
+
 ### Timestamp Metadata {#timestamp_meta}
+
+The timestamp metadata specifies metadata (e.g., filename and version number) about the snapshot metadata file. It is signed using the timestamp role keys, and follows the format below.
+```
+TimestampModule DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+  EXPORTS TimestampMetadata;
+
+  IMPORTS Filename,
+          Hashes,
+          Length,
+          Version FROM CommonModule;
+
+  TimestampMetadata ::= SEQUENCE {
+    filename        Filename,
+    version         Version,
+    length          Length,
+    numberOfHashes  Length,
+    hashes          Hashes,
+    -- https://tools.ietf.org/html/rfc6025#section-2.4.2
+    ...
+  }
+
+
+END
+```
+
+### The map file
+
+The map file specifies which images should be downloaded from which repositories. In most deployment scenarios for full verification ECUs, this will mean downloading images from both the image and director repositories. It is not signed, and follows the format specified here.
+```
+MapFileModule DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+  IMPORTS Length,
+          Paths,
+          StrictFilename,
+          URLs FROM CommonModule;
+
+  -- https://github.com/theupdateframework/taps/blob/master/tap4.md
+  MapFile ::= SEQUENCE {
+    -- A list of repositories.
+    numberOfRepositories  Length,
+    repositories          Repositories,
+    --A list of mapping of images to repositories.
+    numberOfMappings      Length,
+    mappings              Mappings
+  }
+
+  -- Adjust length of SEQUENCE OF to your needs.
+  Repositories    ::= SEQUENCE (SIZE(2)) OF Repository
+  Repository      ::= SEQUENCE {
+    -- A shorthand name for the repository, which also specifies the name of the
+    -- directory on the client which contains previous and latest metadata.
+    name              RepositoryName,
+    -- A list of servers where metadata and targets may be downloaded from.
+    numberOfServers   Length,
+    servers           URLs,
+    -- https://tools.ietf.org/html/rfc6025#section-2.4.2
+    ...
+  }
+  -- Adjust length of SEQUENCE OF to your needs.
+  RepositoryNames ::= SEQUENCE (SIZE(2)) OF RepositoryName
+  RepositoryName  ::= StrictFilename
+
+  -- Adjust length of SEQUENCE OF to your needs.
+  Mappings ::= SEQUENCE (SIZE(1)) OF Mapping
+  Mapping  ::= SEQUENCE {
+    -- The list of targets delegated to the following repositories.
+    numberOfPaths         Length,
+    paths                 Paths,
+    -- The repositories which MUST all sign the preceeding targets.
+    numberOfRepositories  Length,
+    repositories          RepositoryNames,
+    -- Whether or not this delegation is terminating.
+    terminating           BOOLEAN DEFAULT FALSE,
+    -- https://tools.ietf.org/html/rfc6025#section-2.4.2
+    ...
+  }
+
+END
+```
+The `MapFile.repositories` attribute specifies a list of available repositories. For each repository, a short-hand name, and a list of servers where metadata and targets may be downloaded from, are specified. The short-hand name also specifies the metadata directory on an ECU containing the previous and current sets of metadata files.
+
+The `MapFile.mappings` attribute specifies which images are mapped to which repositories. An OEM MAY map the same set of images to multiple repositories. Typically, an OEM would map all images to both the image and director repositories. See the deployment considerations document for other configurations, especially with regard to fleet management.
 
 ## Server / repository implementation requirements
 
@@ -398,5 +845,3 @@ The Time Server SHALL expose a public interface allowing primaries to communicat
 #### Full verification
 
 #### Partial verification
-
-
