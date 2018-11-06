@@ -76,6 +76,10 @@ informative:
     author:
       - ins: K. Barry
     date: 2018-04-20
+  IN-TOTO:
+    target: https://in-toto.github.io/
+    title: "in-toto: A framework to secure the integrity of software supply chains"
+    date: 2018-10-29
 
 
 --- abstract
@@ -105,7 +109,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 *Image*: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.  
 *Primary/Secondary ECUs*: Terms used to describe the control units within an automobile. A primary ECU downloads from a repository and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a connection to the internet. Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.  
 *Repository*: A server containing metadata about images. May also contain the images themselves.  
-*Suppliers*: Independent companies to which auto manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that receive outsourced work from Tier-1 suppliers.  
+*Suppliers*: Independent companies to which auto manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that perform outsourced work for Tier-1 suppliers.  
 *Vehicle Version Manifest*: A compilation of all ECU version manifests on a vehicle. It serves as a master list of all images currently running on all ECUs in the vehicle.  
 
 ## Uptane Role Terminology
@@ -162,7 +166,7 @@ To DO
 The following topics will not be addressed in this document, as they represent threats outside the scope of Uptane:
 
 * Physical attacks, such as manual tampering with ECUs outside the vehicle.
-* Compromise of the supply chain (e.g., build system, version control system, packaging process). A number of strategies already (e.g., git signing, TPMs, in-toto) exist to address this problem. Therefore, there is no need duplicate those techniques here.
+* Compromise of the supply chain (e.g., build system, version control system, packaging process). A number of strategies already (e.g., git signing, TPMs, in-toto {{IN-TOTO}}) exist to address this problem. Therefore, there is no need duplicate those techniques here.
 * Problems associated with OBD or UDS programming of ECUs, such as authentication of communications between ECUs.
 
 ## Design Requirements
