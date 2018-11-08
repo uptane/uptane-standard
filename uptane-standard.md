@@ -289,7 +289,7 @@ The Timestamp role SHALL produce and sign metadata indicating whether there are 
 
 ## Metadata abstract syntax {#meta_syntax}
 
-Metadata files on a repository SHOULD be written using the ASN.1 abstract syntax specified in this section.  These files MAY be encoded and decoded using any transfer syntax that an OEM desires (e.g., BER, CER, DER, JSON, OER, PER, XER).
+Metadata files on a repository SHOULD be written using the ABNF abstract syntax specified in this section.  These files MAY be encoded and decoded using any transfer syntax that an OEM desires (e.g., BER, CER, DER, JSON, OER, PER, XER).
 
 ### Common Metadata Structures and Formats
 
