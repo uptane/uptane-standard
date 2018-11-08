@@ -422,7 +422,7 @@ ReleaseCounter = Natural
 ; its hardware ID.
 ; An OEM MAY define other types of information to further restrict the
 ; choices that can be made by a compromised director repository.
-HardwareIdnetifier = Identifier
+HardwareIdentifier = Identifier
 
 ; The ECU identifier specifies information, e.g., serial numbers, that the
 ; director uses to point ECUs as to which images they should install.
