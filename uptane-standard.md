@@ -301,25 +301,25 @@ This is an ABNF module that defines common data structures used by metadata file
 RoleType        = "root" / "targets" / "snapshot" / "timestamp"
 
 ; String types.
-Filename        = 1*32VCHAR
+Filename        = 1*32(VCHAR)
 ; No known path separator allowed in a strict filename.
 StrictFilename  = %x21-2E / %x30-5B / %x5D-7E
-BitString       = 1*1024BIT
-OctetString     = 1*1024OCTET
-HexString       = 1*1024HEXDIG
+BitString       = 1*1024(BIT)
+OctetString     = 1*1024(OCTET)
+HexString       = 1*1024(HEXDIG)
 ; Table 1 of RFC 4648.
 Base64String    = 1*1024(ALPHA / DIGIT / "+" / "=" / "/")
 ; Adjust length to your needs.
 Paths           = 1*8(Path)
 Path            = 1*32((ALPHA / "_" / "*" / "\"" / "/"))
 ; Adjust length to your needs.
-URLs            = *8URL
-URL             = 1*1024VCHAR
+URLs            = *8(URL)
+URL             = 1*1024(VCHAR)
 ; A generic identifier for vehicles, primaries, secondaries.
-Identifier      = 1*32VCHAR
+Identifier      = 1*32(VCHAR)
 
-Natural         = *DIGIT
-Positive        = *("1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9")
+Natural         = *(DIGIT)
+Positive        = ("1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9") *(DIGIT)
 Length          = Positive
 Threshold       = Positive
 Version         = Positive
@@ -329,25 +329,27 @@ UTCDateTime     = Positive
 BinaryData      = BitString / OctetString / HexString / Base64String
 
 ; Adjust length to your needs.
-Hashes          = 1*8Hash
+Hashes          = 1*8(Hash)
 Hash            = HashFunction  BinaryData
 
 HashFunction    = "sha224" / "sha256" / "sha384" / "sha512" / "sha512-224" /
                                "sha512-256" / ...
 
 ; Adjust length to your needs.
-Keyids          = 1*8Keyid
+Keyids          = 1*8(Keyid)
 ; Usually, a hash of a public key.
 Keyid           = HexString
 
 ; Adjust length to your needs.
-Signatures      = 1*8Signature
-Signature       = Keyid SignatureMethod Hash HexString
+Signatures      = 1*8(Signature)
+Signature       = Keyid Hash HexString
+
+; signature method goes in the key as described in TAP 9
 SignatureMethod = "rsassa-pss" / "ed25519" / ...
 
 ; Adjust length of SEQUENCE OF to your needs.
-PublicKeys      = 1*8PublicKey
-PublicKey       = Keyid PublicKeyType BinaryData
+PublicKeys      = 1*8(PublicKey)
+PublicKey       = Keyid SignatureMethod PublicKeyType BinaryData
 PublicKeyType   = "rsa" / "ed25519" / ...
 
 ```
@@ -370,7 +372,9 @@ Below is an example of the metadata format common to all metadata. All metadata 
 Metadata      = Signed Length Signatures
 Expires       = UTCDateTime
 Version       = Positive
-Signed        = RoleType Expires Version SignedBody
+; TAP 6
+SpecVersion   = Positive
+Signed        = RoleType SpecVersion Expires Version SignedBody
 SignedBody    = RootMetadata / TargetsMetadata / SnapshotMetadata / TimestampMetadata
 ```
 
@@ -526,7 +530,7 @@ The snapshot metadata lists the version numbers of all targets metadata files on
 ; Adjust length to your needs.
 SnapshotMetadata              = NumberOfSnapshotMetadataFiles SnapshotMetadataFiles
 NumberOfSnapshotMetadataFiles = Length
-SnapshotMetadataFiles         = 1*128SnapshotMetadataFile
+SnapshotMetadataFiles         = 1*128(SnapshotMetadataFile)
 SnapshotMetadataFile          = StrictFilename Version
 ; https://tools.ietf.org/html/rfc6025#section-2.4.2
 ```
@@ -546,9 +550,9 @@ NumberOfHashes = Length
 ### The map file
 
 The map file specifies which images should be downloaded from which repositories. In most deployment scenarios for full verification ECUs, this will mean downloading images from both the image and director repositories. It is not signed, and follows the format specified here.
-```
+```ABNF
 ; https://github.com/theupdateframework/taps/blob/master/tap4.md
-MapFile = NumberOfRepositories  Repositories NumberOfMappings Mappings
+MapFile = NumberOfRepositories Repositories NumberOfMappings Mappings
 
 ; A list of repositories
 numberOfRepositories = Length
@@ -557,12 +561,12 @@ numberOfRepositories = Length
 NumberOfMappings = Length
 
 ; Adjust length to your needs.
-Repositories    = 2Repository
+Repositories    = 2(Repository)
 ; https://tools.ietf.org/html/rfc6025#section-2.4.2
 Repository      = RepositoryName NumberOfServers Servers  
 
 ; Adjust length to your needs.
-RepositoryNames = 2RepositoryName
+RepositoryNames = 2(RepositoryName)
 ; A shorthand name for the repository, which also specifies the name of the
 ; directory on the client which contains previous and latest metadata.
 RepositoryName  = StrictFilename
@@ -574,7 +578,7 @@ Servers         = URLs
 ; Adjust length to your needs.
 Mappings = Mapping
 ; https://tools.ietf.org/html/rfc6025#section-2.4.2
-Mapping  = NumberOfPaths Paths NumberOfRepositories RepositoryNames Terminating
+Mapping  = NumberOfPaths Paths NumberOfRepositories RepositoryNames Threshold Terminating
 
 ; The list of targets delegated to the following repositories.
 NumberOfPaths = Length  
