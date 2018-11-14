@@ -394,7 +394,7 @@ The primary SHALL send the time server's latest attested time to each ECU. The s
 
 The primary SHALL send the latest metadata it has downloaded to all of its associated secondaries.
 
-Full verification secondaries SHALL keep a complete copy of all repository metadata. A partial verification secondary SHOULD keep *only* the targets metadata file from the director repository.
+Full verification secondaries SHALL keep a complete copy of all repository metadata. A partial verification secondary SHALL keep the targets metadata file from the director repository, and MAY keep the rest of the metadata.
 
 #### Send images to secondaries {#send_images_primary}
 
