@@ -129,6 +129,9 @@ informative:
       - ins: D. Stufft
       - ins: J. Cappos
     date: 2013-09-27
+  DEPLOY:
+    target: https://uptane.github.io/TODO
+    title: "Uptane Deployment Guidelines"
   # TODO add TUF-CCS-2010
   # TODO add DIPLOMAT-NSDI-2016
   # TODO add DER
@@ -334,13 +337,13 @@ An Uptane-compliant ECU SHALL be able to download and verify the time, metadata,
 
 Each ECU in a vehicle receiving over-the-air updates is either a primary or a secondary ECU. A primary ECU collects and delivers to the Director vehicle manifests ({{vehicle_version_manifest}}) containing information about which images have been installed on ECUs in the vehicle. It also downloads and verifies the latest time, metadata, and images for itself and for its secondaries. A secondary ECU downloads and verifies the latest time, metadata, and images for itself from its associated primary ECU. It also sends signed information about its installed images to its associated primary.
 
-All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A primary ECU MUST perform full verification ({{full_verification}}). A secondary ECU SHOULD perform full verification if possible, and MUST perform full verification if it is safety-critical. If it is not safety-critical, it MAY perform partial verification ({{partial_verification}}) instead.
+All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A primary ECU MUST perform full verification ({{full_verification}}). A secondary ECU SHOULD perform full verification if possible. See [Uptane Deployment Considerations](#DEPLOY) for a discussion of how to choose between partial and full verification.
 
 ### Build-time prerequisite requirements for ECUs
 
 For an ECU to be capable of receiving Uptane-secured updates, it MUST have the following data provisioned at the time it is manufactured or installed in the vehicle:
 
-1. The latest copy of required Uptane metadata at the time of manufacture or install.
+1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See [Uptane Deployment Considerations](#DEPLOY) for more information.
     * Partial verification ECUs MUST have the root and targets metadata from the director repository.
     * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository map file {{TAP-4}}.
 2. The public key(s) of the time server.
@@ -391,7 +394,7 @@ The primary SHALL send the time server's latest attested time to each ECU. The s
 
 The primary SHALL send the latest metadata it has downloaded to all of its associated secondaries.
 
-Full verification secondaries SHALL keep a complete copy of all metadata. A partial verification secondary MAY keep *only* the targets metadata file from the director repository.
+Full verification secondaries SHALL keep a complete copy of all repository metadata. A partial verification secondary SHOULD keep *only* the targets metadata file from the director repository.
 
 #### Send images to secondaries {#send_images_primary}
 
