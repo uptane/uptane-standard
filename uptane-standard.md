@@ -151,15 +151,42 @@ A standards document that can guide the safe design, integration and deployment 
 
 ## Scope of Standards Coverage
 
-TODO
+This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in cars. In this section, we define the scope of that applicability by providing sample use cases and possible exceptions, aspects of update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
 
 ### Use Cases
 
-TODO
+The following use cases provide a number of scenarios illustrating the manner in which software updates could be accomplished using Uptane.
+
+#### OEMs initializing Uptane at the factory using SOTA
+
+Bob, who works for an OEM, is overseeing the installation of Uptane on new vehicles at a manufacturing plant. He starts with preparing the ECUs by adding the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server. His implementation would be considered Uptane-compliant if:
+
+1. all primaries perform full verification; 
+1. all secondaries that are updated via OTA perform full or partial verification; and 
+1. all other ECUs that do not perform verification cannot be updated via OTA.
+
+#### Updating one ECU with a complete image
+
+Alice, a Tier-1 supplier, completes work on a revised image for an electronic brake control module. This module will control the brakes on all models of an SUV produced by the OEM for whom Clark is in charge of electronic systems. Alice signs the image, then delivers it and all of its metadata, including delegations, and associated images to Clark. Clark adds these metadata and images to the image repository, along with information about any dependencies and conflicts between this image and those on other ECUs. Clark also updates the inventory database, so that the director repository can instruct the ECU on how to install these updated images.
+
+#### Dealership updating individual ECUs on demand
+
+Dana runs a dealership for a major OEM. The OEM has issued a recall to address a problem with a keyless entry device that has been locking people out of their cars. Individual owners are bringing in a revised image on a flash drive that was sent to them from the manufacturer via courier mail. To carry out this update, the OEM would first have to delegate to Dana the authority to sign the metadata that would need to accompany the image on the flashdrive. He would then follow the same procedures used by Clark in the example above.
+
+#### Update one ECU with multiple deltas
+
+Frances needs to update an On-Board Diagnostics port and has several new images to download. To save bandwidth costs, she uses delta images that contain only the code and/or data that has changed from the previous image installed by the ECU. To do so, she must first modify the director repository using the vehicle version manifest and dependency resolution to determine the differences between the previous and latest images. Frances then adds the following to the custom targets metadata used by the director repository: (1) the algorithm used to apply a delta image and (2) the targets metadata about the delta image. Frances would also check whether the delta images match the targets metadata from the director repository.
 
 ## Exceptions
 
-To DO
+There are a number of factors that could impede the completion of the above scenarios:
+* ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that prevent performance of public key cryptography; or they may lack sufficient storage to undo installation of bad software; or they simply may reside on a low-speed network (e.g., LIN)
+* ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.
+* A user may replace OEM-installed ECUs with aftermarket ECUs instead.
+* A vehicle may be able to download only a limited amount of data via a cellular channel (due to limits on a data plan).
+* A system may lack sufficient power to download or install software updates.
+* Vehicles may be offline for extended periods of time, thus missing required updates (e.g., key rotations).
+* OEMs may be unwilling to implement costly security or hardware requirements.
 
 ## Out of Scope
 
