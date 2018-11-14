@@ -297,7 +297,7 @@ Metadata files SHOULD share the data structures in this section. These data stru
 
 This is an ABNF module that defines common data structures used by metadata files.
 
-```
+~~~~ABNF
 RoleType        = "root" / "targets" / "snapshot" / "timestamp"
 
 ; String types.
@@ -352,7 +352,8 @@ PublicKeys      = 1*8(PublicKey)
 PublicKey       = Keyid SignatureMethod PublicKeyType BinaryData
 PublicKeyType   = "rsa" / "ed25519" / ...
 
-```
+~~~~
+
 An OEM MAY use any hash function (`Hash.function`; e.g., SHA-2) and signature scheme (`Signature.method`; e.g., [RSASSA-PSS](https://tools.ietf.org/html/rfc3447#page-29), [Ed25519](https://ed25519.cr.yp.to/)).
 
 A hash digest (`Hash.digest`), signature (`Signature.sig`), or public key (`PublicKey.keyval`) SHOULD be encoded as either a bit, octet, hexadecimal, or Base64 string. For example, an RSA public key MAY be encoded using the PEM format, whereas an Ed25519 public key MAY be encoded as a hexadecimal string.
@@ -368,7 +369,8 @@ The signed message is a sequence of four attributes: (1) `RoleType`, an enumerat
 Signatures SHOULD be computed over the hash of the signed message, instead of the signed message itself.
 
 Below is an example of the metadata format common to all metadata. All metadata SHOULD follow this format.
-```
+
+~~~~ABNF
 Metadata      = Signed Length Signatures
 Expires       = UTCDateTime
 Version       = Positive
@@ -376,7 +378,7 @@ Version       = Positive
 SpecVersion   = Positive
 Signed        = RoleType SpecVersion Expires Version SignedBody
 SignedBody    = RootMetadata / TargetsMetadata / SnapshotMetadata / TimestampMetadata
-```
+~~~~
 
 ### Root Metadata {#root_meta}
 
@@ -385,7 +387,8 @@ The root metadata distributes and revokes the public keys of the top-level root,
 The root metadata contains two important attributes. First, the `keys` attribute lists the public keys used by the root, targets, snapshot, and timestamp roles. Second, the `roles` attribute maps each of the four roles to: (1) the URL pointing to its metadata file, (2) its public keys, and (3) the threshold number of keys required to sign the metadata file. An empty sequence of URLs denotes that the metadata file SHALL NOT be updated. An ECU SHOULD verify that each of the four roles has been defined exactly once in the metadata.
 
 Here is the ABNF definition for the body of the root metadata.
-```
+
+~~~~ABNF
 ; https://tools.ietf.org/html/rfc6025#section-2.4.2
 NumberOfKeys  = Length
 NumberOfRoles = Length
@@ -396,14 +399,15 @@ TopLevelRoles = 4(TopLevelRole)
 NumberOfURLs  = Length ; TAP 5: URLs pointing to the metadata file for this role.
 NumberOfKeyIds = Length
 TopLevelRole  = RoleType [NumberOfURLs] [URLs] NumberOfKeyIds Keyids Threshold
-```
+~~~~
 
 ### Targets Metadata {#targets_meta}
 
 At a minimum, a targets metadata file contains metadata (i.e., filename, hashes, length) about unencrypted images on a repository. The file MAY also contain two optional pieces of information: (1) custom metadata about which images should be installed by which ECUs, and whether encrypted images are available, and / or (2) other delegated targets roles that have been entrusted to sign images. This file is signed using the private keys of either the top-level targets role or a delegated targets role.
 
 The following example specifies all of the REQUIRED as well as all of the RECOMMENDED attributes for the body of targets metadata.
-```
+
+~~~~ABNF
 Number of Targets  = Natural ; Allowed to have no targets at all.
 TargetsMetadata    = NumberOfTargets Targets [TargetsDelegations] ; https://tools.ietf.org/html/rfc6025#section-2.4.2
 
@@ -494,7 +498,7 @@ RoleName = StrictFilename
 
 ; The public keys used by this role.
 NumberOfKeyids = Length
-```
+~~~~
 
 #### Metadata about Images
 
@@ -526,14 +530,16 @@ The metadata file for a delegated targets role SHALL have exactly the same forma
 ### Snapshot Metadata {#snapshot_meta}
 
 The snapshot metadata lists the version numbers of all targets metadata files on the repository. It is signed using the snapshot role keys, and follows the format specified here.
-```
+
+~~~~ABNF
 ; Adjust length to your needs.
 SnapshotMetadata              = NumberOfSnapshotMetadataFiles SnapshotMetadataFiles
 NumberOfSnapshotMetadataFiles = Length
 SnapshotMetadataFiles         = 1*128(SnapshotMetadataFile)
 SnapshotMetadataFile          = StrictFilename Version
 ; https://tools.ietf.org/html/rfc6025#section-2.4.2
-```
+~~~~
+
 The `filename` attribute specifies a metadata file's relative path from the metadata root of a repository, and SHALL NOT contain a path separator.
 
 An ECU SHOULD verify that each filename has been defined exactly once in the snapshot metadata file.
@@ -541,16 +547,18 @@ An ECU SHOULD verify that each filename has been defined exactly once in the sna
 ### Timestamp Metadata {#timestamp_meta}
 
 The timestamp metadata specifies metadata (e.g., filename and version number) about the snapshot metadata file. It is signed using the timestamp role keys, and follows the format below.
-```
+
+~~~~ABNF
 ; https://tools.ietf.org/html/rfc6025#section-2.4.2
 TimestampMetadata = Filename Version Length NumberOfHashes Hashes
 NumberOfHashes = Length
-```
+~~~~
 
 ### The map file
 
 The map file specifies which images should be downloaded from which repositories. In most deployment scenarios for full verification ECUs, this will mean downloading images from both the image and director repositories. It is not signed, and follows the format specified here.
-```ABNF
+
+~~~~ABNF
 ; https://github.com/theupdateframework/taps/blob/master/tap4.md
 MapFile = NumberOfRepositories Repositories NumberOfMappings Mappings
 
@@ -591,7 +599,8 @@ NumberOfRepositories = Length
 Terminating = BIT
 
 END
-```
+~~~~
+
 The `MapFile.repositories` attribute specifies a list of available repositories. For each repository, a short-hand name, and a list of servers where metadata and targets may be downloaded from, are specified. The short-hand name also specifies the metadata directory on an ECU containing the previous and current sets of metadata files.
 
 The `MapFile.mappings` attribute specifies which images are mapped to which repositories. An OEM MAY map the same set of images to multiple repositories. Typically, an OEM would map all images to both the image and director repositories. See the deployment considerations document for other configurations, especially with regard to fleet management.
