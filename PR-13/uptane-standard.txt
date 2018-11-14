@@ -1,0 +1,1008 @@
+
+
+
+
+TODO                                                           J. Cappos
+Internet-Draft                          NYU Tandon School of Engineering
+Intended status: Informational                           August 28, 2018
+Expires: March 1, 2019
+
+
+        Uptane IEEE-ISTO Standard for Design and Implementation
+                         uptane-standard-design
+
+Abstract
+
+   This document describes a framework for securing automotive software
+   update systems.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on March 1, 2019.
+
+Copyright Notice
+
+   Copyright (c) 2018 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (https://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+   This document may not be modified, and derivative works of it may not
+   be created, and it may not be published except as an Internet-Draft.
+
+
+
+Cappos                    Expires March 1, 2019                 [Page 1]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
+     2.1.  Conformance Terminology . . . . . . . . . . . . . . . . .   3
+     2.2.  Automotive Terminology  . . . . . . . . . . . . . . . . .   3
+     2.3.  Uptane Role Terminology . . . . . . . . . . . . . . . . .   4
+     2.4.  Acronyms and Abbreviations  . . . . . . . . . . . . . . .   4
+   3.  Rationale for and Scope of Uptane Standards . . . . . . . . .   4
+     3.1.  Why Uptane requires standards . . . . . . . . . . . . . .   5
+     3.2.  Scope of Standards Coverage . . . . . . . . . . . . . . .   5
+       3.2.1.  Use Cases . . . . . . . . . . . . . . . . . . . . . .   5
+     3.3.  Exceptions  . . . . . . . . . . . . . . . . . . . . . . .   7
+     3.4.  Out of Scope  . . . . . . . . . . . . . . . . . . . . . .   7
+     3.5.  Design Requirements . . . . . . . . . . . . . . . . . . .   8
+   4.  Threat Model and Attack Strategies  . . . . . . . . . . . . .   8
+     4.1.  Attacker goals  . . . . . . . . . . . . . . . . . . . . .   8
+     4.2.  Attacker capabilities . . . . . . . . . . . . . . . . . .   9
+     4.3.  Description of threats  . . . . . . . . . . . . . . . . .   9
+       4.3.1.  Read updates  . . . . . . . . . . . . . . . . . . . .   9
+       4.3.2.  Deny installation of updates  . . . . . . . . . . . .   9
+       4.3.3.  Interfere with ECU functionality  . . . . . . . . . .  10
+       4.3.4.  Control an ECU or vehicle . . . . . . . . . . . . . .  10
+   5.  Detailed Design of Uptane . . . . . . . . . . . . . . . . . .  10
+     5.1.  Roles on repositories . . . . . . . . . . . . . . . . . .  11
+       5.1.1.  The Root role . . . . . . . . . . . . . . . . . . . .  11
+       5.1.2.  The Targets role  . . . . . . . . . . . . . . . . . .  12
+       5.1.3.  The Snapshot role . . . . . . . . . . . . . . . . . .  12
+       5.1.4.  The Timestamp role  . . . . . . . . . . . . . . . . .  12
+     5.2.  Metadata abstract syntax  . . . . . . . . . . . . . . . .  13
+       5.2.1.  Common Metadata Structures and Formats  . . . . . . .  13
+       5.2.2.  Root Metadata . . . . . . . . . . . . . . . . . . . .  13
+       5.2.3.  Targets Metadata  . . . . . . . . . . . . . . . . . .  13
+       5.2.4.  Snapshot Metadata . . . . . . . . . . . . . . . . . .  13
+       5.2.5.  Timestamp Metadata  . . . . . . . . . . . . . . . . .  13
+     5.3.  Server / repository implementation requirements . . . . .  13
+       5.3.1.  Image Repository  . . . . . . . . . . . . . . . . . .  13
+       5.3.2.  Director Repository . . . . . . . . . . . . . . . . .  14
+       5.3.3.  Time Server . . . . . . . . . . . . . . . . . . . . .  16
+     5.4.  In-vehicle implementation requirements  . . . . . . . . .  16
+       5.4.1.  Downloading and distributing updates on a primary ECU  16
+       5.4.2.  Installing images on ECUs . . . . . . . . . . . . . .  16
+       5.4.3.  Metadata verification . . . . . . . . . . . . . . . .  16
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  17
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  17
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .  18
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  18
+
+
+
+
+Cappos                    Expires March 1, 2019                 [Page 2]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+1.  Introduction
+
+   Uptane is a secure software update framework for automobiles.  This
+   document describes procedures to enable programmers for OEMs and
+   suppliers to design and implement this framework to better protect
+   connected units on cars.  Integrating Uptane as outlined in the
+   sections that follow can reduce the ability of attackers to
+   compromise critical systems.  It also assures a faster and easier
+   recovery process should a compromise occur.
+
+   These instructions specify the components necessary for a compliant
+   implementation.  Individual implementors can make their own
+   technological choices within those requirements.  This flexibility
+   makes Uptane adaptable to the many customized update solutions used
+   by manufacturers.
+
+2.  Terminology
+
+2.1.  Conformance Terminology
+
+   The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD,
+   SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be
+   interpreted as described in [RFC2119].
+
+   In order to be considered "Uptane-compliant," an implementation MUST
+   follow all of these rules as specified in the document.
+
+2.2.  Automotive Terminology
+
+   _Bus_: An internal communications network that interconnects
+   components within a vehicle.  A car can have a number of buses that
+   will vary in terms of power, speed and resources.
+   _Image_: File containing software for an ECU to install.  May contain
+   a binary image to flash, installation instructions, and other
+   necessary information for the ECU to properly apply the update.  Each
+   ECU typically holds only one image, although this may vary in some
+   cases.
+   _Primary/Secondary ECUs_: Terms used to describe the control units
+   within an automobile.  A primary ECU downloads from a repository and
+   verifies update images and metadata for itself and for secondary
+   ECUs, and distributes images and metadata to secondaries.  Thus, it
+   requires extra storage space and a connection to the internet.
+   Secondary ECUs receive their update images and metadata from the
+   primary, and only need to verify and install their own metadata and
+   images.
+   _Repository_: A server containing metadata about images.  May also
+   contain the images themselves.
+
+
+
+
+Cappos                    Expires March 1, 2019                 [Page 3]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+   _Suppliers_: Independent companies to which auto manufacturers may
+   outsource the production of ECUs.  Tier-1 suppliers directly serve
+   the manufacturers.  Tier-2 suppliers are those that receive
+   outsourced work from Tier-1 suppliers.
+   _Vehicle Version Manifest_: A compilation of all ECU version
+   manifests on a vehicle.  It serves as a master list of all images
+   currently running on all ECUs in the vehicle.
+
+2.3.  Uptane Role Terminology
+
+   These terms are defined in greater detail in Section 5.1.
+
+   _Delegations_: Designating the responsibility of signing metadata
+   about images to another party.
+   _Roles_: The roles mechanism of Uptane allows the system to
+   distribute signing responsibilities so that the compromise of one key
+   does not necessarily impact the security of the entire system.
+
+   o  _Root Role_: Distributes and revokes public keys used to verify
+      the root, timestamp, snapshot, and targets role metadata.
+
+   o  _Snapshot Role_: Indicates which images the repository has
+      released at the same time.
+
+   o  _Targets Role_: Holds the metadata used to verify the image, such
+      as cryptographic hashes and file size.
+
+   o  _Timestamp Role_: Indicates if there are any new metadata or image
+      on the repository.
+
+2.4.  Acronyms and Abbreviations
+
+   _CAN Bus_: Controller Area Network bus standard.
+   _ECUs_: Electronic Control Units, the computing units on vehicle.
+   _LIN Bus_: Local Interconnect Bus.
+   _SOTA_: Software Updates Over-the-Air.
+   _VIN_: Vehicle Identification Number.
+
+3.  Rationale for and Scope of Uptane Standards
+
+   This Standards document clarifies the essential components and best
+   practices for the secure design implementation and deployment of
+   Uptane by OEMs and suppliers.  These practices contribute to
+   compromise resilience, or the ability to minimize the extent of the
+   threat posed by any given attack.
+
+
+
+
+
+
+Cappos                    Expires March 1, 2019                 [Page 4]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+3.1.  Why Uptane requires standards
+
+   A standards document that can guide the safe design, integration and
+   deployment of Uptane in cars is needed at this time because:
+
+   o  The number of connected units on the average vehicle continues to
+      grow, with mainstream cars now containing up to 100 million lines
+      of code.  [USATODAY]
+
+   o  The expanded use of software over-the-air strategies creates new
+      attack surfaces for malicious parties.  [CR-OTA]
+
+   o  Legacy update strategies, such as SSL/TLS or GPG/RSA, are not
+      feasible for use on automotive ECUs because they force
+      manufacturers to chose between enhanced security and
+      customizability.
+
+   o  Conventional strategies are also complicated by the differing
+      resources of the ECUs, which can vary greatly in memory, storage
+      space, and Internet connectivity.
+
+   o  The design of Uptane makes it possible to offer improved design
+      flexibility, without sacrificing security.
+
+   o  This added design flexibility, however, could be a liability if
+      the framework is implemented incorrectly.
+
+   o  Standardization of crucial steps in the design, implementation and
+      use of Uptane can assure that customizability does not impact
+      security or functionality.
+
+3.2.  Scope of Standards Coverage
+
+   This document sets guidelines for implementing Uptane in most systems
+   capable of updating software on connected units in cars.  In this
+   section, we define the scope of that applicability by providing
+   sample use cases and possible exceptions, aspects of update security
+   that are not applicable to Uptane, and the design requirements
+   governing the preparation of these standards.
+
+3.2.1.  Use Cases
+
+   The following use cases provide a number of scenarios illustrating
+   the manner in which software updates could be accomplished using
+   Uptane.
+
+
+
+
+
+
+Cappos                    Expires March 1, 2019                 [Page 5]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+3.2.1.1.  OEMs initializing Uptane at the factory using SOTA
+
+   Bob, who works for an OEM, is overseeing the installation of Uptane
+   on new vehicles at a manufacturing plant.  He starts with preparing
+   the ECUs by adding the following components: code to perform full and
+   partial verification, the latest copy of the relevant metadata, the
+   public keys, and the latest time, signed by the time server.  His
+   implementation would be considered Uptane-compliant if:
+
+   1.  all primaries perform full verification;
+
+   2.  all secondaries that are updated via OTA perform full or partial
+       verification; and
+
+   3.  all other ECUs that do not perform verification cannot be updated
+       via OTA.
+
+3.2.1.2.  Updating one ECU with a complete image
+
+   Alice, a Tier-1 supplier, completes work on a revised image for an
+   electronic brake control module.  This module will control the brakes
+   on all models of an SUV produced by the OEM for whom Clark is in
+   charge of electronic systems.  Alice signs the image, then delivers
+   it and all of its metadata, including delegations, and associated
+   images to Clark.  Clark adds these metadata and images to the image
+   repository, along with information about any dependencies and
+   conflicts between this image and those on other ECUs.  Clark also
+   updates the inventory database, so that the director repository can
+   instruct the ECU on how to install these updated images.
+
+3.2.1.3.  Dealership updating individual ECUs on demand
+
+   Dana runs a dealership for a major OEM.  The OEM has issued a recall
+   to address a problem with a keyless entry device that has been
+   locking people out of their cars.  Individual owners are bringing in
+   a revised image on a flash drive that was sent to them from the
+   manufacturer via courier mail.  To carry out this update, the OEM
+   would first have to delegate to Dana the authority to sign the
+   metadata that would need to accompany the image on the flashdrive.
+   He would then follow the same procedures used by Clark in the example
+   above.
+
+3.2.1.4.  Update one ECU with multiple deltas
+
+   Frances needs to update an On-Board Diagnostics port and has several
+   new images to download.  To save bandwidth costs, she uses delta
+   images that contain only the code and/or data that has changed from
+   the previous image installed by the ECU.  To do so, she must first
+
+
+
+Cappos                    Expires March 1, 2019                 [Page 6]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+   modify the director repository using the vehicle version manifest and
+   dependency resolution to determine the differences between the
+   previous and latest images.  Frances then adds the following to the
+   custom targets metadata used by the director repository: (1) the
+   algorithm used to apply a delta image and (2) the targets metadata
+   about the delta image.  Frances would also check whether the delta
+   images match the targets metadata from the director repository.
+
+3.3.  Exceptions
+
+   There are a number of factors that could impede the completion of the
+   above scenarios: * ECUs may be lacking the necessary resources to
+   function as designated.  These resources could include weaknesses, in
+   terms of CPU or RAM, that prevent performance of public key
+   cryptography; or they may lack sufficient storage to undo
+   installation of bad software; or they simply may reside on a low-
+   speed network (e.g., LIN) * ECUs may reside on different network
+   segments, and may not be able to directly reach each other, requiring
+   a gateway to facilitate communication.  * A user may replace OEM-
+   installed ECUs with aftermarket ECUs instead.  * A vehicle may be
+   able to download only a limited amount of data via a cellular channel
+   (due to limits on a data plan).  * A system may lack sufficient power
+   to download or install software updates.  * Vehicles may be offline
+   for extended periods of time, thus missing required updates (e.g.,
+   key rotations).  * OEMs may be unwilling to implement costly security
+   or hardware requirements.
+
+3.4.  Out of Scope
+
+   The following topics will not be addressed in this document, as they
+   represent threats outside the scope of Uptane:
+
+   o  Physical attacks, such as manual tampering with ECUs outside the
+      vehicle.
+
+   o  Compromise of the supply chain (e.g., build system, version
+      control system, packaging process).  A number of strategies
+      already (e.g., git signing, TPMs, in-toto) exist to address this
+      problem.  Therefore, there is no need duplicate those techniques
+      here.
+
+   o  Problems associated with OBD or UDS programming of ECUs, such as
+      authentication of communications between ECUs.
+
+
+
+
+
+
+
+
+Cappos                    Expires March 1, 2019                 [Page 7]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+3.5.  Design Requirements
+
+   The design requirements for this document are governed by three
+   principal parameters:
+
+   o  to clearly mandate the design and implementation steps that are
+      security critical and must be followed as is, while offering
+      flexibility in the implementation of non-critical steps.  In this
+      manner, users can adapt to support different use models and
+      deployment scenarios.
+
+   o  to delineate best practices to ensure that, should a vehicle be
+      attacked, an attacker is forced to compromise many different
+      systems.
+
+   o  to ensure that, if implemented, the security practices mandated or
+      suggested in this document do not interfere with the functionality
+      of ECUs, vehicles, or the manufacturing systems on which they run.
+
+4.  Threat Model and Attack Strategies
+
+   The overarching goal of Uptane is to provide a system that is
+   resilient in the face of various types of compromise.  In this
+   section, we describe the goals that an attacker may have
+   (Section 4.1) and the capabilities they may have or develop
+   (Section 4.2).  We then describe and classify types of attack on the
+   system according to the attacker's goals (Section 4.3).
+
+4.1.  Attacker goals
+
+   We assume that attackers may want to achieve one or more of the
+   following goals, in increasing order of severity:
+
+   o  Read the contents of updates to discover confidential information
+      or reverse-engineer firmware
+
+   o  Deny installation of updates to prevent vehicles from fixing
+      software problems
+
+   o  Cause one or more ECUs in the vehicle to fail, denying use of the
+      vehicle or of certain functions
+
+   o  Control the vehicle or ECUs within the vehicle
+
+
+
+
+
+
+
+
+Cappos                    Expires March 1, 2019                 [Page 8]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+4.2.  Attacker capabilities
+
+   Uptane is designed with resilience to compromise in mind.  We assume
+   that attackers may develop one or more of the following capabilities:
+
+   o  Read and analyze the contents of previous and/or current versions
+      of software, as well as the update sequence and instructions
+
+   o  Intercept and modify network traffic (i.e., perform man-in-the-
+      middle attacks).  This capability may be developed in two domains:
+
+      *  Outside the vehicle, intercepting and modifying traffic between
+         the vehicle and software repositories
+
+      *  Inside the vehicle, intercepting and modifying traffic on one
+         or more vehicle buses (e.g. via an OBD port or using a
+         compromised ECU as a vector)
+
+   o  Compromise and control one or more ECUs within a vehicle
+
+   o  Compromise signing or encryption keys
+
+   o  Compromise and control software repository servers (and any keys
+      stored on the repository)
+
+4.3.  Description of threats
+
+   Uptane's threat model considers the following types of attack,
+   organized according to the attacker goals listed in Section 4.1.
+
+4.3.1.  Read updates
+
+   o  _Eavesdrop attack:_ Read the unencrypted contents of an update
+      sent from a repository to a vehicle.
+
+4.3.2.  Deny installation of updates
+
+   An attacker seeking to deny installation of updates may attempt one
+   or more of the following strategies:
+
+   o  _Drop-request attack:_ Block network traffic outside or inside the
+      vehicle.
+
+   o  _Slow retrieval attack:_ Slow down network traffic, in the extreme
+      case sending barely enough packets to avoid a timeout.  Similar to
+      a drop-request attack, except that both the sender and receiver of
+      the traffic still think network traffic is unimpeded.
+
+
+
+
+Cappos                    Expires March 1, 2019                 [Page 9]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+   o  _Freeze attack:_ Continue to send a previously known update to an
+      ECU, even if a newer update exists.
+
+   o  _Partial bundle installation attack:_ Install updates to some
+      ECUs, but freeze updates on others.
+
+4.3.3.  Interfere with ECU functionality
+
+   Attackers seeking to interfere with the functionality of vehicle ECUs
+   in order to cause an operational failure or unexpected behaviour may
+   do so in one of the following ways:
+
+   o  _Rollback attack:_ Cause an ECU to install a previously-valid
+      software revision that is older than the currently-installed
+      version.
+
+   o  _Endless data attack:_ Send a large amount of data to an ECU,
+      until it runs out of storage, possibly causing the ECU to fail to
+      operate.
+
+   o  _Mix-and-match attack:_ Install a set of images on ECUs in the
+      vehicle that are incompatible with each other.  This may be
+      accomplished even if all of the individual images being installed
+      are valid, as long as there exist valid versions that are mutually
+      incompatible.
+
+4.3.4.  Control an ECU or vehicle
+
+   Full control of a vehicle, or one or more ECUs within a vehicle, is
+   the most severe threat.
+
+   o  _Arbitrary software attack:_ Cause an ECU to install and run
+      arbitrary code of the attacker's choice.
+
+5.  Detailed Design of Uptane
+
+   Uptane is a secure software update framework for automobiles.  We do
+   not specify implementation details.  Instead, we describe the
+   components necessary for a compliant implementation, and leave it up
+   to individual implementors to make their own technological choices
+   within those requirements.
+
+   At a high level, Uptane requires:
+
+   o  Two software repositories:
+
+      *  An image repository containing binary images for install, and
+         signed metadata about those images
+
+
+
+Cappos                    Expires March 1, 2019                [Page 10]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+      *  A director repository connected to an inventory database that
+         can sign metadata on demand for images in the image repository
+
+   o  Repository tools for generating Uptane-specific metadata about
+      images
+
+   o  A public key infrastructure supporting the required metadata
+      production/signing roles on each repository:
+
+      *  Root - Certificate authority for the repo.  Distributes public
+         keys for verifying all the other roles' metadata
+
+      *  Timestamp - Indicates whether there are new metadata or images
+
+      *  Snapshot - Indicates images released by the repository at a
+         point in time, via signing metadata about targets metadata
+
+      *  Targets - Indicates metadata about images, such as hashes and
+         file sizes
+
+   o  A time server to deliver cryptographically verifiable time to ECUs
+
+   o  An in-vehicle client on a primary ECU capable of verifying the
+      signatures on all update metadata, handling all server
+      communication, and downloading updates on behalf of secondary ECUs
+
+   o  A client or library on each secondary ECU capable of performing
+      either full or partial verification of metadata
+
+5.1.  Roles on repositories
+
+   A repository contains images and metadata.  Each role has a
+   particular type of metadata associated with it, as described in
+   Section 5.2.
+
+5.1.1.  The Root role
+
+   The Root role SHALL be responsible for a Certificate Authority as
+   defined in [RFC3647].  The Root role SHALL produce and sign Root
+   metadata as described in Section 5.2.2.  The Root role SHALL sign the
+   public keys used to verfy the metadata produced by the Timestamp,
+   Snapshot, and Targets roles.  The Root role SHALL revoke keys for the
+   other roles, in case of compromise.
+
+
+
+
+
+
+
+
+Cappos                    Expires March 1, 2019                [Page 11]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+5.1.2.  The Targets role
+
+   The Targets role SHALL produce and sign metadata about images and
+   delegations as described in Section 5.2.3.
+
+5.1.2.1.  Delegations
+
+   The Targets role on the Image repository MAY delegate the
+   responsibility of signing metadata to other, custom-defined roles.
+   If it does, it MUST do so as specified in Section 5.2.3.2.
+
+   Responsibility for signing images or a subset of images MAY be
+   delegated to more than one role, and therefore it is possible for two
+   different roles to be trusted for signing a particular image.  For
+   this reason, delegations MUST be prioritized.
+
+   A particular delegation for a subset of images MAY be designated as
+   *terminating*. For terminating delegations, the client SHALL NOT
+   search the any further if it does not find validly signed metadata
+   about those images in the terminating delegation.  Delegations SHOULD
+   NOT be terminating by default; terminating delegations SHOULD only be
+   used when there is a compelling technical reason to do so.
+
+   A delegation for a subset of images MAY be a multi-role delegation.
+   A multi-role delegation indicates that each of the delegatee roles
+   MUST sign the same metadata.
+
+   Delegations only apply to the Image repository.  The Targets role on
+   the Director repository MUST NOT delegate metadata signing
+   responsibility.
+
+5.1.3.  The Snapshot role
+
+   The Snapshot role SHALL produce and sign metadata about all Targets
+   metadata the repository releases, including the current version
+   number and hash of the main Targets metadata and the version numbers
+   and hashes of all delegated targets metadata, as described in
+   Section 5.2.4.
+
+5.1.4.  The Timestamp role
+
+   The Timestamp role SHALL produce and sign metadata indicating whether
+   there are new metadata or images on the repository.  It MUST do so by
+   signing the metadata about the Snapshot metadata file.
+
+
+
+
+
+
+
+Cappos                    Expires March 1, 2019                [Page 12]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+5.2.  Metadata abstract syntax
+
+5.2.1.  Common Metadata Structures and Formats
+
+5.2.2.  Root Metadata
+
+5.2.3.  Targets Metadata
+
+5.2.3.1.  Metadata about Images
+
+5.2.3.2.  Metadata about Delegations
+
+5.2.4.  Snapshot Metadata
+
+5.2.5.  Timestamp Metadata
+
+5.3.  Server / repository implementation requirements
+
+   An Uptane implementation SHALL make the following services available
+   to vehicles:
+
+   o  Image repository
+
+   o  Director repository
+
+   o  Time server
+
+5.3.1.  Image Repository
+
+   The Image repository exists to allow an OEM and/or its suppliers to
+   upload images and their associated metadata.  It makes these images
+   and their metadata available to vehicles.  The Image repository is
+   designed to be primarily controlled by human actors, and updated
+   relatively infrequently.
+
+   The Image repository SHALL expose an interface permitting the
+   download of metadata and images.  This interface SHOULD be public.
+
+   The Image repository SHALL require authorization for writing metadata
+   and images.
+
+   The Image repository SHALL provide a method for authorized users to
+   upload images and their associated metadata.  It SHALL check that a
+   user writing metadata and images is authorized to do so for that
+   specific image by checking the chain of delegations for the image as
+   described in Section 5.2.3.2.
+
+
+
+
+
+Cappos                    Expires March 1, 2019                [Page 13]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+   The Image repository SHALL implement storage which permits authorized
+   users to write an image file using a unique filename, and later read
+   the same file using the same name.  It MAY use any filesystem, key-
+   value store, or database that fulfills this requirement.
+
+   The Image repository MAY require authentication for read access.
+
+5.3.2.  Director Repository
+
+   The Director repository instructs ECUs as to which images should be
+   installed by producing signed metadata on demand.  Unlike the Image
+   repository, it is mostly controlled by automated, online processes.
+   It also consults a private inventory database containing information
+   on vehicles, ECUs, and software revisions.
+
+   The Directory repository SHALL expose an interface for primaries to
+   upload vehicle version manifests and download metadata.  This
+   interface SHOULD be public.  The Director MAY encrypt images for ECUs
+   that require it, either by encrypting on-the-fly or by storing
+   encrypted images in the repository.
+
+   The Director repository SHALL implement storage which permits an
+   automated service to write generated metadata files.  It MAY use any
+   filesystem, key-value store, or database that fulfills this
+   requirement.
+
+5.3.2.1.  Directing installation of images on vehicles
+
+   A Director repository MUST conform to the following six-step process
+   for directing the installation of software images on a vehicle.
+
+   1.  When the Director receives a vehicle version manifest sent by a
+       primary (as described in Section 5.4.1.1), it decodes the
+       manifest, and determines the unique vehicle identifier.
+
+   2.  Using the vehicle identifier, the Director queries its inventory
+       database (as described in Section 5.3.2.2) for relevant
+       information about each ECU in the vehicle.
+
+   3.  The Director checks the manifest for accuracy compared to the
+       information in the inventory database.  If any of the required
+       checks fail, the Director drops the request.  An implementor MAY
+       make whatever additional checks they wish.  At a minimum, the
+       following checks are required:
+
+       *  Each ECU recorded in the inventory database is also
+          represented in the manifest.
+
+
+
+
+Cappos                    Expires March 1, 2019                [Page 14]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+       *  The signature of the manifest matches the ECU key of the
+          primary that sent it.
+
+       *  The signature of each secondary's contribution to the manifest
+          matches the ECU key of that secondary.
+
+   4.  The Director extracts information about currently installed
+       images from the vehicle version manifest.  Using this
+       information, it determines if the vehicle is already up-to-date,
+       and if not, determines a set of images that should be installed.
+       The exact process by which this determination takes place is out
+       of scope of this standard.  However, it MUST take into account
+       _dependencies_ and _conflicts_ between images, and SHOULD consult
+       well-established techniques for dependency resolution.
+
+   5.  The Director MAY encrypt images for ECUs that require it.
+
+   6.  The Director generates new metadata representing the desired set
+       of images to be installed in the vehicle, based on the dependency
+       resolution in step 4.  This includes targets (Section 5.2.3),
+       snapshot (Section 5.2.4), and timestamp (Section 5.2.5) metadata.
+       It then sends this metadata to the primary as described in
+       Section 5.4.1.3.
+
+5.3.2.2.  Inventory Database
+
+   The Director SHALL use a private inventory database to store
+   information about ECUs and vehicles.  An implementor MAY use any
+   durable database for this purpose.
+
+   The inventory database MUST record the following pieces of
+   information:
+
+   o  Per vehicle:
+
+      *  A unique identifier (such as a VIN)
+
+   o  Per ECU:
+
+      *  A unique identifier (such as a serial number)
+
+      *  The vehicle identifier the ECU is associated with
+
+      *  A public key
+
+      *  The format of the public key
+
+      *  Whether the ECU is a primary or a secondary
+
+
+
+Cappos                    Expires March 1, 2019                [Page 15]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+   The inventory database MAY record other information about ECUs and
+   vehicles.
+
+5.3.3.  Time Server
+
+   The Time Server exists to inform vehicles about the current time in
+   cryptographically secure way, since many ECUs in a vehicle will not
+   have a reliable source of time.  It receives lists of tokens from
+   vehicles, and returns back a signed sequence that includes the token
+   and the current time.
+
+   The Time Server SHALL receive a sequence of tokens from a vehicle
+   representing all of its ECUs.  In response, it SHALL sign each token
+   together with the current time.
+
+   The Time Server SHALL expose a public interface allowing primaries to
+   communicate with it.  This communication MAY occur over FTP, FTPS,
+   SFTP, HTTP, or HTTPS.
+
+5.4.  In-vehicle implementation requirements
+
+5.4.1.  Downloading and distributing updates on a primary ECU
+
+5.4.1.1.  Construct and send vehicle version manifest
+
+5.4.1.2.  Download and check current time
+
+5.4.1.3.  Download and verify metadata
+
+5.4.1.4.  Download and verify images
+
+5.4.1.5.  Send latest time to secondaries
+
+5.4.1.6.  Send metadata to secondaries
+
+5.4.1.7.  Send images to secondaries
+
+5.4.2.  Installing images on ECUs
+
+5.4.3.  Metadata verification
+
+5.4.3.1.  Full verification
+
+5.4.3.2.  Partial verification
+
+
+
+
+
+
+
+Cappos                    Expires March 1, 2019                [Page 16]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+6.  References
+
+6.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
+              Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
+              Transfer Protocol -- HTTP/1.1", RFC 2616,
+              DOI 10.17487/RFC2616, June 1999,
+              <https://www.rfc-editor.org/info/rfc2616>.
+
+   [RFC3280]  Housley, R., Polk, W., Ford, W., and D. Solo, "Internet
+              X.509 Public Key Infrastructure Certificate and
+              Certificate Revocation List (CRL) Profile", RFC 3280,
+              DOI 10.17487/RFC3280, April 2002,
+              <https://www.rfc-editor.org/info/rfc3280>.
+
+   [RFC3447]  Jonsson, J. and B. Kaliski, "Public-Key Cryptography
+              Standards (PKCS) #1: RSA Cryptography Specifications
+              Version 2.1", RFC 3447, DOI 10.17487/RFC3447, February
+              2003, <https://www.rfc-editor.org/info/rfc3447>.
+
+   [RFC3647]  Chokhani, S., Ford, W., Sabett, R., Merrill, C., and S.
+              Wu, "Internet X.509 Public Key Infrastructure Certificate
+              Policy and Certification Practices Framework", RFC 3647,
+              DOI 10.17487/RFC3647, November 2003,
+              <https://www.rfc-editor.org/info/rfc3647>.
+
+   [RFC4634]  Eastlake 3rd, D. and T. Hansen, "US Secure Hash Algorithms
+              (SHA and HMAC-SHA)", RFC 4634, DOI 10.17487/RFC4634, July
+              2006, <https://www.rfc-editor.org/info/rfc4634>.
+
+   [RFC4648]  Josefsson, S., "The Base16, Base32, and Base64 Data
+              Encodings", RFC 4648, DOI 10.17487/RFC4648, October 2006,
+              <https://www.rfc-editor.org/info/rfc4648>.
+
+   [RFC5756]  Turner, S., Brown, D., Yiu, K., Housley, R., and T. Polk,
+              "Updates for RSAES-OAEP and RSASSA-PSS Algorithm
+              Parameters", RFC 5756, DOI 10.17487/RFC5756, January 2010,
+              <https://www.rfc-editor.org/info/rfc5756>.
+
+   [RFC7159]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
+              Interchange Format", RFC 7159, DOI 10.17487/RFC7159, March
+              2014, <https://www.rfc-editor.org/info/rfc7159>.
+
+
+
+Cappos                    Expires March 1, 2019                [Page 17]
+
+Internet-Draft                   UPTANE                      August 2018
+
+
+6.2.  Informative References
+
+   [CR-OTA]   Barry, K., "Automakers Embrace Over-the-Air Updates, but
+              Can We Trust Digital Car Repair?", April 2018,
+              <https://www.consumerreports.org/automotive-technology/
+              automakers-embrace-over-the-air-updates-can-we-trust-
+              digital-car-repair/>.
+
+   [ED25519]  Bernstein, D., Duif, N., Lange, T., Schwabe, P., and B-Y.
+              Yang, ""High-Speed High-Security Signatures", Journal of
+              Cryptographic Engineering, Vol. 2", September 2011.
+
+   [MERCURY]  Kuppusamy, ., "https://ssl.engineering.nyu.edu/papers/
+              kuppusamy_usenix_17.pdf", January 2017.
+
+   [RFC1321]  Rivest, R., "The MD5 Message-Digest Algorithm", RFC 1321,
+              DOI 10.17487/RFC1321, April 1992,
+              <https://www.rfc-editor.org/info/rfc1321>.
+
+   [USATODAY]
+              O'Donnell, B., "Your average car is a lot more code-driven
+              than you think", June 2016,
+              <https://www.usatoday.com/story/tech/columnist/2016/06/28/
+              your-average-car-lot-more-code-driven-than-you-
+              think/86437052/>.
+
+Author's Address
+
+   Justin Cappos
+   NYU Tandon School of Engineering
+   todo
+   New York, NY  todo
+   USA
+
+   Email: redacted@nyu.edu
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Cappos                    Expires March 1, 2019                [Page 18]
