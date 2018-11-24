@@ -230,7 +230,7 @@ The following use cases provide a number of scenarios illustrating the manner in
 
 #### OEMs initializing Uptane at the factory using SOTA
 
-Bob, who works for an OEM, is overseeing the installation of Uptane on new vehicles at a manufacturing plant. He starts with preparing the ECUs by adding the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server. His implementation would be considered Uptane-compliant if:
+An OEM plans to install Uptane on new vehicles. The OEM plans for the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server. The OEM then either requires the OEM's tier-1 suppliers to provision this material at the suppliers' assembly lines, or the OEM might add the material at the OEM's assembly lines later. The OEM's implementation is Uptane-compliant if:
 
 1. all primaries perform full verification; 
 1. all secondaries that are updated via OTA perform full or partial verification; and 
@@ -238,15 +238,15 @@ Bob, who works for an OEM, is overseeing the installation of Uptane on new vehic
 
 #### Updating one ECU with a complete image
 
-Alice, a Tier-1 supplier, completes work on a revised image for an electronic brake control module. This module will control the brakes on all models of an SUV produced by the OEM for whom Clark is in charge of electronic systems. Alice signs the image, then delivers it and all of its metadata, including delegations, and associated images to Clark. Clark adds these metadata and images to the image repository, along with information about any dependencies and conflicts between this image and those on other ECUs. Clark also updates the inventory database, so that the director repository can instruct the ECU on how to install these updated images.
+A tier-1 supplier completes work on a revised image for an electronic brake control module. This module will control the brakes on all models of an SUV produced by above OEM. The tier-1 suppliers digitally signs the image, then delivers the signature and all of its metadata, including delegations, and associated images to the OEM. The OEM adds these metadata and images to the OEM's image repository, along with information about any dependencies and conflicts between this image and those on other ECUs used in OEM's vehicles. The OEM also updates the inventory database, so that the director repository can instruct the ECU on how to install these updated images.
 
-#### Dealership updating individual ECUs on demand
+####  updating individual ECUs on demand
 
-Dana runs a dealership for a major OEM. The OEM has issued a recall to address a problem with a keyless entry device that has been locking people out of their cars. Individual owners are bringing in a revised image on a flash drive that was sent to them from the manufacturer via courier mail. To carry out this update, the OEM would first have to delegate to Dana the authority to sign the metadata that would need to accompany the image on the flashdrive. He would then follow the same procedures used by Clark in the example above.
+An OEM has issued a recall to address a problem with a keyless entry device that has been locking people out of their cars. The OEM prepares an updated flash image in the manner described above. The OEM then ships USB flash drives to vehicle owners and dealerships that allow those parties to update the firmware of their vehicles. 
 
 #### Update one ECU with multiple deltas
 
-Frances needs to update an On-Board Diagnostics port and has several new images to download. To save bandwidth costs, she uses delta images that contain only the code and/or data that has changed from the previous image installed by the ECU. To do so, she must first modify the director repository using the vehicle version manifest and dependency resolution to determine the differences between the previous and latest images. Frances then adds the following to the custom targets metadata used by the director repository: (1) the algorithm used to apply a delta image and (2) the targets metadata about the delta image. Frances would also check whether the delta images match the targets metadata from the director repository.
+The OEM wants to use delta updates to save over-the-air bytes. The delta images contain only the code and/or data that has changed from the previous image version. To do so, the OEM must first modify the director repository using the vehicle version manifest and dependency resolution to determine the differences between the previous and latest images. The OEM then adds the following to the custom targets metadata used by the director repository: (1) the algorithm used to apply a delta image and (2) the targets metadata about the delta image. The OEM will also check whether the delta images match the targets metadata from the director repository.
 
 ## Exceptions
 
