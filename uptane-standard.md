@@ -352,7 +352,7 @@ At a high level, Uptane requires:
 
 ## Roles on repositories {#roles}
 
-A repository contains images and metadata. Each role has a particular type of metadata associated with it, as described in {{meta_syntax}}.
+A repository contains images and metadata. Each role has a particular type of metadata associated with it, as described in {{meta_structures}}.
 
 ### The Root role {#root_role}
 
@@ -365,7 +365,7 @@ The Root role SHALL revoke keys for the other roles, in case of compromise.
 
 The Targets role SHALL produce and sign metadata about images and delegations as described in {{targets_meta}}.
 
-#### Delegations
+#### Delegations {#targets_role_delegations}
 
 The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles. If it does, it MUST do so as specified in {{delegations_meta}}.
 
@@ -507,7 +507,7 @@ For an ECU to be capable of receiving Uptane-secured updates, it MUST have the f
 
 1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See [Uptane Deployment Considerations](#DEPLOY) for more information.
     * Partial verification ECUs MUST have the root and targets metadata from the director repository.
-    * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository map file {{TAP-4}}.
+    * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository map file if implemented.
 2. The public key(s) of the time server.
 3. An attestation of time downloaded from the time server.
 4. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
@@ -656,17 +656,17 @@ A primary ECU SHALL download metadata and images following the rules specified i
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
-1. Load the map file {{TAP-4}}. If necessary, use the information therein to determine where to download metadata from.
+1. Load the map file if implemented. If necessary, use the information therein to determine where to download metadata from.
 2. Load the latest attested time from the time server.
 3. Download and check the root metadata file from the director repository:
     1. Load the previous root metadata file.
     2. Update to the latest root metadata file.
-      1. Let N denote the version number of the latest root metadata file (which at first could be the same as the previous root metadata file).
-      2. Try downloading a new version N+1 of the root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, then go to step 3.5.
-      3. Version N+1 of the root metadata file MUST have been signed by: (1) a threshold of keys specified in the latest root metadata file (version N), and (2) a threshold of keys specified in the new root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at step 0 and version N of the root metadata file. (Checks for an arbitrary software attack.)
-      4. The version number of the latest root metadata file (version N) must be less than or equal to the version number of the new root metadata file (version N+1). Effectively, this means checking that the version number signed in the new root metadata file is indeed N+1. If the version of the new root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the root metadata file. (Checks for a rollback attack.)
-      5. Set the latest root metadata file to the new root metadata file.
-      6. Repeat steps 1 to 6.
+        1. Let N denote the version number of the latest root metadata file (which at first could be the same as the previous root metadata file).
+        2. Try downloading a new version N+1 of the root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, then go to step 3.5.
+        3. Version N+1 of the root metadata file MUST have been signed by: (1) a threshold of keys specified in the latest root metadata file (version N), and (2) a threshold of keys specified in the new root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at step 0 and version N of the root metadata file. (Checks for an arbitrary software attack.)
+        4. The version number of the latest root metadata file (version N) must be less than or equal to the version number of the new root metadata file (version N+1). Effectively, this means checking that the version number signed in the new root metadata file is indeed N+1. If the version of the new root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the root metadata file. (Checks for a rollback attack.)
+        5. Set the latest root metadata file to the new root metadata file.
+        6. Repeat steps 1 to 6.
     5. Check that the latest attested time is lower than the expiration timestamp in the latest root metadata file. (Checks for a freeze attack.)
     6. If the timestamp and / or snapshot keys have been rotated, delete the previous timestamp and snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
 4. Download and check the timestamp metadata file from the director repository:
@@ -712,3 +712,5 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
 If the ECU performing the verification is the primary ECU, it SHOULD also ensure that the ECU identifiers present in the targets metadata from the director repository are a subset of the actual ECU identifiers of ECUs in the vehicle.
+
+
