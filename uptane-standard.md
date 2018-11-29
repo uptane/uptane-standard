@@ -319,7 +319,7 @@ An attacker seeking to deny installation of updates may attempt one or more of t
 
 ### Interfere with ECU functionality {#change_functionality}
 
-Attackers seeking to interfere with the functionality of vehicle ECUs in order to cause an operational failure or unexpected behaviour may do so in one of the following ways:
+Attackers seeking to interfere with the functionality of vehicle ECUs in order to cause an operational failure or unexpected behavior may do so in one of the following ways:
 
 * *Rollback attack:* Cause an ECU to install a previously-valid software revision that is older than the currently-installed version.
 * *Endless data attack:* Send a large amount of data to an ECU, until it runs out of storage, possibly causing the ECU to fail to operate.
@@ -358,7 +358,7 @@ A repository contains images and metadata. Each role has a particular type of me
 
 The Root role SHALL be responsible for a Certificate Authority as defined in {{RFC3647}}.
 The Root role SHALL produce and sign Root metadata as described in {{root_meta}}.
-The Root role SHALL sign the public keys used to verfy the metadata produced by the Timestamp, Snapshot, and Targets roles.
+The Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.
 The Root role SHALL revoke keys for the other roles, in case of compromise.
 
 ### The Targets role {#targets_role}
@@ -668,7 +668,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
       5. Set the latest root metadata file to the new root metadata file.
       6. Repeat steps 1 to 6.
     5. Check that the latest attested time is lower than the expiration timestamp in the latest root metadata file. (Checks for a freeze attack.)
-    6. If the the timestamp and / or snapshot keys have been rotated, delete the previous timestamp and snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
+    6. If the timestamp and / or snapshot keys have been rotated, delete the previous timestamp and snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
 4. Download and check the timestamp metadata file from the director repository:
     1. Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).
     2. Check that it has been signed by the threshold of keys specified in the latest root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
