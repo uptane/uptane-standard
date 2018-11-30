@@ -45,7 +45,7 @@ normative:
   RFC7159:
   # TAP 3 at rev d0818e5
   TAP-3:
-    target: https://github.com/theupdateframework/taps/commit/d0818e580c322815a473520f2e8cc5f5eb8df499
+    target: https://github.com/theupdateframework/taps/blob/d0818e580c322815a473520f2e8cc5f5eb8df499/tap3.md
     title: The Update Framework TAP 3 - Multi-role delegations
     author:
       - ins: T.K. Kuppusamy
@@ -57,7 +57,7 @@ normative:
     date: 2018-01-18
   # TAP 4 at rev 2cb67d9
   TAP-4:
-    target: https://github.com/theupdateframework/taps/commit/2cb67d913ec19424d1e354b38f862886fbfd4105
+    target: https://github.com/theupdateframework/taps/blob/2cb67d913ec19424d1e354b38f862886fbfd4105/tap4.md
     title: The Update Framework TAP 4 - Multiple repository consensus on entrusted targets
     author:
       - ins: T.K. Kuppusamy
