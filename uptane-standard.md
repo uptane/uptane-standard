@@ -385,23 +385,128 @@ The Snapshot role SHALL produce and sign metadata about all Targets metadata the
 
 The Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.
 
-## Metadata abstract syntax {#meta_syntax}
+## Metadata structures {#meta_structures}
 
-### Common Metadata Structures and Formats {#common_metadata}
+Uptane's security guarantees all rely on properly created metadata with a certain structure. The Uptane standard **does not** mandate any particular format or encoding for this metadata. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.
+
+In the Deployment Considerations document, the Uptane Alliance provides some examples of compliant metadata structures in ASN.1 and JSON.
+
+### Common Metadata Structures {#common_metadata}
+
+All four Uptane roles (root, targets, snapshot, and timestamp) share a structure in common. They SHALL contain the following 2 attributes:
+
+* A payload of metadata to be signed
+* An attribute containing the signature(s) of the payload, each specified by:
+  * The identifier of the key being used to sign the payload
+  * The signing method (e.g. ed25519, rsassa-pss, etc.)
+  * A hash of the payload to be signed
+  * The hashing function used (e.g. sha256, sha512-224, etc.)
+  * The signature of the hash
+
+The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:
+
+* An indicator of the type of role (root, targets, snapshot, or timestamp)
+* An expiration date and time
+* An integer version number, which SHOULD be incremented each time the metadata file is updated
+* The role-specific metadata for the role indicated
+
+The following sections describe the role-specific metadata. All roles SHALL follow the common structures described here.
 
 ### Root Metadata {#root_meta}
 
+The root metadata distributes the public keys of the top-level root, targets, snapshot, and timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
+
+* A representation of the public keys for all four roles. Each key should have a unique identifier.
+* An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
+
+Additionally, it MAY contain a mapping of roles to a list of valid URLs the role metadata can be downloaded from, as described in {{TAP-5}}.
+
 ### Targets Metadata {#targets_meta}
 
-#### Metadata about Images
+A targets metadata file contains metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.
+
+#### Metadata about Images {#targets_images_meta}
+
+The targets metadata MUST contain a list of images on the repository. This list MUST provide, at a minimum, the following information about each image on the repository:
+
+* The image filename
+* The length of the image file in bytes
+* One or more hashes of the image file, along with the hashing function used
+
+##### Custom metadata about images
+
+In addition to the required metadata, the targets metadata file SHOULD contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the deployment considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations.
+
+The following information SHOULD be provided for each image on both the image repository and the director repository:
+
+* A release counter, to be incremented each time a new version of the image is released. This can be used to prevent rollback attacks even in cases where the director repository is compromised.
+* A hardware identifier, or list of hardware identifiers, representing models of ECU that the image is compatible with. This can be used to ensure that an ECU can't be ordered to install an incompatible image, even in cases where the director repository is compromised.
+
+The following information SHOULD be provided for each image on the director repository:
+
+* An ECU identifier, specifying (by serial number, for example) of the ECU that should install the image.
+* If encrypted images are desired, information about filenames, hashes, and file size of the encrypted image
+* If encrypted images are desired, information about the encryption method, and other relevant information--for example, a symmetric encryption key encrypted by the ECU's asymmetric key could be included in the director's metadata.
+
+A download URL for the image file MAY be provided by the director repository. This may be useful when the image is on a public CDN and the director wishes to provide a signed URL, for example.
 
 #### Metadata about Delegations {#delegations_meta}
 
+A targets metadata file on the image repository (but not the director repository) MAY delegate signing authority to other entities--for example, delegating signing authority for a particular ECU's firmware to that ECU's supplier. A metadata file MAY contain more than one delegation, and MUST keep the delegations in prioritized order.
+
+A list of delegations MUST provide the following information:
+
+* A list of public keys of all delegatees. Each key should have a unique identifier, and a key type.
+* A list of delegations, each of which contains:
+  * A list of the images or paths this role applies to. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
+  * An indicator of whether this is a terminating delegation or not. (See {{targets_role_delegations}}.)
+  * A list of the roles this delegation applies to. Each role needs to specify:
+    * A name for the role (e.g. "supplier1-qa")
+    * The key identifiers for each key this role uses
+    * A threshold of keys which must sign for this role
+
+Note that **any** targets metadata file may contain delegations--delegations can be in chains of arbitrary length.
+
 ### Snapshot Metadata {#snapshot_meta}
+
+The snapshot metadata lists version numbers and filenames of all targets metadata files. It protects against mix-and-match attacks in the case that a delegated supplier key has been compromised.
+
+For each targets metadata file on the repository, the snapshot metadata SHALL contain the following information:
+
+* The filename and version number of the each targets metadata file on the repository
+
+The snapshot metadata MAY also list the root metadata filename and version number. This is no longer required because of the implementation of {{TAP-5}}, but MAY be included for backwards compatibility.
 
 ### Timestamp Metadata {#timestamp_meta}
 
-### The map file {#map_file}
+The timestamp metadata SHALL contain the following information:
+
+* The filename and version number of the latest snapshot metadata on the repository
+* One or more hashes of the snapshot metadata file, along with the hashing function used
+
+### Repository mapping metadata {#repo_mapping_meta}
+
+Repository mapping metadata informs a primary ECU about which repositories to trust for images or image paths. Repository mapping metadata MUST be present on all primary ECUs, and MUST contain the following information:
+
+* A list of repository names and one or more URLs at which the named repository can be accessed. At a minimum, this MUST include the director and image repositories.
+* A list of mappings of image paths to repositories, each of which contains:
+    * A list of image paths. Image paths MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
+    * A list of repositories which MUST sign the targets metadata for the image paths.
+
+For example, in the most basic Uptane case, the repository mapping metadata would contain:
+
+* The name and URL of the director repository
+* The name and URL of the image repository
+* A single mapping indicating that all images (`*`) MUST be signed by both the director and image repository
+
+However, more complex repository mapping metadata can permit more complicated use cases. For example:
+
+* A second director repository might be useful for fleet management of after-market vehicles; for example, a rental car company might wish to only install approved updates.
+* For dynamic content with lower security sensitivity, an OEM might want to allow a certain subset of images to only require trust from the director repository.
+
+The deployment considerations document gives more guidance on how to implement repository mapping metadata for these use cases. It also discusses strategies for updating repository mapping metadata, if required. {{TAP-4}} contains detailed guidance on repository mapping metadata implementation.
+
+Note that repository mapping metadata might not be a file, and MAY be expressed in a different format than the repository roles metadata. For example, it could be part of the primary ECU's Uptane client configuration. As long as the client has access to the required information, the repository mapping metadata requirements are met.
 
 ### Rules for filenames in repositories and metadata {#metadata_filename_rules}
 
@@ -418,10 +523,6 @@ The Timestamp role SHALL produce and sign metadata indicating whether there are 
   However, note that although a primary SHALL download a metadata or target file using the filename written to the repository, it SHALL write the file to its own storage using the original filename in the metadata. For example, if a metadata file is referred to as FILENAME.EXT in another metadata file, then a primary SHALL download it using either the filename FILENAME.EXT, VERSION.FILENAME.EXT, or HASH.FILENAME.EXT (depending on which of the aforementioned rules applies), but it SHALL always write it to its own storage as FILENAME.EXT. This implies that the previous set of metadata and target files downloaded from a repository SHALL be kept in a separate directory on an ECU from the latest set of files.
 
   For example, the previous set of metadata and target files MAY be kept in the "previous" directory on an ECU, whereas the latest set of files MAY be kept in the "current" directory.
-
-### Vehicle version manifest {#vehicle_version_manifest}
-
-#### ECU version report {#version_report}
 
 ## Server / repository implementation requirements
 
@@ -507,7 +608,7 @@ For an ECU to be capable of receiving Uptane-secured updates, it MUST have the f
 
 1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See [Uptane Deployment Considerations](#DEPLOY) for more information.
     * Partial verification ECUs MUST have the root and targets metadata from the director repository.
-    * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository map file if implemented.
+    * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository mapping metadata ({{repo_mapping_meta}}).
 2. The public key(s) of the time server.
 3. An attestation of time downloaded from the time server.
 4. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
@@ -531,6 +632,40 @@ The primary SHALL build a *vehicle version manifest* as described in {{vehicle_v
 Once it has the complete manifest built, it MAY send the manifest to the director repository. However, it is not strictly required that the primary send the manifest until step three.
 
 Secondaries MAY send their version report at any time, so that it is stored on the primary already when it wishes to check for updates. Alternatively, the primary MAY request a version report from each secondary at the time of the update check.
+
+##### Vehicle version manifest {#vehicle_version_manifest}
+
+The vehicle version manifest is a metadata structure which MUST contain the following information:
+
+* An attribute containing the signature(s) of the payload, each specified by:
+  * The identifier of the key being used to sign the payload
+  * The signing method (e.g. ed25519, rsassa-pss, etc.)
+  * A hash of the payload to be signed
+  * The hashing function used (e.g. sha256, sha512-224, etc.)
+  * The signature of the hash
+* A payload representing the installed versions of each software image on the vehicle. This payload SHALL contain:
+  * The vehicle's unique identifier (e.g. the VIN)
+  * The primary ECU's unique identifier (e.g. the serial number)
+  * A list of ECU version reports as specified in {{version_report}}
+
+Note that one of the ECU version reports should be the version report for the primary itself.
+
+##### ECU version report {#version_report}
+
+An ECU version report is a metadata structure which MUST contain the following information:
+
+* An attribute containing the signature(s) of the payload, each specified by:
+  * The identifier of the key being used to sign the payload
+  * The signing method (e.g. ed25519, rsassa-pss, etc.)
+  * A hash of the payload to be signed
+  * The hashing function used (e.g. sha256, sha512-224, etc.)
+  * The signature of the hash
+* A payload containing:
+  * The ECU's unique identifier (e.g. the serial number)
+  * The latest time downloaded from the time server
+  * The previous time downloaded from the time server
+  * The filename, length, and hashes of its currently installed image (i.e. the non-custom targets metadata for this particular image)
+  * An indicator of any security attack that was detected
 
 #### Download and check current time {#check_time_primary}
 
@@ -656,7 +791,7 @@ A primary ECU SHALL download metadata and images following the rules specified i
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
-1. Load the map file if implemented. If necessary, use the information therein to determine where to download metadata from.
+1. Load the repository mapping metadata ({{repo_mapping_meta}}), and use the information therein to determine where to download metadata from.
 2. Load the latest attested time from the time server.
 3. Download and check the root metadata file from the director repository:
     1. Load the previous root metadata file.
