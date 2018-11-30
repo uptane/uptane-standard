@@ -407,11 +407,9 @@ The Timestamp role SHALL produce and sign metadata indicating whether there are 
 
 There is a difference between the file name in a metadata file or an ECU, and the file name on a repository. This difference exists in order to avoid race conditions, where metadata and images are read from and written to at the same time. For more details, the reader should read the TUF specification {{TUF-spec}} and PEP 458 {{PEP-458}}.
 
-Unless stated otherwise, all files SHALL be written to repositories in accordance with the rules in this subsection.
+Unless stated otherwise, all files SHALL be written to repositories in accordance with following two rules:
 
-1. Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT where VERSION is A's version number as defined in {{common_metadata}}, except in the following two cases:
-    1. The root metadata file. The root metadata file SHALL NOT be qualified with a version number.
-    2. If the version number of the timestamp metadata file might not be known in advance by a client, it MAY be read from and written to a repository using a filename without version number qualification, i.e. FILENAME.EXT.
+1. Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT where VERSION is A's version number as defined in {{common_metadata}}, with one exception: If the version number of the timestamp metadata file might not be known in advance by a client, it MAY be read from and written to a repository using a filename without version number qualification, i.e. FILENAME.EXT.
 2. If an image is specified in a targets metadata file as FILENAME.EXT, it SHALL be written to the repository as HASH.FILENAME.EXT, where HASH is one of the hash digests of the file, as specified in {{targets_images_meta}}. The file MUST be written to the repository using *n* different filenames, one for each hash digest listed in its corresponding targets metadata.
 
 For example: 
