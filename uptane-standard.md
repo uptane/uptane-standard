@@ -448,7 +448,7 @@ The following information SHOULD be provided for each image on the director repo
 * If encrypted images are desired, information about filenames, hashes, and file size of the encrypted image
 * If encrypted images are desired, information about the encryption method, and other relevant information--for example, a symmetric encryption key encrypted by the ECU's asymmetric key could be included in the director's metadata.
 
-A download URL for the image file MAY be provided by the director repository. This may be useful when the image is on a public CDN and the director wishes to provide a signed URL, or as an alternative to implementing the map file when working with encrypted images downloaded from the director.
+A download URL for the image file MAY be provided by the director repository. This may be useful when the image is on a public CDN and the director wishes to provide a signed URL, for example.
 
 #### Metadata about Delegations {#delegations_meta}
 
@@ -484,9 +484,29 @@ The timestamp metadata SHALL contain the following information:
 * The filename and version number of the latest snapshot metadata on the repository
 * One or more hashes of the snapshot metadata file, along with the hashing function used
 
-### The map file {#map_file}
+### Repository mapping metadata {#repo_mapping_meta}
 
-The map file instructs clients about which repositories to check for different targets. It MAY be implemented as specified in {{TAP-4}} to instruct clients about which repository to download a particular target from. In particular, this is useful when encrypted images are required and are downloaded from the director repository.
+Repository mapping metadata informs a primary ECU about which repositories to trust for images or image paths. Repository mapping metadata MUST be present on all primary ECUs, and MUST contain the following information:
+
+* A list of repository names and one or more URLs at which the named repository can be accessed. At a minimum, this MUST include the director and image repositories.
+* A list of mappings of image paths to repositories, each of which contains:
+    * A list of image paths. Image paths MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
+    * A list of repositories which MUST sign the targets metadata for the image paths.
+
+For example, in the most basic Uptane case, the repository mapping metadata would contain:
+
+* The name and URL of the director repository
+* The name and URL of the image repository
+* A single mapping indicating that all images (`*`) MUST be signed by both the director and image repository
+
+However, more complex repository mapping metadata can permit more complicated use cases. For example:
+
+* A second director repository might be useful for fleet management of after-market vehicles; for example, a rental car company might wish to only install approved updates.
+* For dynamic content with lower security sensitivity, an OEM might want to allow a certain subset of images to only require trust from the director repository.
+
+The deployment considerations document gives more guidance on how to implement repository mapping metadata for these use cases. It also discusses strategies for updating repository mapping metadata, if required. {{TAP-4}} contains detailed guidance on repository mapping metadata implementation.
+
+Note that repository mapping metadata might not be a file, and MAY be expressed in a different format than the repository roles metadata. For example, it could be part of the primary ECU's Uptane client configuration. As long as the client has access to the required information, the repository mapping metadata requirements are met.
 
 ### Rules for filenames in repositories and metadata {#metadata_filename_rules}
 
@@ -588,7 +608,7 @@ For an ECU to be capable of receiving Uptane-secured updates, it MUST have the f
 
 1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See [Uptane Deployment Considerations](#DEPLOY) for more information.
     * Partial verification ECUs MUST have the root and targets metadata from the director repository.
-    * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository map file if implemented.
+    * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository mapping metadata ({{repo_mapping_meta}}).
 2. The public key(s) of the time server.
 3. An attestation of time downloaded from the time server.
 4. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
@@ -771,7 +791,7 @@ A primary ECU SHALL download metadata and images following the rules specified i
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
-1. Load the map file if implemented. If necessary, use the information therein to determine where to download metadata from.
+1. Load the repository mapping metadata ({{repo_mapping_meta}}), and use the information therein to determine where to download metadata from.
 2. Load the latest attested time from the time server.
 3. Download and check the root metadata file from the director repository:
     1. Load the previous root metadata file.
