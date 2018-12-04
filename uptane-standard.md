@@ -14,15 +14,15 @@ stand_alone: yes
 pi: [toc, sortrefs, symrefs]
 
 author:
-  - ins: J. Cappos
-    name: Justin Cappos
-    organization: NYU Tandon School of Engineering
-    email: redacted@nyu.edu
-    street: todo
+  - ins: Members of the Uptane Alliance Community
+    name: Uptane Alliance Community
+    organization: Uptane Alliance (c/o Prof. Justin Cappos)
+    email: uptane-standards@googlegroups.com
+    street: 6 MetroTech 
     country: USA
     region: NY
-    city: New York
-    code: todo
+    city: Brooklyn
+    code: 11201
 
 normative:
   # Keyword def (MUST, SHALL, MAY, etc.)
