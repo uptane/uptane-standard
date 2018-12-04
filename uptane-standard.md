@@ -400,8 +400,8 @@ All four Uptane roles (root, targets, snapshot, and timestamp) share a structure
   * The identifier of the key being used to sign the payload
   * The signing method (e.g. ed25519, rsassa-pss, etc.)
   * A hash of the payload to be signed
-  * The hashing function used (e.g. sha256, sha512-224, etc.)
-  * The signature of the hash of both the payload and the other portions of the attribute
+  * The hashing function used in the signature (e.g. sha256, sha512-224, etc.)
+  * The signature over all of the above items.  Note, that this needs to cover both the payload and all the other portions of the attribute (identifier, signing method, etc.). 
 
 The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:
 
