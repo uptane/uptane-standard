@@ -232,8 +232,8 @@ The following use cases provide a number of scenarios illustrating the manner in
 
 An OEM plans to install Uptane on new vehicles. The OEM plans for the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server. The OEM then either requires the OEM's tier-1 suppliers to provision this material at the suppliers' assembly lines, or the OEM might add the material at the OEM's assembly lines later. The OEM's implementation is Uptane-compliant if:
 
-1. all primaries perform full verification; 
-1. all secondaries that are updated via OTA perform full or partial verification; and 
+1. all primaries perform full verification;
+1. all secondaries that are updated via OTA perform full or partial verification; and
 1. all other ECUs that do not perform verification cannot be updated via OTA.
 
 #### Updating one ECU with a complete image
@@ -242,7 +242,7 @@ A tier-1 supplier completes work on a revised image for an electronic brake cont
 
 ####  updating individual ECUs on demand
 
-An OEM has issued a recall to address a problem with a keyless entry device that has been locking people out of their cars. The OEM prepares an updated flash image in the manner described above. The OEM then ships USB flash drives to vehicle owners and dealerships that allow those parties to update the firmware of their vehicles. 
+An OEM has issued a recall to address a problem with a keyless entry device that has been locking people out of their cars. The OEM prepares an updated flash image in the manner described above. The OEM then ships USB flash drives to vehicle owners and dealerships that allow those parties to update the firmware of their vehicles.
 
 #### Update one ECU with multiple deltas
 
@@ -324,7 +324,7 @@ Attackers seeking to interfere with the functionality of vehicle ECUs in order t
 * *Rollback attack:* Cause an ECU to install a previously-valid software revision that is older than the currently-installed version.
 * *Endless data attack:* Send a large amount of data to an ECU, until it runs out of storage, possibly causing the ECU to fail to operate.
 * *Mix-and-match attack:* Install a set of images on ECUs in the vehicle that are incompatible with each other. This may be accomplished even if all of the individual images being installed are valid, as long as there exist valid versions that are mutually incompatible.
- 
+
 ### Control an ECU or vehicle {#control_ecu}
 
 Full control of a vehicle, or one or more ECUs within a vehicle, is the most severe threat.
@@ -397,11 +397,15 @@ All four Uptane roles (root, targets, snapshot, and timestamp) share a structure
 
 * A payload of metadata to be signed
 * An attribute containing the signature(s) of the payload, each specified by:
-  * The identifier of the key being used to sign the payload
-  * The signing method (e.g. ed25519, rsassa-pss, etc.)
-  * A hash of the payload to be signed
-  * The hashing function used in the signature (e.g. sha256, sha512-224, etc.)
-  * The signature over all of the above items.  Note, that this needs to cover both the payload and all the other portions of the attribute (identifier, signing method, etc.). 
+  * A globally unique identifier of the key being used to sign the payload, such as the hexadecimal digest of the SHA-256 hash of the canonical JSON form of the key
+  * The signature from the corresponding key over the payload
+
+Note that when public keys corresponding to signatures are distributed in the signed payload of role-specific metadata, they MUST indicate at least the following 3 attributes:
+
+* The globally unique identifier of the key used to sign the payload
+* Which public key signature system is to be used to verify the signature, such as RSA or ECDSA
+* Which particular signature scheme is to be used to verify the signature, such as "rsassa-pss-sha256" or "ecdsa-sha2-nistp256"
+* The value of the public key itself (which MAY be, for example, formatted as a PEM string)
 
 The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:
 
@@ -847,5 +851,3 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
 If the ECU performing the verification is the primary ECU, it SHOULD also ensure that the ECU identifiers present in the targets metadata from the director repository are a subset of the actual ECU identifiers of ECUs in the vehicle.
-
-
