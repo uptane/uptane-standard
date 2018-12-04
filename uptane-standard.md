@@ -396,8 +396,8 @@ In the Deployment Considerations document, the Uptane Alliance provides some exa
 All four Uptane roles (root, targets, snapshot, and timestamp) share a structure in common. They SHALL contain the following 2 attributes:
 
 * A payload of metadata to be signed
-* An attribute containing the signature(s) of the payload, each specified by:
-  * A globally unique identifier of the key being used to sign the payload, such as the hexadecimal digest of the SHA-256 hash of the canonical JSON form of the key
+* An attribute containing the signature(s) of the payload, where each entry specifies:
+  * The globally unique identifier of the key being used to sign the payload, such as the hexadecimal digest of the SHA-256 hash of the canonical JSON form of the key
   * The signature from the corresponding key over the payload
 
 Note that when public keys corresponding to signatures are distributed in the signed payload of role-specific metadata, they MUST indicate at least the following 3 attributes:
