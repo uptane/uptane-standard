@@ -394,10 +394,12 @@ In the Deployment Considerations document, the Uptane Alliance provides some exa
 ### Common Metadata Structures {#common_metadata}
 
 Every public key MUST be represented using a public key identifier.  A public key identifier is either all of the following:
-  * The value of the public key itself (which MAY be, for example, formatted as a PEM string)
-  * Which public key cryptographic algorithm the key uses (such as RSA or ECDSA)
-  * Which particular signature scheme is to be used to verify the signature (such as `rsassa-pss-sha256` or `ecdsa-sha2-nistp256`)
-or a secure hash over at least all of the above components (such as the keyid mechanism in TUF).
+
+* The value of the public key itself (which MAY be, for example, formatted as a PEM string)
+* Which public key cryptographic algorithm the key uses (such as RSA or ECDSA)
+* Which particular signature scheme is to be used to verify the signature (such as `rsassa-pss-sha256` or `ecdsa-sha2-nistp256`)
+
+OR a secure hash over at least all of the above components (such as the keyid mechanism in TUF).
 
 All four Uptane roles (root, targets, snapshot, and timestamp) share a structure in common. They SHALL contain the following 2 attributes:
 
