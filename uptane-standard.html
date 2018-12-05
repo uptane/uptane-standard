@@ -424,12 +424,12 @@
 <link href="#rfc.authors" rel="Chapter">
 
 
-  <meta name="generator" content="xml2rfc version 2.8.2 - https://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.9.6 - https://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2018-8-28" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-08-28" />
   <meta name="dct.abstract" content="This document describes a framework for securing automotive software update systems." />
   <meta name="description" content="This document describes a framework for securing automotive software update systems." />
 
@@ -840,21 +840,19 @@
 <h1 id="rfc.section.5.2.1">
 <a href="#rfc.section.5.2.1">5.2.1.</a> <a href="#common_metadata" id="common_metadata">Common Metadata Structures</a>
 </h1>
-<p id="rfc.section.5.2.1.p.1">All four Uptane roles (root, targets, snapshot, and timestamp) share a structure in common. They SHALL contain the following 2 attributes:</p>
+<p id="rfc.section.5.2.1.p.1">Every public key MUST be represented using a public key identifier.  A public key identifier is either all of the following: * The value of the public key itself (which MAY be, for example, formatted as a PEM string) * Which public key cryptographic algorithm the key uses (such as RSA or ECDSA) * Which particular signature scheme is to be used to verify the signature (such as <samp>rsassa-pss-sha256</samp> or <samp>ecdsa-sha2-nistp256</samp>) or a secure hash over at least all of the above components (such as the keyid mechanism in TUF).</p>
+<p id="rfc.section.5.2.1.p.2">All four Uptane roles (root, targets, snapshot, and timestamp) share a structure in common. They SHALL contain the following 2 attributes:</p>
 <p></p>
 
 <ul>
 <li>A payload of metadata to be signed</li>
-<li>An attribute containing the signature(s) of the payload, each specified by: <ul>
-<li>The identifier of the key being used to sign the payload</li>
-<li>The signing method (e.g. ed25519, rsassa-pss, etc.)</li>
-<li>A hash of the payload to be signed</li>
-<li>The hashing function used (e.g. sha256, sha512-224, etc.)</li>
-<li>The signature of the hash</li>
+<li>An attribute containing the signature(s) of the payload, where each entry specifies: <ul>
+<li>The public key identifier of the key being used to sign the payload</li>
+<li>A signature with this key over the payload</li>
 </ul>
 </li>
 </ul>
-<p id="rfc.section.5.2.1.p.3">The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:</p>
+<p id="rfc.section.5.2.1.p.4">The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:</p>
 <p></p>
 
 <ul>
@@ -863,7 +861,7 @@
 <li>An integer version number, which SHOULD be incremented each time the metadata file is updated</li>
 <li>The role-specific metadata for the role indicated</li>
 </ul>
-<p id="rfc.section.5.2.1.p.5">The following sections describe the role-specific metadata. All roles SHALL follow the common structures described here.</p>
+<p id="rfc.section.5.2.1.p.6">The following sections describe the role-specific metadata. All roles SHALL follow the common structures described here.</p>
 <h1 id="rfc.section.5.2.2">
 <a href="#rfc.section.5.2.2">5.2.2.</a> <a href="#root_meta" id="root_meta">Root Metadata</a>
 </h1>
@@ -871,7 +869,7 @@
 <p></p>
 
 <ul>
-<li>A representation of the public keys for all four roles. Each key should have a unique identifier.</li>
+<li>A representation of the public keys for all four roles. Each key should have a unique public key identifier.</li>
 <li>An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role</li>
 </ul>
 <p id="rfc.section.5.2.2.p.3">Additionally, it MAY contain a mapping of roles to a list of valid URLs the role metadata can be downloaded from, as described in <a href="#TAP-5" class="xref">[TAP-5]</a>.</p>
@@ -918,7 +916,7 @@
 <p></p>
 
 <ul>
-<li>A list of public keys of all delegatees. Each key should have a unique identifier, and a key type.</li>
+<li>A list of public keys of all delegatees. Each key should have a unique public key identifier, and a key type.</li>
 <li>A list of delegations, each of which contains: <ul>
 <li>A list of the images or paths this role applies to. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.</li>
 <li>An indicator of whether this is a terminating delegation or not. (See <a href="#targets_role_delegations" class="xref">Section 5.1.2.1</a>.)</li>
@@ -1114,7 +1112,7 @@
 
 <ul>
 <li>An attribute containing the signature(s) of the payload, each specified by: <ul>
-<li>The identifier of the key being used to sign the payload</li>
+<li>The public key identifier of the key being used to sign the payload</li>
 <li>The signing method (e.g. ed25519, rsassa-pss, etc.)</li>
 <li>A hash of the payload to be signed</li>
 <li>The hashing function used (e.g. sha256, sha512-224, etc.)</li>
@@ -1138,7 +1136,7 @@
 
 <ul>
 <li>An attribute containing the signature(s) of the payload, each specified by: <ul>
-<li>The identifier of the key being used to sign the payload</li>
+<li>The public key identifier of the key being used to sign the payload</li>
 <li>The signing method (e.g. ed25519, rsassa-pss, etc.)</li>
 <li>A hash of the payload to be signed</li>
 <li>The hashing function used (e.g. sha256, sha512-224, etc.)</li>
