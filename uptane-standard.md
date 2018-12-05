@@ -397,12 +397,14 @@ All four Uptane roles (root, targets, snapshot, and timestamp) share a structure
 
 * A payload of metadata to be signed
 * An attribute containing the signature(s) of the payload, where each entry specifies:
-  * The value of the public key itself (which MAY be, for example, formatted as a PEM string)
-  * Which public key cryptographic algorithm the key uses, such as RSA or ECDSA
-  * Which particular signature scheme is to be used to verify the signature, such as "rsassa-pss-sha256" or "ecdsa-sha2-nistp256"
-  * A signature with the key whose identifier is listed above over the payload and attributes for this key (except for the signature which cannot include itself).  Note, that in addition to the payload, this MUST cover all the other portions of the attribute (identifier, signing method, etc.) so that an attacker cannot cause keys intended for one algorithm to be used with another.  
-  
-Note that the implementer MAY elect to substitute the non-signature attributes with a secure hash that covers this content.  If so, this secure hash MUST cover the signing scheme, the key type, and the verification algorithm.   An example of this may be seen in the keyid functionality in TUF.
+  * The identifier of the key being used to sign the payload
+  * A signature with this key over the payload
+
+When public keys are distributed and signed for in the payload, every public key in the signed payload SHOULD specify the following attributes, so that an attacker cannot cause keys intended for one algorithm to be used with another:
+* The identifier of the key used to sign and verify the payload
+* The value of the public key itself (which MAY be, for example, formatted as a PEM string)
+* Which public key cryptographic algorithm the key uses (such as RSA or ECDSA)
+* Which particular signature scheme is to be used to verify the signature (such as `rsassa-pss-sha256` or `ecdsa-sha2-nistp256`)
 
 The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:
 
