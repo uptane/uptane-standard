@@ -393,18 +393,18 @@ In the Deployment Considerations document, the Uptane Alliance provides some exa
 
 ### Common Metadata Structures {#common_metadata}
 
+Every public key MUST be represented using a public key identifier.  A public key identifier is either all of the following:
+  * The value of the public key itself (which MAY be, for example, formatted as a PEM string)
+  * Which public key cryptographic algorithm the key uses (such as RSA or ECDSA)
+  * Which particular signature scheme is to be used to verify the signature (such as `rsassa-pss-sha256` or `ecdsa-sha2-nistp256`)
+or a secure hash over at least all of the above components (such as the keyid mechanism in TUF).
+
 All four Uptane roles (root, targets, snapshot, and timestamp) share a structure in common. They SHALL contain the following 2 attributes:
 
 * A payload of metadata to be signed
 * An attribute containing the signature(s) of the payload, where each entry specifies:
-  * The identifier of the key being used to sign the payload
+  * The public key identifier of the key being used to sign the payload
   * A signature with this key over the payload
-
-When public keys are distributed and signed for in the payload, every public key in the signed payload SHOULD specify the following attributes, so that an attacker cannot cause keys intended for one algorithm to be used with another:
-* The identifier of the key used to sign and verify the payload
-* The value of the public key itself (which MAY be, for example, formatted as a PEM string)
-* Which public key cryptographic algorithm the key uses (such as RSA or ECDSA)
-* Which particular signature scheme is to be used to verify the signature (such as `rsassa-pss-sha256` or `ecdsa-sha2-nistp256`)
 
 The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:
 
@@ -459,7 +459,7 @@ A targets metadata file on the image repository (but not the director repository
 
 A list of delegations MUST provide the following information:
 
-* A list of public keys of all delegatees. Each key should have a unique identifier, and a key type.
+* A list of public keys of all delegatees. Each key should have a unique public key identifier, and a key type.
 * A list of delegations, each of which contains:
   * A list of the images or paths this role applies to. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
   * An indicator of whether this is a terminating delegation or not. (See {{targets_role_delegations}}.)
@@ -641,7 +641,7 @@ Secondaries MAY send their version report at any time, so that it is stored on t
 The vehicle version manifest is a metadata structure which MUST contain the following information:
 
 * An attribute containing the signature(s) of the payload, each specified by:
-  * The identifier of the key being used to sign the payload
+  * The public key identifier of the key being used to sign the payload
   * The signing method (e.g. ed25519, rsassa-pss, etc.)
   * A hash of the payload to be signed
   * The hashing function used (e.g. sha256, sha512-224, etc.)
@@ -658,7 +658,7 @@ Note that one of the ECU version reports should be the version report for the pr
 An ECU version report is a metadata structure which MUST contain the following information:
 
 * An attribute containing the signature(s) of the payload, each specified by:
-  * The identifier of the key being used to sign the payload
+  * The public key identifier of the key being used to sign the payload
   * The signing method (e.g. ed25519, rsassa-pss, etc.)
   * A hash of the payload to be signed
   * The hashing function used (e.g. sha256, sha512-224, etc.)
