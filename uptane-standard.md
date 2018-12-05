@@ -397,15 +397,12 @@ All four Uptane roles (root, targets, snapshot, and timestamp) share a structure
 
 * A payload of metadata to be signed
 * An attribute containing the signature(s) of the payload, where each entry specifies:
-  * The globally unique identifier of the key being used to sign the payload, such as the hexadecimal digest of the SHA-256 hash of the canonical JSON form of the key
-  * The signature from the corresponding key over the payload
-
-Note that when public keys corresponding to signatures are distributed in the signed payload of role-specific metadata, they MUST indicate at least the following 3 attributes:
-
-* The globally unique identifier of the key used to sign the payload
-* Which public key signature system is to be used to verify the signature, such as RSA or ECDSA
-* Which particular signature scheme is to be used to verify the signature, such as "rsassa-pss-sha256" or "ecdsa-sha2-nistp256"
-* The value of the public key itself (which MAY be, for example, formatted as a PEM string)
+  * The value of the public key itself (which MAY be, for example, formatted as a PEM string)
+  * Which public key cryptographic algorithm the key uses, such as RSA or ECDSA
+  * Which particular signature scheme is to be used to verify the signature, such as "rsassa-pss-sha256" or "ecdsa-sha2-nistp256"
+  * A signature with the key whose identifier is listed above over the payload and attributes for this key (except for the signature which cannot include itself).  Note, that in addition to the payload, this MUST cover all the other portions of the attribute (identifier, signing method, etc.) so that an attacker cannot cause keys intended for one algorithm to be used with another.  
+  
+Note that the implementer MAY elect to substitute the non-signature attributes with a secure hash that covers this content.  If so, this secure hash MUST cover the signing scheme, the key type, and the verification algorithm.   An example of this may be seen in the keyid functionality in TUF.
 
 The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:
 
