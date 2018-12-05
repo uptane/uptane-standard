@@ -847,8 +847,8 @@ In order to perform full verification, an ECU SHALL perform the following steps:
   1. If there is no targets metadata about this image, abort the update cycle and report that there is no such image.
   2. Otherwise, download the image (up to the number of bytes specified in the targets metadata), and verify that its hashes match the targets metadata. (We download up to this number of bytes, because in some cases, the exact number is unknown. This may happen, for example, if an external program is used to compute the root hash of a tree of targets files, and this program does not provide the total size of all of these files.) If consistent snapshots are not used {{metadata_filename_rules}}, then the filename used to download the image file is of the fixed form FILENAME.EXT (e.g., foobar.tar.gz). Otherwise, the filename is of the form HASH.FILENAME.EXT (e.g., c14aeb4ac9f4a8fc0d83d12482b9197452f6adf3eb710e3b1e2b79e8d14cb681.foobar.tar.gz), where HASH is one of the hashes of the targets file listed in the targets metadata file found earlier in step 4. In either case, the client MUST write the file to non-volatile storage as FILENAME.EXT.
 
-
-
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
 If the ECU performing the verification is the primary ECU, it SHOULD also ensure that the ECU identifiers present in the targets metadata from the director repository are a subset of the actual ECU identifiers of ECUs in the vehicle.
+
+
