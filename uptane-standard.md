@@ -419,7 +419,7 @@ The following sections describe the role-specific metadata. All roles SHALL foll
 
 The root metadata distributes the public keys of the top-level root, targets, snapshot, and timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
 
-* A representation of the public keys for all four roles. Each key should have a unique identifier.
+* A representation of the public keys for all four roles. Each key should have a unique public key identifier.
 * An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
 
 Additionally, it MAY contain a mapping of roles to a list of valid URLs the role metadata can be downloaded from, as described in {{TAP-5}}.
