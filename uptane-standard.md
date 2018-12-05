@@ -232,8 +232,8 @@ The following use cases provide a number of scenarios illustrating the manner in
 
 An OEM plans to install Uptane on new vehicles. The OEM plans for the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server. The OEM then either requires the OEM's tier-1 suppliers to provision this material at the suppliers' assembly lines, or the OEM might add the material at the OEM's assembly lines later. The OEM's implementation is Uptane-compliant if:
 
-1. all primaries perform full verification;
-1. all secondaries that are updated via OTA perform full or partial verification; and
+1. all primaries perform full verification; 
+1. all secondaries that are updated via OTA perform full or partial verification; and 
 1. all other ECUs that do not perform verification cannot be updated via OTA.
 
 #### Updating one ECU with a complete image
@@ -242,7 +242,7 @@ A tier-1 supplier completes work on a revised image for an electronic brake cont
 
 ####  updating individual ECUs on demand
 
-An OEM has issued a recall to address a problem with a keyless entry device that has been locking people out of their cars. The OEM prepares an updated flash image in the manner described above. The OEM then ships USB flash drives to vehicle owners and dealerships that allow those parties to update the firmware of their vehicles.
+An OEM has issued a recall to address a problem with a keyless entry device that has been locking people out of their cars. The OEM prepares an updated flash image in the manner described above. The OEM then ships USB flash drives to vehicle owners and dealerships that allow those parties to update the firmware of their vehicles. 
 
 #### Update one ECU with multiple deltas
 
@@ -324,7 +324,7 @@ Attackers seeking to interfere with the functionality of vehicle ECUs in order t
 * *Rollback attack:* Cause an ECU to install a previously-valid software revision that is older than the currently-installed version.
 * *Endless data attack:* Send a large amount of data to an ECU, until it runs out of storage, possibly causing the ECU to fail to operate.
 * *Mix-and-match attack:* Install a set of images on ECUs in the vehicle that are incompatible with each other. This may be accomplished even if all of the individual images being installed are valid, as long as there exist valid versions that are mutually incompatible.
-
+ 
 ### Control an ECU or vehicle {#control_ecu}
 
 Full control of a vehicle, or one or more ECUs within a vehicle, is the most severe threat.
@@ -846,6 +846,8 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 12. Verify the desired image against its targets metadata.
   1. If there is no targets metadata about this image, abort the update cycle and report that there is no such image.
   2. Otherwise, download the image (up to the number of bytes specified in the targets metadata), and verify that its hashes match the targets metadata. (We download up to this number of bytes, because in some cases, the exact number is unknown. This may happen, for example, if an external program is used to compute the root hash of a tree of targets files, and this program does not provide the total size of all of these files.) If consistent snapshots are not used {{metadata_filename_rules}}, then the filename used to download the image file is of the fixed form FILENAME.EXT (e.g., foobar.tar.gz). Otherwise, the filename is of the form HASH.FILENAME.EXT (e.g., c14aeb4ac9f4a8fc0d83d12482b9197452f6adf3eb710e3b1e2b79e8d14cb681.foobar.tar.gz), where HASH is one of the hashes of the targets file listed in the targets metadata file found earlier in step 4. In either case, the client MUST write the file to non-volatile storage as FILENAME.EXT.
+
+
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
