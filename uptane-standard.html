@@ -840,8 +840,16 @@
 <h1 id="rfc.section.5.2.1">
 <a href="#rfc.section.5.2.1">5.2.1.</a> <a href="#common_metadata" id="common_metadata">Common Metadata Structures</a>
 </h1>
-<p id="rfc.section.5.2.1.p.1">Every public key MUST be represented using a public key identifier.  A public key identifier is either all of the following: * The value of the public key itself (which MAY be, for example, formatted as a PEM string) * Which public key cryptographic algorithm the key uses (such as RSA or ECDSA) * Which particular signature scheme is to be used to verify the signature (such as <samp>rsassa-pss-sha256</samp> or <samp>ecdsa-sha2-nistp256</samp>) or a secure hash over at least all of the above components (such as the keyid mechanism in TUF).</p>
-<p id="rfc.section.5.2.1.p.2">All four Uptane roles (root, targets, snapshot, and timestamp) share a structure in common. They SHALL contain the following 2 attributes:</p>
+<p id="rfc.section.5.2.1.p.1">Every public key MUST be represented using a public key identifier.  A public key identifier is either all of the following:</p>
+<p></p>
+
+<ul>
+<li>The value of the public key itself (which MAY be, for example, formatted as a PEM string)</li>
+<li>Which public key cryptographic algorithm the key uses (such as RSA or ECDSA)</li>
+<li>Which particular signature scheme is to be used to verify the signature (such as <samp>rsassa-pss-sha256</samp> or <samp>ecdsa-sha2-nistp256</samp>)</li>
+</ul>
+<p id="rfc.section.5.2.1.p.3">OR a secure hash over at least all of the above components (such as the keyid mechanism in TUF).</p>
+<p id="rfc.section.5.2.1.p.4">All four Uptane roles (root, targets, snapshot, and timestamp) share a structure in common. They SHALL contain the following 2 attributes:</p>
 <p></p>
 
 <ul>
@@ -852,7 +860,7 @@
 </ul>
 </li>
 </ul>
-<p id="rfc.section.5.2.1.p.4">The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:</p>
+<p id="rfc.section.5.2.1.p.6">The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:</p>
 <p></p>
 
 <ul>
@@ -861,7 +869,7 @@
 <li>An integer version number, which SHOULD be incremented each time the metadata file is updated</li>
 <li>The role-specific metadata for the role indicated</li>
 </ul>
-<p id="rfc.section.5.2.1.p.6">The following sections describe the role-specific metadata. All roles SHALL follow the common structures described here.</p>
+<p id="rfc.section.5.2.1.p.8">The following sections describe the role-specific metadata. All roles SHALL follow the common structures described here.</p>
 <h1 id="rfc.section.5.2.2">
 <a href="#rfc.section.5.2.2">5.2.2.</a> <a href="#root_meta" id="root_meta">Root Metadata</a>
 </h1>
