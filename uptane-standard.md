@@ -251,6 +251,7 @@ The OEM wants to use delta updates to save over-the-air bytes. The delta images 
 ## Exceptions
 
 There are a number of factors that could impede the completion of the above scenarios:
+
 * ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that prevent performance of public key cryptography; or they may lack sufficient storage to undo installation of bad software; or they simply may reside on a low-speed network (e.g., LIN)
 * ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.
 * A user may replace OEM-installed ECUs with aftermarket ECUs instead.
