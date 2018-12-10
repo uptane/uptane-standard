@@ -240,7 +240,7 @@ An OEM plans to install Uptane on new vehicles. The OEM plans for the following 
 
 A tier-1 supplier completes work on a revised image for an electronic brake control module. This module will control the brakes on all models of an SUV produced by above OEM. The tier-1 suppliers digitally signs the image, then delivers the signature and all of its metadata, including delegations, and associated images to the OEM. The OEM adds these metadata and images to the OEM's image repository, along with information about any dependencies and conflicts between this image and those on other ECUs used in OEM's vehicles. The OEM also updates the inventory database, so that the director repository can instruct the ECU on how to install these updated images.
 
-####  updating individual ECUs on demand
+####  Updating individual ECUs on demand
 
 An OEM has issued a recall to address a problem with a keyless entry device that has been locking people out of their cars. The OEM prepares an updated flash image in the manner described above. The OEM then ships USB flash drives to vehicle owners and dealerships that allow those parties to update the firmware of their vehicles. 
 
