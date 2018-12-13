@@ -664,7 +664,7 @@
 </h1>
 <p id="rfc.section.3.2.1.2.p.1">A tier-1 supplier completes work on a revised image for an electronic brake control module. This module will control the brakes on all models of an SUV produced by above OEM. The tier-1 suppliers digitally signs the image, then delivers the signature and all of its metadata, including delegations, and associated images to the OEM. The OEM adds these metadata and images to the OEM&#8217;s image repository, along with information about any dependencies and conflicts between this image and those on other ECUs used in OEM&#8217;s vehicles. The OEM also updates the inventory database, so that the director repository can instruct the ECU on how to install these updated images.</p>
 <h1 id="rfc.section.3.2.1.3">
-<a href="#rfc.section.3.2.1.3">3.2.1.3.</a> <a href="#updating-individual-ecus-on-demand" id="updating-individual-ecus-on-demand">updating individual ECUs on demand</a>
+<a href="#rfc.section.3.2.1.3">3.2.1.3.</a> <a href="#updating-individual-ecus-on-demand" id="updating-individual-ecus-on-demand">Updating individual ECUs on demand</a>
 </h1>
 <p id="rfc.section.3.2.1.3.p.1">An OEM has issued a recall to address a problem with a keyless entry device that has been locking people out of their cars. The OEM prepares an updated flash image in the manner described above. The OEM then ships USB flash drives to vehicle owners and dealerships that allow those parties to update the firmware of their vehicles.</p>
 <h1 id="rfc.section.3.2.1.4">
@@ -674,7 +674,18 @@
 <h1 id="rfc.section.3.3">
 <a href="#rfc.section.3.3">3.3.</a> <a href="#exceptions" id="exceptions">Exceptions</a>
 </h1>
-<p id="rfc.section.3.3.p.1">There are a number of factors that could impede the completion of the above scenarios: * ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that prevent performance of public key cryptography; or they may lack sufficient storage to undo installation of bad software; or they simply may reside on a low-speed network (e.g., LIN) * ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.  * A user may replace OEM-installed ECUs with aftermarket ECUs instead.  * A vehicle may be able to download only a limited amount of data via a cellular channel (due to limits on a data plan).  * A system may lack sufficient power to download or install software updates.  * Vehicles may be offline for extended periods of time, thus missing required updates (e.g., key rotations).  * OEMs may be unwilling to implement costly security or hardware requirements.</p>
+<p id="rfc.section.3.3.p.1">There are a number of factors that could impede the completion of the above scenarios:</p>
+<p></p>
+
+<ul>
+<li>ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that prevent performance of public key cryptography; or they may lack sufficient storage to undo installation of bad software; or they simply may reside on a low-speed network (e.g., LIN)</li>
+<li>ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.</li>
+<li>A user may replace OEM-installed ECUs with aftermarket ECUs instead.</li>
+<li>A vehicle may be able to download only a limited amount of data via a cellular channel (due to limits on a data plan).</li>
+<li>A system may lack sufficient power to download or install software updates.</li>
+<li>Vehicles may be offline for extended periods of time, thus missing required updates (e.g., key rotations).</li>
+<li>OEMs may be unwilling to implement costly security or hardware requirements.</li>
+</ul>
 <h1 id="rfc.section.3.4">
 <a href="#rfc.section.3.4">3.4.</a> <a href="#out-of-scope" id="out-of-scope">Out of Scope</a>
 </h1>
