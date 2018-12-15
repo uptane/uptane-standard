@@ -516,19 +516,17 @@ Note that repository mapping metadata might not be a file, and MAY be expressed 
 
 ### Rules for filenames in repositories and metadata {#metadata_filename_rules}
 
-  There is a difference between the file name in a metadata file or an ECU, and the file name on a repository. This difference exists in order to avoid race conditions, where metadata and images are read from and written to at the same time. For more details, the reader should read the TUF specification {{TUF-spec}} and PEP 458 {{PEP-458}}.
+There is a difference between the file name in a metadata file or an ECU, and the file name on a repository. This difference exists in order to avoid race conditions, where metadata and images are read from and written to at the same time. For more details, the reader should read the TUF specification {{TUF-spec}} and PEP 458 {{PEP-458}}.
 
-  Unless stated otherwise, all metadata files SHALL be written as such to a repository. If a metadata file A was specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT where VERSION is A's version number {{common_metadata}}.
+Unless stated otherwise, all files SHALL be written to repositories in accordance with following two rules:
 
-  For example, if the top-level targets metadata file is referenced as "targets.json" in the snapshot metadata file, it is read and written using the filename "1.targets.json" instead. In a similar example, if the snapshot metadata file is referenced as "snapshot.json" in the timestamp metadata file, it is read and written using the filename "1.snapshot.json" instead. To take a final example using delegations (Section 3.4.2), if the ROLENAME of a delegated targets metadata file is "director," and it is referred to in the snapshot metadata file using the filename "director.json" and the version number 42, then it is read and written using the filename "42.director.json" instead.
+1. Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT where VERSION is A's version number as defined in {{common_metadata}}, with one exception: If the version number of the timestamp metadata file might not be known in advance by a client, it MAY be read from and written to a repository using a filename without version number qualification, i.e. FILENAME.EXT.
+2. If an image is specified in a targets metadata file as FILENAME.EXT, it SHALL be written to the repository as HASH.FILENAME.EXT, where HASH is one of the hash digests of the file, as specified in {{targets_images_meta}}. The file MUST be written to the repository using *n* different filenames, one for each hash digest listed in its corresponding targets metadata.
 
-  There are two exceptions to this rule. First, if the version number of the timestamp metadata is not known in advance, it MAY also be read from and written to a repository using a filename that is not qualified with a version number (i.e., FILENAME.EXT). As we will see in {{director_repository}}, this is the case with the timestamp metadata file on the image repository, but not the director repository. Second, the root metadata SHALL also be read from and written to a repository using a filename that is not qualified with a version number (i.e., FILENAME.EXT). This is because, as we will see in {{metadata_verification}}, the root metadata may be read without knowing its version number in advance.
+For example: 
 
-  All target files are written as such to a repository. If a target’s metadata file specifies a target file as FILENAME.EXT then it SHALL be written as HASH.FILENAME.EXT where HASH is one of the n hashes of the targets file {{targets_meta}}. This means that there SHALL be n different file names that all point to the same target file. Each filename is distinguished only by the value of the digest in its filename.
-
-  However, note that although a primary SHALL download a metadata or target file using the filename written to the repository, it SHALL write the file to its own storage using the original filename in the metadata. For example, if a metadata file is referred to as FILENAME.EXT in another metadata file, then a primary SHALL download it using either the filename FILENAME.EXT, VERSION.FILENAME.EXT, or HASH.FILENAME.EXT (depending on which of the aforementioned rules applies), but it SHALL always write it to its own storage as FILENAME.EXT. This implies that the previous set of metadata and target files downloaded from a repository SHALL be kept in a separate directory on an ECU from the latest set of files.
-
-  For example, the previous set of metadata and target files MAY be kept in the "previous" directory on an ECU, whereas the latest set of files MAY be kept in the "current" directory.
+* The version number of the snapshot metadata file is 61, and its filename in the timestamp metadata is "snapshot.json". The filename on the repository will be "61.snapshot.json".
+* There is an image with the filename "acme_firmware.bin" specified in the targets metadata, with a SHA256 of "aaaa" and a SHA512-256 of "bbbb". It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin".
 
 ## Server / repository implementation requirements
 
@@ -740,7 +738,8 @@ The filename used to identify the latest known image (i.e., the file to request 
 
 1. Load the targets metadata file from the director repository.
 2. Find the targets metadata associated with this ECU identifier.
-3. Construct the image filename using the rule in {{metadata_filename_rules}}.
+3. Construct the image filename using the rule in {{metadata_filename_rules}}, or use the download URL specified in the director metadata.
+4. If there is no targets metadata about this image, abort the update cycle and report that there is no such image. Otherwise, download the image (up to the number of bytes specified in the targets metadata), and verify that its hashes match the targets metadata.
 
 When the primary responds to the download request, the ECU SHALL overwrite its current image with the downloaded image from the primary.
 
@@ -816,7 +815,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
     3. Check that the version number of the previous timestamp metadata file, if any, is less than or equal to the version number of this timestamp metadata file. If the new timestamp metadata file is older than the trusted timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
     4. Check that the latest attested time is lower than the expiration timestamp in this timestamp metadata file. If the new timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
 5. Download and check the snapshot metadata file from the director repository:
-    1. Download up to the number of bytes specified in the timestamp metadata file. If consistent snapshots are not used {{metadata_filename_rules}}, then the filename used to download the snapshot metadata file is of the fixed form FILENAME.EXT (e.g., snapshot.json). Otherwise, the filename is of the form VERSION_NUMBER.FILENAME.EXT (e.g., 42.snapshot.json), where VERSION_NUMBER is the version number of the snapshot metadata file listed in the timestamp metadata file. In either case, the ECU MUST write the file to non-volatile storage as FILENAME.EXT.
+    1. Download up to the number of bytes specified in the timestamp metadata file, constructing the metadata filename as defined in {{metadata_filename_rules}}.
     2. The hashes and version number of the new snapshot metadata file MUST match the hashes and version number listed in timestamp metadata. If hashes and version do not match, discard the new snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
     3. Check that it has been signed by the threshold of keys specified in the latest root metadata file. If the new snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
     4. Check that the version number of the previous snapshot metadata file, if any, is less than or equal to the version number of this snapshot metadata file. If this snapshot metadata file is older than the previous snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
@@ -824,7 +823,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
     6. Check that each targets metadata filename listed in the previous snapshot metadata file is also listed in this snapshot metadata file. If this condition is not met, discard the new snaphot metadadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
     7. Check that the latest attested time is lower than the expiration timestamp in this snapshot metadata file. If the new snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
 6. Download and check the targets metadata file from the director repository:
-    1. Download up to either the number of bytes specified in the snapshot metadata file, or some Z number of bytes. The value for Z is set by the implementor. For example, Z may be tens of kilobytes. If consistent snapshots are not used {{metadata_filename_rules}}, then the filename used to download the targets metadata file is of the fixed form FILENAME.EXT (e.g., targets.json). Otherwise, the filename is of the form VERSION_NUMBER.FILENAME.EXT (e.g., 42.targets.json), where VERSION_NUMBER is the version number of the targets metadata file listed in the snapshot metadata file. In either case, the ECU MUST write the file to non-volatile storage as FILENAME.EXT.
+    1. Download up to either the number of bytes specified in the snapshot metadata file, or some Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.
     2. The hashes (if any), and version number of the new targets metadata file MUST match the latest snapshot metadata. If the new targets metadata file does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
     3. Check that it has been signed by the threshold of keys specified in the latest root metadata file. (Checks for an arbitrary software attack.)
     4. Check that the version number of the previous targets metadata file, if any, is less than or equal to the version number of this targets metadata file. (Checks for a rollback attack.)
@@ -846,9 +845,6 @@ In order to perform full verification, an ECU SHALL perform the following steps:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.
         2. Check that the custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
-12. Verify the desired image against its targets metadata.
-  1. If there is no targets metadata about this image, abort the update cycle and report that there is no such image.
-  2. Otherwise, download the image (up to the number of bytes specified in the targets metadata), and verify that its hashes match the targets metadata. (We download up to this number of bytes, because in some cases, the exact number is unknown. This may happen, for example, if an external program is used to compute the root hash of a tree of targets files, and this program does not provide the total size of all of these files.) If consistent snapshots are not used {{metadata_filename_rules}}, then the filename used to download the image file is of the fixed form FILENAME.EXT (e.g., foobar.tar.gz). Otherwise, the filename is of the form HASH.FILENAME.EXT (e.g., c14aeb4ac9f4a8fc0d83d12482b9197452f6adf3eb710e3b1e2b79e8d14cb681.foobar.tar.gz), where HASH is one of the hashes of the targets file listed in the targets metadata file found earlier in step 4. In either case, the client MUST write the file to non-volatile storage as FILENAME.EXT.
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
