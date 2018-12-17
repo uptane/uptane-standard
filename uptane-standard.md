@@ -176,7 +176,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 ## Automotive Terminology
 
-*Bundle*: A set of images released by the repository that is meant to be installed by all ECUs on a vehicle at the same time.
+*Bundle*: A set of images released by the repository that is meant to be installed by one or more target ECUs on a vehicle at the same time.
 
 *Bus*: An internal communications network that interconnects components within a vehicle. A car can have a number of buses that will vary in terms of power, speed and resources.
 
@@ -284,12 +284,12 @@ The following topics will not be addressed in this document, as they represent t
 The design requirements for this document are governed by three principal parameters:
 
 * to clearly mandate the design and implementation steps that are security critical and must be followed as is, while offering flexibility in the implementation of non-critical steps. In this manner, users can adapt to support different use models and deployment scenarios.
-* to delineate best practices to ensure that, should a vehicle be attacked, an attacker must compromise many different systems to access control or seriously impact functionality.
+* to delineate best practices to ensure that, should a vehicle be attacked, an attacker must compromise many different systems to control the vehicle, access sensitive data, or seriously impact functionality.
 * to ensure that, if Uptane is implemented, the security practices mandated or suggested in this document do not interfere with the functionality of ECUs, vehicles, or the systems that maintain them.
 
 # Threat Model and Attack Strategies
 
-The overarching goal of Uptane is to provide a system that is resilient in the face of various types of compromise. In this section, we describe the goals that an attacker may have ({{attacker_goals}}) and the capabilities they may have or can develop ({{capabilities}}). We then describe and classify types of attack on the system based on the attacker's goals ({{threats}}).
+The overarching goal of Uptane is to provide a system that is resilient in the face of various types of compromise. In this section, we describe the goals that an attacker may have ({{attacker_goals}}) and the capabilities they may have or could develop ({{capabilities}}). We then describe and classify types of attacks on the system according to the attacker's goals ({{threats}}).
 
 ## Attacker goals {#attacker_goals}
 
@@ -326,7 +326,7 @@ An attacker seeking to deny installation of updates may attempt one or more of t
 
 * *Drop-request attack:* Block network traffic outside or inside the vehicle.
 * *Slow retrieval attack:* Slow down network traffic, in the extreme case sending barely enough packets to avoid a timeout. Similar to a drop-request attack, except that both the sender and receiver of the traffic still think network traffic is unimpeded.
-* *Freeze attack:* Continue to send a properly signed, but old, update bundle to an ECU, even if a newer update exists.
+* *Freeze attack:* Continue to send a properly signed, but old, update bundle to the ECUs, even if newer updates exist.
 * *Partial bundle installation attack:* Install a valid (signed) update bundle, and then block selected updates within the bundle.
 
 ### Interfere with ECU functionality {#change_functionality}
@@ -335,7 +335,7 @@ Attackers seeking to interfere with the functionality of vehicle ECUs in order t
 
 * *Rollback attack:* Cause an ECU to install a previously-valid software revision that is older than the currently-installed version.
 * *Endless data attack:* Send a large amount of data to an ECU, until it runs out of storage, possibly causing the ECU to fail to operate.
-* *Mix-and-match attack:* Install a malicious software bundle in which some of the updates do not interoperate properly. This may be accomplished even if all of the individual images being installed are valid, as long as versions exist that are mutually incompatible.
+* *Mix-and-match attack:* Install a malicious software bundle in which some of the updates do not interoperate properly. This may be accomplished even if all of the individual images being installed are valid, as long as valid versions exist that are mutually incompatible.
 
 ### Control an ECU or vehicle {#control_ecu}
 
@@ -568,7 +568,7 @@ The Image repository MAY require authentication for read access.
 The Director repository instructs ECUs as to which images should be installed by producing signed metadata on demand. Unlike the Image repository, it is mostly controlled by automated, online processes. It also consults a private inventory database containing information on vehicles, ECUs, and software revisions.
 
 The Director repository SHALL expose an interface for primaries to upload vehicle version manifests ({{vehicle_version_manifest}}) and download metadata. This interface SHOULD be public.
-The Director MAY encrypt images for ECUs that require it, either by encrypting on-the-fly or by storing encrypted images on the repository.
+The Director MAY encrypt images for ECUs that require them, either by encrypting on-the-fly or by storing encrypted images in the repository.
 
 The Director repository SHALL implement storage which permits an automated service to write generated metadata files. It MAY use any filesystem, key-value store, or database that fulfills this requirement.
 
@@ -599,7 +599,7 @@ The inventory database MUST record the following pieces of information:
     * The vehicle identifier the ECU is associated with
     * A public key
     * The format of the public key
-    * Identification of the ECU as a primary or a secondary
+    * Whether the ECU is a primary or a secondary
 
 The inventory database MAY record other information about ECUs and vehicles.
 
@@ -609,7 +609,7 @@ The Time Server exists to inform vehicles about the current time in a cryptograp
 
 The Time Server SHALL receive a sequence of tokens from a vehicle representing all of its ECUs. In response, it SHALL sign each token together with the current time.
 
-The Time Server SHALL expose a public interface to allow primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.
+The Time Server SHALL expose a public interface allowing primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.
 
 ## In-vehicle implementation requirements
 
