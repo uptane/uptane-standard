@@ -200,14 +200,14 @@ These terms are defined in greater detail in {{roles}}.
 * *Root Role*: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
 * *Snapshot Role*: Indicates which images the repository has released at the same time.
 * *Targets Role*: Holds the metadata used to verify the image, such as cryptographic hashes and file size.
-* *Timestamp Role*: Indicates if there are any new metadata or image on the repository.
+* *Timestamp Role*: Indicates if there are any new metadata or images on the repository.
 
 
 ## Acronyms and Abbreviations
 
 *CAN Bus*: Controller Area Network bus standard  
 
-*ECUs*: Electronic Control Units, the computing units on vehicle
+*ECUs*: Electronic Control Units, the computing units on a vehicle
 
 *LIN Bus*: Local Interconnect Bus  
 
@@ -259,18 +259,6 @@ An OEM has issued a recall to address a problem with a keyless entry device that
 
 The OEM wants to use delta updates to save over-the-air bytes. The delta images contain only the code and/or data that has changed from the previous image version. To do so, the OEM must first modify the director repository, using the vehicle version manifest and dependency resolution to determine the differences between the previous and latest images. The OEM then adds the following to the custom targets metadata used by the director repository: (1) the algorithm used to apply a delta image, and (2) the targets metadata about the delta image. The OEM will also check whether the delta images match the targets metadata from the director repository.
 
-## Exceptions
-
-There are a number of factors that could impede the completion of the above scenarios:
-
-* ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that prevent performance of public key cryptography; a lack of sufficient storage to undo installation of bad software; or an ECU simply may reside on a low-speed network (e.g., LIN).
-* ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.
-* A user may replace OEM-installed ECUs with aftermarket ECUs.
-* A vehicle may be able to download only a limited amount of data via a cellular channel, due to limits on a data plan.
-* A system may lack sufficient power to download or install software updates.
-* Vehicles may be offline for extended periods of time, thus missing required updates (e.g., key rotations).
-* OEMs may be unwilling to implement costly security or hardware requirements.
-
 ## Out of Scope
 
 The following topics will not be addressed in this document, as they represent threats outside the scope of Uptane:
@@ -281,10 +269,9 @@ The following topics will not be addressed in this document, as they represent t
 
 ## Design Requirements
 
-The design requirements for this document are governed by three principal parameters:
+The design requirements for this document are governed by principal parameters:
 
 * to clearly mandate the design and implementation steps that are security critical and must be followed as is, while offering flexibility in the implementation of non-critical steps. In this manner, users can adapt to support different use models and deployment scenarios.
-* to delineate best practices to ensure that, should a vehicle be attacked, an attacker must compromise many different systems to control the vehicle, access sensitive data, or seriously impact functionality.
 * to ensure that, if Uptane is implemented, the security practices mandated or suggested in this document do not interfere with the functionality of ECUs, vehicles, or the systems that maintain them.
 
 # Threat Model and Attack Strategies
@@ -295,10 +282,10 @@ The overarching goal of Uptane is to provide a system that is resilient in the f
 
 We assume that attackers may want to achieve one or more of the following goals, in increasing order of severity:
 
-* Read the contents of updates to discover confidential information or reverse-engineer firmware
+* Read the contents of updates to discover confidential information, reverse-engineer firmware, or compare two firmware images to identify security fixes and hence determine the fixed security vulnerability
 * Deny installation of updates to prevent vehicles from fixing software problems
 * Cause one or more ECUs in the vehicle to fail, denying use of the vehicle or of certain functions
-* Control the vehicle or ECUs within the vehicle
+* Control ECUs within the vehicle, possibly to control the vehicle
 
 ## Attacker capabilities {#capabilities}
 
@@ -354,7 +341,7 @@ At a high level, Uptane requires:
     * A director repository connected to an inventory database that can sign metadata on demand for images in the image repository
 * Repository tools for generating Uptane-specific metadata about images
 * A public key infrastructure supporting the required metadata production/signing roles on each repository:
-    * Root - Certificate authority for the repo. Distributes public keys for verifying all the other roles' metadata
+    * Root - Certificate authority for the Uptane ecosystem. Distributes public keys for verifying all the other roles' metadata
     * Timestamp - Indicates whether there are new metadata or images
     * Snapshot - Indicates images released by the repository at a point in time, via signing metadata about targets metadata
     * Targets - Indicates metadata about images, such as hashes and file sizes
@@ -405,7 +392,7 @@ In the Deployment Considerations document, the Uptane Alliance provides some exa
 
 ### Common Metadata Structures {#common_metadata}
 
-Every public key MUST be represented using a public key identifier.  A public key identifier is either all of the following:
+Every public key MUST be represented using a public key identifier.  A public key identifier is EITHER all of the following:
 
 * The value of the public key itself (which MAY be, for example, formatted as a PEM string)
 * Which public key cryptographic algorithm the key uses (such as RSA or ECDSA)
@@ -576,11 +563,11 @@ A Director repository MUST conform to the following six-step process for directi
 
 1. When the Director receives a vehicle version manifest sent by a primary (as described in {{construct_manifest_primary}}), it decodes the manifest, and determines the unique vehicle identifier.
 1. Using the vehicle identifier, the Director queries its inventory database (as described in {{inventory_db}}) for relevant information about each ECU in the vehicle.
-1. The Director checks the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director drops the request. An implementor MAY make whatever additional checks they wish. At a minimum, the following checks are required:
+1. The Director checks the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director drops the request. An implementor MAY make whatever additional checks they wish. At a minimum, the Director SHALL check the following:
     * Each ECU recorded in the inventory database is also represented in the manifest.
     * The signature of the manifest matches the ECU key of the primary that sent it.
     * The signature of each secondary's contribution to the manifest matches the ECU key of that secondary.
-1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this standard. However, it MUST take into account *dependencies* and *conflicts* between images, and SHOULD consult well-established techniques for dependency resolution.
+1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this standard. However, the Director MUST take into account *dependencies* and *conflicts* between images, and SHOULD consult well-established techniques for dependency resolution.
 1. The Director MAY encrypt images for ECUs that require it.
 1. The Director generates new metadata representing the desired set of images to be installed on the vehicle, based on the dependency resolution in step 4. This includes targets ({{targets_meta}}), snapshot ({{snapshot_meta}}), and timestamp ({{timestamp_meta}}) metadata. It then sends this metadata to the primary as described in {{download_meta_primary}}.
 
