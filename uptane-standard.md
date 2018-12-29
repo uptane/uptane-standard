@@ -291,13 +291,9 @@ We assume that attackers may want to achieve one or more of the following goals,
 
 Uptane is designed with resilience to compromise in mind. We assume that attackers may develop one or more of the following capabilities:
 
-* Read and analyze the contents of previous and/or current versions of software, as well as the update sequence and instructions
 * Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability may be developed in two domains:
     * Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories
     * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g. via an OBD port or using a compromised ECU as a vector)
-* Compromise and control one or more ECUs within a vehicle
-* Compromise signing or encryption keys
-* Compromise and control software repository servers (and any keys stored on the repository)
 
 ## Description of threats {#threats}
 
