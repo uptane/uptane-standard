@@ -235,6 +235,15 @@ A standards document that can guide the safe design, integration and deployment 
 
 This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in cars. In this section, we define the scope of that applicability by providing sample use cases and possible exceptions, aspects of update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
 
+### Assumptions
+
+We assume the following system preconditions for Uptane: 
+
+* Vehicles have regular connectivity established. The common scenario is cellular connectivity, but Uptane could also be applied via other communication channels such as WiFi and even wired connections. Only ECUs on networks that are connected to the communication channel can be updated. 
+* ECUs are programmable and provide sufficient performance to be updated. 
+* ECUs must be able to perform a public key cryptography operation as well as some supporting operations.
+* There are state-of-the-art security protected servers in place, such as the director and image repository servers.
+
 ### Use Cases
 
 The following use cases provide a number of scenarios illustrating the manner in which software updates could be accomplished using Uptane.
@@ -259,6 +268,18 @@ An OEM has issued a recall to address a problem with a keyless entry device that
 
 The OEM wants to use delta updates to save over-the-air bytes. The delta images contain only the code and/or data that has changed from the previous image version. To do so, the OEM must first modify the director repository, using the vehicle version manifest and dependency resolution to determine the differences between the previous and latest images. The OEM then adds the following to the custom targets metadata used by the director repository: (1) the algorithm used to apply a delta image, and (2) the targets metadata about the delta image. The OEM will also check whether the delta images match the targets metadata from the director repository.
 
+## Exceptions
+
+There are a number of factors that could impede the completion of the above scenarios:
+
+* ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that prevent performance of public key cryptography; a lack of sufficient storage to undo installation of bad software; or an ECU simply may reside on a low-speed network (e.g., LIN).
+* ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.
+* A user may replace OEM-installed ECUs with aftermarket ECUs.
+* A vehicle may be able to download only a limited amount of data via a cellular channel, due to limits on a data plan.
+* A system may lack sufficient power to download or install software updates.
+* Vehicles may be offline for extended periods of time, thus missing required updates (e.g., key rotations).
+* OEMs may be unwilling to implement costly security or hardware requirements.
+
 ## Out of Scope
 
 The following topics will not be addressed in this document, as they represent threats outside the scope of Uptane:
@@ -269,7 +290,7 @@ The following topics will not be addressed in this document, as they represent t
 
 ## Design Requirements
 
-The design requirements for this document are governed by principal parameters:
+The design requirements for this document are governed by the following principal parameters:
 
 * to clearly mandate the design and implementation steps that are security critical and must be followed as is, while offering flexibility in the implementation of non-critical steps. In this manner, users can adapt to support different use models and deployment scenarios.
 * to ensure that, if Uptane is implemented, the security practices mandated or suggested in this document do not interfere with the functionality of ECUs, vehicles, or the systems that maintain them.
@@ -285,7 +306,7 @@ We assume that attackers may want to achieve one or more of the following goals,
 * Read the contents of updates to discover confidential information, reverse-engineer firmware, or compare two firmware images to identify security fixes and hence determine the fixed security vulnerability
 * Deny installation of updates to prevent vehicles from fixing software problems
 * Cause one or more ECUs in the vehicle to fail, denying use of the vehicle or of certain functions
-* Control ECUs within the vehicle, possibly to control the vehicle
+* Control ECUs within the vehicle, and possibly the vehicle itself
 
 ## Attacker capabilities {#capabilities}
 
@@ -294,6 +315,8 @@ Uptane is designed with resilience to compromise in mind. We assume that attacke
 * Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability may be developed in two domains:
     * Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories
     * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g. via an OBD port or using a compromised ECU as a vector)
+* Compromise and control either a director repository or image repository server, and any keys stored on the repository, but not both director and image repository. 
+* Compromise either a primary ECU or a secondary ECU, but not both in the same vehicle
 
 ## Description of threats {#threats}
 
@@ -726,7 +749,7 @@ The ECU SHALL verify the latest downloaded metadata ({{metadata_verification}}) 
 
 #### Download latest image {#download_image}
 
-If the ECU does not have secondary storage, it SHALL download the latest image from the primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in {{send_images_primary}}, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the primary).
+If the ECU does not have secondary storage, i.e. buffer storage to temporarily store the latest image before installing it, it SHALL download the latest image from the primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in {{send_images_primary}}, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the primary).
 
 The filename used to identify the latest known image (i.e., the file to request from the primary) SHALL be determined as follows:
 
