@@ -184,7 +184,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 *Primary/Secondary ECUs*: Terms used to describe the control units within an automobile. A primary ECU downloads from a repository and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a connection to the internet. Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.  
 
-*Repository*: A server containing metadata about images. May also contain the images themselves.  
+*Repository*: A server containing metadata about images. May also contain the images themselves. Other data may be stored on the repository to be accessed by ECUs during the update process.
 
 *Suppliers*: Independent companies to which auto manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that perform outsourced work for Tier-1 suppliers.  
 
@@ -381,11 +381,11 @@ The Targets role SHALL produce and sign metadata about images and delegations as
 
 The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles. If it does, it MUST do so as specified in {{delegations_meta}}.
 
-Responsibility for signing images or a subset of images MAY be delegated to more than one role, and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.
+Responsibility for signing images or a subset of images MAY be delegated to more than one role and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.
 
 A particular delegation for a subset of images MAY be designated as **terminating**. For terminating delegations, the client SHALL NOT search any further if it does not find validly signed metadata about those images in the terminating delegation. Delegations SHOULD NOT be terminating by default; terminating delegations SHOULD only be used when there is a compelling technical reason to do so.
 
-A delegation for a subset of images MAY be a multi-role delegation {{TAP-3}}. A multi-role delegation indicates that each of the delegatee roles MUST sign the same metadata.
+A delegation for a subset of images MAY be a multi-role delegation {{TAP-3}}. A multi-role delegation indicates that multiple roles are needed to sign a particular image and so each of the delegatee roles MUST sign the same metadata.
 
 Delegations only apply to the Image repository. The Targets role on the Director repository MUST NOT delegate metadata signing responsibility.
 
@@ -405,7 +405,7 @@ In the Deployment Considerations document, the Uptane Alliance provides some exa
 
 ### Common Metadata Structures {#common_metadata}
 
-Every public key MUST be represented using a public key identifier.  A public key identifier is either all of the following:
+Every public key MUST be represented using a public key identifier.  A public key identifier is EITHER all of the following:
 
 * The value of the public key itself (which MAY be, for example, formatted as a PEM string)
 * Which public key cryptographic algorithm the key uses (such as RSA or ECDSA)
@@ -534,7 +534,7 @@ Unless stated otherwise, all files SHALL be written to repositories in accordanc
 1. Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT where VERSION is A's version number as defined in {{common_metadata}}, with one exception: If the version number of the timestamp metadata file might not be known in advance by a client, it MAY be read from and written to a repository using a filename without version number qualification, i.e. FILENAME.EXT.
 2. If an image is specified in a targets metadata file as FILENAME.EXT, it SHALL be written to the repository as HASH.FILENAME.EXT, where HASH is one of the hash digests of the file, as specified in {{targets_images_meta}}. The file MUST be written to the repository using *n* different filenames, one for each hash digest listed in its corresponding targets metadata.
 
-For example: 
+For example:
 
 * The version number of the snapshot metadata file is 61, and its filename in the timestamp metadata is "snapshot.json". The filename on the repository will be "61.snapshot.json".
 * There is an image with the filename "acme_firmware.bin" specified in the targets metadata, with a SHA256 of "aaaa" and a SHA512-256 of "bbbb". It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin".
