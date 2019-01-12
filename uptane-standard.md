@@ -233,7 +233,7 @@ A standards document that can guide the safe design, integration and deployment 
 
 ## Scope of Standards Coverage
 
-This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in ground vehicles. In this section, we define the scope of that applicability by providing sample use cases and possible exceptions, aspects of update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
+This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in ground vehicles, including passenger vehicles, light-duty trucks, heavy-duty trucks, and motorcycles. Uptane could potentially also be applied to other ground vehicles such as automated shuttles, recreational vehicles, and military ground vehicles. In this section, we define the scope of that applicability by providing sample use cases and possible exceptions, aspects of update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
 
 ### Assumptions
 
@@ -295,6 +295,7 @@ The design requirements for this document are governed by the following principa
 
 * to clearly mandate the design and implementation steps that are security critical and must be followed as is, while offering flexibility in the implementation of non-critical steps. In this manner, users can adapt to support different use models and deployment scenarios.
 * to ensure that, if Uptane is implemented, the security practices mandated or suggested in this document do not interfere with the functionality of ECUs, vehicles, or the systems that maintain them.
+* to delineate best practices to ensure that, should any part of the SOTA mechanism of a vehicle be attacked, an attacker must compromise two or more modules to breach the SOTA mechanism.
 
 # Threat Model and Attack Strategies
 
