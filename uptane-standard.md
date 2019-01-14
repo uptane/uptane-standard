@@ -194,7 +194,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 These terms are defined in greater detail in {{roles}}.
 
-*Delegations*: Designating the responsibility of signing metadata about images to another party.  
+*Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.  
 *Roles*: The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
 * *Root Role*: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
