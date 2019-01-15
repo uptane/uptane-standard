@@ -194,7 +194,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 These terms are defined in greater detail in {{roles}}.
 
-*Delegations*: Designating the responsibility of signing metadata about images to another party.  
+*Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.  
 *Roles*: The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
 * *Root Role*: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
@@ -399,7 +399,7 @@ The Timestamp role SHALL produce and sign metadata indicating whether there are 
 
 ## Metadata structures {#meta_structures}
 
-Uptane's security guarantees all rely on properly created metadata with a certain structure. The Uptane standard **does not** mandate any particular format or encoding for this metadata. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.
+Uptane's security guarantees all rely on properly created metadata that follow a designated structure. The Uptane standard **does not** mandate any particular format or encoding for this metadata. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.
 
 In the Deployment Considerations document, the Uptane Alliance provides some examples of compliant metadata structures in ASN.1 and JSON.
 
@@ -408,21 +408,21 @@ In the Deployment Considerations document, the Uptane Alliance provides some exa
 Every public key MUST be represented using a public key identifier.  A public key identifier is either all of the following:
 
 * The value of the public key itself (which MAY be, for example, formatted as a PEM string)
-* Which public key cryptographic algorithm the key uses (such as RSA or ECDSA)
-* Which particular signature scheme is to be used to verify the signature (such as `rsassa-pss-sha256` or `ecdsa-sha2-nistp256`)
+* The public key cryptographic algorithm used by the key (such as RSA or ECDSA)
+* The particular scheme used to verify the signature (such as `rsassa-pss-sha256` or `ecdsa-sha2-nistp256`)
 
-OR a secure hash over at least all of the above components (such as the keyid mechanism in TUF).
+OR a secure hash over at least the above components (such as the keyid mechanism in TUF).
 
-All four Uptane roles (root, targets, snapshot, and timestamp) share a structure in common. They SHALL contain the following 2 attributes:
+All four Uptane roles (Root, Targets, Snapshot, and Timestamp) share a common structure. They SHALL contain the following two attributes:
 
 * A payload of metadata to be signed
 * An attribute containing the signature(s) of the payload, where each entry specifies:
   * The public key identifier of the key being used to sign the payload
   * A signature with this key over the payload
 
-The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following 4 attributes:
+The payload differs depending on the role. However, the payload for all roles shares a common structure. It SHALL contain the following four attributes:
 
-* An indicator of the type of role (root, targets, snapshot, or timestamp)
+* An indicator of the type of role (Root, Targets, Snapshot, or Timestamp)
 * An expiration date and time
 * An integer version number, which SHOULD be incremented each time the metadata file is updated
 * The role-specific metadata for the role indicated
@@ -431,20 +431,20 @@ The following sections describe the role-specific metadata. All roles SHALL foll
 
 ### Root Metadata {#root_meta}
 
-The root metadata distributes the public keys of the top-level root, targets, snapshot, and timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
+The Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
 
 * A representation of the public keys for all four roles. Each key should have a unique public key identifier.
 * An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
 
-Additionally, it MAY contain a mapping of roles to a list of valid URLs the role metadata can be downloaded from, as described in {{TAP-5}}.
+Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded, as described in {{TAP-5}}.
 
 ### Targets Metadata {#targets_meta}
 
-A targets metadata file contains metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.
+A Targets metadata file contains metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.
 
 #### Metadata about Images {#targets_images_meta}
 
-The targets metadata MUST contain a list of images on the repository. This list MUST provide, at a minimum, the following information about each image on the repository:
+The Targets metadata MUST contain a list of images on the repository. This list MUST provide, at a minimum, the following information about each image on the repository:
 
 * The image filename
 * The length of the image file in bytes
@@ -452,92 +452,92 @@ The targets metadata MUST contain a list of images on the repository. This list 
 
 ##### Custom metadata about images
 
-In addition to the required metadata, the targets metadata file SHOULD contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the deployment considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations.
+In addition to the required metadata, the Targets metadata file SHOULD contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations.
 
-The following information SHOULD be provided for each image on both the image repository and the director repository:
+The following information SHOULD be provided for each image on both the Image repository and the Director repository:
 
 * A release counter, to be incremented each time a new version of the image is released. This can be used to prevent rollback attacks even in cases where the director repository is compromised.
-* A hardware identifier, or list of hardware identifiers, representing models of ECU that the image is compatible with. This can be used to ensure that an ECU can't be ordered to install an incompatible image, even in cases where the director repository is compromised.
+* A hardware identifier, or list of hardware identifiers, representing models of ECUs with which the image is compatible. This can be used to ensure that an ECU can not be ordered to install an incompatible image, even in cases where the Director repository is compromised.
 
 The following information SHOULD be provided for each image on the director repository:
 
-* An ECU identifier, specifying (by serial number, for example) of the ECU that should install the image.
+* An ECU identifier, specifying (by serial number, for example) the ECU that should install the image.
 * If encrypted images are desired, information about filenames, hashes, and file size of the encrypted image
-* If encrypted images are desired, information about the encryption method, and other relevant information--for example, a symmetric encryption key encrypted by the ECU's asymmetric key could be included in the director's metadata.
+* If encrypted images are desired, information about the encryption method, and other relevant information--for example, a symmetric encryption key encrypted by the ECU's asymmetric key could be included in the Director repository metadata.
 
-A download URL for the image file MAY be provided by the director repository. This may be useful when the image is on a public CDN and the director wishes to provide a signed URL, for example.
+The Director repository MAY provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the director wishes to provide a signed URL.
 
 #### Metadata about Delegations {#delegations_meta}
 
-A targets metadata file on the image repository (but not the director repository) MAY delegate signing authority to other entities--for example, delegating signing authority for a particular ECU's firmware to that ECU's supplier. A metadata file MAY contain more than one delegation, and MUST keep the delegations in prioritized order.
+A Targets metadata file on the Image repository (but not the Director repository) MAY delegate signing authority to other entities--for example, it could delegate signing authority for a particular ECU's firmware to that ECU's supplier. A metadata file MAY contain more than one delegation, and MUST keep the delegations in prioritized order.
 
 A list of delegations MUST provide the following information:
 
 * A list of public keys of all delegatees. Each key should have a unique public key identifier, and a key type.
 * A list of delegations, each of which contains:
-  * A list of the images or paths this role applies to. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
-  * An indicator of whether this is a terminating delegation or not. (See {{targets_role_delegations}}.)
-  * A list of the roles this delegation applies to. Each role needs to specify:
+  * A list of the images or paths to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
+  * An indicator of whether or not this is a terminating delegation. (See {{targets_role_delegations}}.)
+  * A list of the roles to which this delegation applies. Each role needs to specify:
     * A name for the role (e.g. "supplier1-qa")
     * The key identifiers for each key this role uses
-    * A threshold of keys which must sign for this role
+    * A threshold of keys that must sign for this role
 
-Note that **any** targets metadata file may contain delegations--delegations can be in chains of arbitrary length.
+Note that **any** targets metadata file may contain delegations, and that delegations can be in chains of arbitrary length.
 
 ### Snapshot Metadata {#snapshot_meta}
 
-The snapshot metadata lists version numbers and filenames of all targets metadata files. It protects against mix-and-match attacks in the case that a delegated supplier key has been compromised.
+The Snapshot metadata lists version numbers and filenames of all Targets metadata files. It protects against mix-and-match attacks if a delegated supplier key is compromised.
 
-For each targets metadata file on the repository, the snapshot metadata SHALL contain the following information:
+For each Targets metadata file on the repository, the Snapshot metadata SHALL contain the following information:
 
-* The filename and version number of the each targets metadata file on the repository
+* The filename and version number of the each Targets metadata file on the repository
 
-The snapshot metadata MAY also list the root metadata filename and version number. This is no longer required because of the implementation of {{TAP-5}}, but MAY be included for backwards compatibility.
+The Snapshot metadata MAY also list the root metadata filename and version number. This is no longer required because of the implementation of {{TAP-5}}, but MAY be included for backwards compatibility.
 
 ### Timestamp Metadata {#timestamp_meta}
 
-The timestamp metadata SHALL contain the following information:
+The Timestamp metadata SHALL contain the following information:
 
-* The filename and version number of the latest snapshot metadata on the repository
-* One or more hashes of the snapshot metadata file, along with the hashing function used
+* The filename and version number of the latest snapshot metadata on the repository.
+* One or more hashes of the snapshot metadata file, along with the hashing function used.
 
 ### Repository mapping metadata {#repo_mapping_meta}
 
 Repository mapping metadata informs a primary ECU about which repositories to trust for images or image paths. Repository mapping metadata MUST be present on all primary ECUs, and MUST contain the following information:
 
-* A list of repository names and one or more URLs at which the named repository can be accessed. At a minimum, this MUST include the director and image repositories.
+* A list of repository names and one or more URLs at which the named repository can be accessed. At a minimum, this MUST include the Director and Image repositories.
 * A list of mappings of image paths to repositories, each of which contains:
     * A list of image paths. Image paths MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
-    * A list of repositories which MUST sign the targets metadata for the image paths.
+    * A list of repositories that MUST sign the targets metadata for the image paths.
 
 For example, in the most basic Uptane case, the repository mapping metadata would contain:
 
-* The name and URL of the director repository
-* The name and URL of the image repository
-* A single mapping indicating that all images (`*`) MUST be signed by both the director and image repository
+* The name and URL of the Director repository
+* The name and URL of the Image repository
+* A single mapping indicating that all images (`*`) MUST be signed by both the Director and Image repository
 
 However, more complex repository mapping metadata can permit more complicated use cases. For example:
 
-* A second director repository might be useful for fleet management of after-market vehicles; for example, a rental car company might wish to only install approved updates.
-* For dynamic content with lower security sensitivity, an OEM might want to allow a certain subset of images to only require trust from the director repository.
+* A second Director repository might be useful for fleet management of after-market vehicles, such as a rental car company that might wish to only install approved updates.
+* For dynamic content with lower security sensitivity, an OEM might want to allow a certain subset of images to only require trust from the Director repository.
 
-The deployment considerations document gives more guidance on how to implement repository mapping metadata for these use cases. It also discusses strategies for updating repository mapping metadata, if required. {{TAP-4}} contains detailed guidance on repository mapping metadata implementation.
+The *Deployment Considerations* document gives more guidance on how to implement repository mapping metadata for these use cases. It also discusses strategies for updating repository mapping metadata, if required. {{TAP-4}} also contains detailed guidance on repository mapping metadata implementation.
 
 Note that repository mapping metadata might not be a file, and MAY be expressed in a different format than the repository roles metadata. For example, it could be part of the primary ECU's Uptane client configuration. As long as the client has access to the required information, the repository mapping metadata requirements are met.
 
 ### Rules for filenames in repositories and metadata {#metadata_filename_rules}
 
-There is a difference between the file name in a metadata file or an ECU, and the file name on a repository. This difference exists in order to avoid race conditions, where metadata and images are read from and written to at the same time. For more details, the reader should read the TUF specification {{TUF-spec}} and PEP 458 {{PEP-458}}.
+There is a difference between the file name in a metadata file or an ECU, and the file name on a repository. This difference exists in order to avoid race conditions, where metadata and images are read from, and written to, at the same time. For more details, the reader should read the TUF specification {{TUF-spec}} and PEP 458 {{PEP-458}}.
 
 Unless stated otherwise, all files SHALL be written to repositories in accordance with following two rules:
 
-1. Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT where VERSION is A's version number as defined in {{common_metadata}}, with one exception: If the version number of the timestamp metadata file might not be known in advance by a client, it MAY be read from and written to a repository using a filename without version number qualification, i.e. FILENAME.EXT.
+1. Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT, where VERSION is A's version number, as defined in {{common_metadata}}, with one exception: If the version number of the Timestamp metadata file might not be known in advance by a client, it MAY be read from, and written to, a repository using a filename without a version number qualification, i.e. FILENAME.EXT.
 2. If an image is specified in a targets metadata file as FILENAME.EXT, it SHALL be written to the repository as HASH.FILENAME.EXT, where HASH is one of the hash digests of the file, as specified in {{targets_images_meta}}. The file MUST be written to the repository using *n* different filenames, one for each hash digest listed in its corresponding targets metadata.
 
-For example: 
+For example:
 
-* The version number of the snapshot metadata file is 61, and its filename in the timestamp metadata is "snapshot.json". The filename on the repository will be "61.snapshot.json".
-* There is an image with the filename "acme_firmware.bin" specified in the targets metadata, with a SHA256 of "aaaa" and a SHA512-256 of "bbbb". It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin".
+* The version number of the Snapshot metadata file is 61, and its filename in the Timestamp metadata is "snapshot.json". The filename on the repository will be "61.snapshot.json".
+* There is an image with the filename "acme_firmware.bin" specified in the Targets metadata, with a SHA256 of "aaaa" and a SHA512-256 of "bbbb". It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin".
 
 ## Server / repository implementation requirements
 
@@ -622,8 +622,8 @@ All ECUs MUST verify image metadata as specified in {{metadata_verification}} be
 For an ECU to be capable of receiving Uptane-secured updates, it MUST have the following data provisioned at the time it is manufactured or installed in the vehicle:
 
 1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See [Uptane Deployment Considerations](#DEPLOY) for more information.
-    * Partial verification ECUs MUST have the root and targets metadata from the director repository.
-    * Full verification ECUs MUST have a complete set of metadata from both repositories (root, targets, snapshot, and timestamp), as well as the repository mapping metadata ({{repo_mapping_meta}}).
+    * Partial verification ECUs MUST have the Root and Targets metadata from the Director repository.
+    * Full verification ECUs MUST have a complete set of metadata (root, targets, snapshot, and timestamp) from both repositories, as well as the repository mapping metadata ({{repo_mapping_meta}}).
 2. The public key(s) of the time server.
 3. An attestation of time downloaded from the time server.
 4. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
@@ -644,13 +644,13 @@ A primary downloads, verifies, and distributes the latest time, metadata and ima
 
 The primary SHALL build a *vehicle version manifest* as described in {{vehicle_version_manifest}}.
 
-Once it has the complete manifest built, it MAY send the manifest to the director repository. However, it is not strictly required that the primary send the manifest until step three.
+Once it has the complete manifest built, it MAY send the manifest to the Director repository. However, it is not strictly required that the primary send the manifest until step three.
 
-Secondaries MAY send their version report at any time, so that it is stored on the primary already when it wishes to check for updates. Alternatively, the primary MAY request a version report from each secondary at the time of the update check.
+Secondaries MAY send their version report at any time, so that it is already stored on the primary  when it wishes to check for updates. Alternatively, the primary MAY request a version report from each secondary at the time of the update check.
 
 ##### Vehicle version manifest {#vehicle_version_manifest}
 
-The vehicle version manifest is a metadata structure which MUST contain the following information:
+The vehicle version manifest is a metadata structure that MUST contain the following information:
 
 * An attribute containing the signature(s) of the payload, each specified by:
   * The public key identifier of the key being used to sign the payload
@@ -667,7 +667,7 @@ Note that one of the ECU version reports should be the version report for the pr
 
 ##### ECU version report {#version_report}
 
-An ECU version report is a metadata structure which MUST contain the following information:
+An ECU version report is a metadata structure that MUST contain the following information:
 
 * An attribute containing the signature(s) of the payload, each specified by:
   * The public key identifier of the key being used to sign the payload
@@ -680,7 +680,7 @@ An ECU version report is a metadata structure which MUST contain the following i
   * The latest time downloaded from the time server
   * The previous time downloaded from the time server
   * The filename, length, and hashes of its currently installed image (i.e. the non-custom targets metadata for this particular image)
-  * An indicator of any security attack that was detected
+  * An indicator of any detected security attack
 
 #### Download and check current time {#check_time_primary}
 
@@ -704,7 +704,7 @@ The primary SHALL send the time server's latest attested time to each ECU. The s
 
 #### Send metadata to secondaries {#send_metadata_primary}
 
-The primary SHALL send the latest metadata it has downloaded to all of its associated secondaries.
+The primary SHALL send its latest downloaded metadata to all of its associated secondaries.
 
 Full verification secondaries SHALL keep a complete copy of all repository metadata. A partial verification secondary SHALL keep the targets metadata file from the director repository, and MAY keep the rest of the metadata.
 
@@ -729,11 +729,11 @@ Before installing a new image, an ECU SHALL perform the following five steps:
 
 The ECU SHALL verify the latest downloaded time. To do so, it must:
 
-1. Verify that the signatures on the downloaded time are valid,
-2. Verify that the list of nonces/tokens in the downloaded time includes the token that the ECU sent in its previous version report
-3. Verify that the time downloaded is greater than the previous time
+1. Verify that the signatures on the downloaded time are valid.
+2. Verify that the list of nonces/tokens in the downloaded time includes the token that the ECU sent in its previous version report.
+3. Verify that the time downloaded is greater than the previous time.
 
-If all three steps complete without error, the ECU SHALL overwrite its current attested time with the time it has just downloaded and generate a new nonce/token for the next request to the time server.
+If all three steps complete without error, the ECU SHALL overwrite its current attested time with the time it has just downloaded, and generate a new nonce/token for the next request to the time server.
 
 If any check fails, the ECU SHALL NOT overwrite its current attested time, and SHALL jump to the fifth step ({{create_version_report}}). The ECU MUST reuse its previous token for the next request to the time server.
 
@@ -747,10 +747,10 @@ If the ECU does not have secondary storage, it SHALL download the latest image f
 
 The filename used to identify the latest known image (i.e., the file to request from the primary) SHALL be determined as follows:
 
-1. Load the targets metadata file from the director repository.
-2. Find the targets metadata associated with this ECU identifier.
-3. Construct the image filename using the rule in {{metadata_filename_rules}}, or use the download URL specified in the director metadata.
-4. If there is no targets metadata about this image, abort the update cycle and report that there is no such image. Otherwise, download the image (up to the number of bytes specified in the targets metadata), and verify that its hashes match the targets metadata.
+1. Load the Targets metadata file from the Director repository.
+2. Find the Targets metadata associated with this ECU identifier.
+3. Construct the Image filename using the rule in {{metadata_filename_rules}}, or use the download URL specified in the Director metadata.
+4. If there is no Targets metadata about this image, abort the update cycle and report that there is no such image. Otherwise, download the image (up to the number of bytes specified in the Targets metadata), and verify that its hashes match the Targets metadata.
 
 When the primary responds to the download request, the ECU SHALL overwrite its current image with the downloaded image from the primary.
 
@@ -760,8 +760,8 @@ If any part of this step fails, the ECU SHALL jump to the fifth step ({{create_v
 
 The ECU SHALL verify that the latest image matches the latest metadata as follows:
 
-1. Load the latest targets metadata file from the director.
-2. Find the target metadata associated with this ECU identifier.
+1. Load the latest Targets metadata file from the director.
+2. Find the Targets metadata associated with this ECU identifier.
 3. Check that the hardware identifier in the metadata matches the ECUs hardware identifier.
 4. Check that the release counter of the image in the previous metadata, if it exists, is less than or equal to the release counter in the latest metadata.
 5. If the image is encrypted, decrypt the image with a decryption key to be chosen as follows:
@@ -772,7 +772,7 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
 
 If the ECU has secondary storage, the checks SHOULD be performed on the image in secondary storage, before it is installed.
 
-If any step fails, the ECU SHALL jump to the fifth step ({{create_version_report}}). If the ECU does not have secondary storage, a step fails, and the ECU created a backup of its previous working image, the ECU SHOULD now install the backup image.
+If any step fails, the ECU SHALL jump to the fifth step ({{create_version_report}}). If a step fails and the ECU does not have secondary storage, and the ECU has created a backup of its previous working image, the ECU SHOULD now install the backup image.
 
 #### Create and send version report {#create_version_report}
 
@@ -789,7 +789,7 @@ If a step in the following workflows does not succeed (e.g., the update is abort
 In order to perform partial verification, an ECU SHALL perform the following steps:
 
 1. Load the latest attested time from the time server.
-2. Load the latest top-level targets metadata file from the director repository.
+2. Load the latest top-level Targets metadata file from the Director repository.
 3. Check that the metadata file has been signed by a threshold of keys specified in the previous root metadata file. If not, return an error code indicating an arbitrary software attack.
 4. Check that the version number in the previous targets metadata file, if any, is less than or equal to the version number in this targets metadata file. If not, return an error code indicating a rollback attack.
 5. Check that the latest attested time is lower than the expiration timestamp in this metadata file. If not, return an error code indicating a freeze attack.
@@ -799,60 +799,60 @@ In order to perform partial verification, an ECU SHALL perform the following ste
 
 #### Full verification {#full_verification}
 
-Full verification of metadata means that the ECU checks that the targets metadata about images from the director repository matches the targets metadata about the same images from the image repository. This provides resilience to a key compromise in the system.
+Full verification of metadata means that the ECU checks that the Targets metadata about images from the Director repository matches the Targets metadata about the same images from the Image repository. This provides resilience to a key compromise in the system.
 
-Full verification MAY be performed either by primary or secondary ECUs. The procedure is the same, except that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, it applies only to primary ECUs.
+Full verification MAY be performed by either primary or secondary ECUs. The procedure is the same, except that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, it applies only to primary ECUs.
 
 A primary ECU SHALL download metadata and images following the rules specified in {{TAP-5}}, and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
-1. Load the repository mapping metadata ({{repo_mapping_meta}}), and use the information therein to determine where to download metadata from.
+1. Load the repository mapping metadata ({{repo_mapping_meta}}), and use the information therein to determine from where metadata should be downloaded.
 2. Load the latest attested time from the time server.
-3. Download and check the root metadata file from the director repository:
-    1. Load the previous root metadata file.
-    2. Update to the latest root metadata file.
-        1. Let N denote the version number of the latest root metadata file (which at first could be the same as the previous root metadata file).
-        2. Try downloading a new version N+1 of the root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, then go to step 3.5.
-        3. Version N+1 of the root metadata file MUST have been signed by: (1) a threshold of keys specified in the latest root metadata file (version N), and (2) a threshold of keys specified in the new root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at step 0 and version N of the root metadata file. (Checks for an arbitrary software attack.)
-        4. The version number of the latest root metadata file (version N) must be less than or equal to the version number of the new root metadata file (version N+1). Effectively, this means checking that the version number signed in the new root metadata file is indeed N+1. If the version of the new root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the root metadata file. (Checks for a rollback attack.)
-        5. Set the latest root metadata file to the new root metadata file.
+3. Download and check the Root metadata file from the Director repository:
+    1. Load the previous Root metadata file.
+    2. Update to the latest Root metadata file.
+        1. Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous root metadata file).
+        2. Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, then go to step 3.5.
+        3. Version N+1 of the Root metadata file MUST have been signed by: (1) a threshold of keys specified in the latest Root metadata file (version N), and (2) a threshold of keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at step 0 and version N of the root metadata file. (Checks for an arbitrary software attack.)
+        4. The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the Root metadata file. (Checks for a rollback attack.)
+        5. Set the latest Root metadata file to the new Root metadata file.
         6. Repeat steps 1 to 6.
-    5. Check that the latest attested time is lower than the expiration timestamp in the latest root metadata file. (Checks for a freeze attack.)
-    6. If the timestamp and / or snapshot keys have been rotated, delete the previous timestamp and snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
-4. Download and check the timestamp metadata file from the director repository:
-    1. Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).
-    2. Check that it has been signed by the threshold of keys specified in the latest root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
-    3. Check that the version number of the previous timestamp metadata file, if any, is less than or equal to the version number of this timestamp metadata file. If the new timestamp metadata file is older than the trusted timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
-    4. Check that the latest attested time is lower than the expiration timestamp in this timestamp metadata file. If the new timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
-5. Download and check the snapshot metadata file from the director repository:
-    1. Download up to the number of bytes specified in the timestamp metadata file, constructing the metadata filename as defined in {{metadata_filename_rules}}.
-    2. The hashes and version number of the new snapshot metadata file MUST match the hashes and version number listed in timestamp metadata. If hashes and version do not match, discard the new snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
-    3. Check that it has been signed by the threshold of keys specified in the latest root metadata file. If the new snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
-    4. Check that the version number of the previous snapshot metadata file, if any, is less than or equal to the version number of this snapshot metadata file. If this snapshot metadata file is older than the previous snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
-    5. Check that the version number the previous snapshot metadata file lists for each targets metadata file is less than or equal to the its version number in this snapshot metadata file. If this condition is not met, discard the new snaphot metadadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
-    6. Check that each targets metadata filename listed in the previous snapshot metadata file is also listed in this snapshot metadata file. If this condition is not met, discard the new snaphot metadadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
-    7. Check that the latest attested time is lower than the expiration timestamp in this snapshot metadata file. If the new snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
-6. Download and check the targets metadata file from the director repository:
-    1. Download up to either the number of bytes specified in the snapshot metadata file, or some Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.
-    2. The hashes (if any), and version number of the new targets metadata file MUST match the latest snapshot metadata. If the new targets metadata file does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
-    3. Check that it has been signed by the threshold of keys specified in the latest root metadata file. (Checks for an arbitrary software attack.)
-    4. Check that the version number of the previous targets metadata file, if any, is less than or equal to the version number of this targets metadata file. (Checks for a rollback attack.)
-    5. Check that the latest attested time is lower than the expiration timestamp in this targets metadata file. (Checks for a freeze attack.)
+    5. Check that the latest attested time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)
+    6. If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
+4. Download and check the Timestamp metadata file from the Director repository:
+    1. Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).
+    2. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
+    3. Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
+    4. Check that the latest attested time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
+5. Download and check the Snapshot metadata file from the Director repository:
+    1. Download up to the number of bytes specified in the Timestamp metadata file, constructing the metadata filename as defined in {{metadata_filename_rules}}.
+    2. The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
+    3. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
+    4. Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
+    5. Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to the its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
+    6. Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
+    7. Check that the latest attested time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
+6. Download and check the Targets metadata file from the Director repository:
+    1. Download the number of bytes either specified in the Snapshot metadata file, or some Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.
+    2. The hashes (if any), and version number of the new Targets metadata file MUST match the latest Snapshot metadata. If the new Targets metadata file does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
+    3. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. (Checks for an arbitrary software attack.)
+    4. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
+    5. Check that the latest attested time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
     6. Check that there are no delegations. (Targets metadata from the director MUST NOT contain delegations.)
     7. Check that no ECU identifier is represented more than once.
-7. Download and check the root metadata file from the image repository as in Step 3.
-8. Download and check the timestamp metadata file from the image repository as in Step 4.
-9. Download and check the snapshot metadata file from the image repository as in Step 5.
-10. Download and check the top-level targets metadata file from the image repository as in Step 6 (except for Steps 6.6-6.7).
-11. For each image listed in the targets metadata file from the director repository, locate a targets metadata file that contains an image with exactly the same file name. For each delegated targets metadata file that is found to contain metadata for the image currently being processed, perform all of the checks in step 10. Use the following process to locate image metadata:
-    1. If the top-level targets metadata file contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.
+7. Download and check the Root metadata file from the Image repository as in Step 3.
+8. Download and check the Timestamp metadata file from the Image repository as in Step 4.
+9. Download and check the Snapshot metadata file from the Image repository as in Step 5.
+10. Download and check the top-level Targets metadata file from the Image repository as in Step 6 (except for Steps 6.6-6.7).
+11. For each image listed in the Targets metadata file from the Director repository, locate a Targets metadata file that contains an image with exactly the same file name. For each delegated Targets metadata file that is found to contain metadata for the image currently being processed, perform all of the checks in step 10. Use the following process to locate image metadata:
+    1. If the top-level Targets metadata file contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.
     2. Recursively search the list of delegations, in order of appearance:
         1. If it is a multi-role delegation {{TAP-3}}, recursively visit each role, and check that each has signed exactly the same non-custom metadata (i.e., length and hashes) about the image. If it is all the same, return the metadata to be checked and skip to step 11.3.
         2. If it is a terminating delegation and it contains signed metadata about the image, return the metadata to be checked and skip to step 11.3. If metadata about an image is not found in a terminating delegation, return an error code indicating that the image is missing.
         3. Otherwise, continue processing the next delegation, if any. As soon as a delegation is found that contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.
         4. If no signed metadata about the image can be found anywhere in the delegation graph, return an error code indicating that the image is missing.
-    3. Check that the targets metadata from the image repository matches the targets metadata from the director repository:
+    3. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.
         2. Check that the custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
