@@ -233,17 +233,17 @@ A standards document that can guide the safe design, integration and deployment 
 
 ## Scope of Standards Coverage
 
-This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in ground vehicles, including passenger vehicles, light-duty trucks, heavy-duty trucks, and motorcycles. Uptane could potentially also be applied to other ground vehicles such as automated shuttles, recreational vehicles, and military ground vehicles. In this section, we define the scope of that applicability by providing sample use cases and possible exceptions, aspects of update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
+This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in ground vehicles, including passenger vehicles, light-duty trucks, heavy-duty trucks, and motorcycles. Uptane could potentially also be applied to other ground vehicles such as automated shuttles, recreational vehicles, and military ground vehicles, and Uptane could even be applied to domains such as IoT devices, medical devices, and UAVs. In this section, we define the scope of that applicability by providing sample use cases and possible exceptions, aspects of update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
 
 ### Assumptions
 
 We assume the following system preconditions for Uptane: 
 
 * Vehicles have regular connectivity established. The common scenario is cellular connectivity, but Uptane could also be applied via other communication channels such as WiFi and even wired connections. 
-* ECUs are either directly connected to the communication channel, or they are indirectly connected via some sort of gateway. The gateway may note be trusted. 
+* ECUs are either directly connected to the communication channel, or they are indirectly connected via some sort of gateway. The gateway may not be trusted. 
 * ECUs are programmable and provide sufficient performance to be updated. 
 * ECUs must be able to perform a public key cryptography operation as well as some supporting operations.
-* There are state-of-the-art security protected servers in place, such as the director and image repository servers.
+* There are state-of-the-art secure servers in place, such as the director and image repository servers.
 
 ### Use Cases
 
