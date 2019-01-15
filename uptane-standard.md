@@ -155,14 +155,14 @@ informative:
 
 --- abstract
 
-This document describes a framework for securing automotive software update systems.
+This document describes a framework for securing ground vehicle software update systems.
 
 --- middle
 
 
 # Introduction
 
-Uptane is a secure software update framework for automobiles. This document describes procedures to enable programmers for OEMs and suppliers to securely design and implement this framework in a manner that better protects connected units on cars. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to compromise critical systems. It also assures a faster and easier recovery process should a compromise occur.
+Uptane is a secure software update framework for ground vehicles. This document describes procedures to enable programmers for OEMs and suppliers to securely design and implement this framework in a manner that better protects connected units on ground vehicles. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to compromise critical systems. It also assures a faster and easier recovery process should a compromise occur.
 
 These instructions specify the components necessary for a compliant implementation. Individual implementors can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers.
 
@@ -174,15 +174,15 @@ The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, REC
 
 In order to be considered “Uptane-compliant,” an implementation MUST follow all of these rules as specified in the document.
 
-## Automotive Terminology
+## Terminology
 
 *Bundle*: A set of images released by the repository that is meant to be installed by one or more target ECUs on a vehicle at the same time.
 
-*Bus*: An internal communications network that interconnects components within a vehicle. A car can have a number of buses that will vary in terms of power, speed and resources.
+*Bus*: An internal communications network that interconnects components within a vehicle. A vehicle can have a number of buses that will vary in terms of power, speed and resources.
 
 *Image*: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.  
 
-*Primary/Secondary ECUs*: Terms used to describe the control units within an automobile. A primary ECU downloads from a repository and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a connection to the internet. Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.  
+*Primary/Secondary ECUs*: Terms used to describe the control units within a ground vehicle. A primary ECU downloads from a repository and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a connection to the internet. Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.  
 
 *Repository*: A server containing metadata about images. May also contain the images themselves. Other data may be stored on the repository to be accessed by ECUs during the update process.
 
@@ -200,14 +200,14 @@ These terms are defined in greater detail in {{roles}}.
 * *Root Role*: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
 * *Snapshot Role*: Indicates which images the repository has released at the same time.
 * *Targets Role*: Holds the metadata used to verify the image, such as cryptographic hashes and file size.
-* *Timestamp Role*: Indicates if there are any new metadata or image on the repository.
+* *Timestamp Role*: Indicates if there are any new metadata or images on the repository.
 
 
 ## Acronyms and Abbreviations
 
 *CAN Bus*: Controller Area Network bus standard  
 
-*ECUs*: Electronic Control Units, the computing units on vehicle
+*ECUs*: Electronic Control Units, the computing units on a vehicle
 
 *LIN Bus*: Local Interconnect Bus  
 
@@ -221,11 +221,11 @@ This Standards document clarifies the essential components and best practices fo
 
 ## Why Uptane requires standards
 
-A standards document that can guide the safe design, integration and deployment of Uptane in cars is needed at this time because:
+A standards document that can guide the safe design, integration and deployment of Uptane in vehicles is needed at this time because:
 
 * The number of connected units on the average vehicle continues to grow, with mainstream cars now containing up to 100 million lines of code. {{USATODAY}}
 * The expanded use of software over-the-air strategies creates new attack surfaces for malicious parties. {{CR-OTA}}
-* Legacy update strategies, such as SSL/TLS or GPG/RSA, are not feasible for use on automotive ECUs because they force manufacturers to chose between enhanced security and customizability.
+* Legacy update strategies, such as SSL/TLS or GPG/RSA, are not feasible for use on vehicle ECUs because they force manufacturers to chose between enhanced security and customizability.
 * Conventional strategies are also complicated by the differing resources of the ECUs, which can vary greatly in memory, storage space, and Internet connectivity.
 * The design of Uptane makes it possible to offer improved design flexibility, without sacrificing security.
 * This added design flexibility, however, could be a liability if the framework is implemented incorrectly.
@@ -233,7 +233,17 @@ A standards document that can guide the safe design, integration and deployment 
 
 ## Scope of Standards Coverage
 
-This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in cars. In this section, we define the scope of that applicability by providing sample use cases and possible exceptions, aspects of update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
+This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in ground vehicles, including passenger vehicles, light-duty trucks, heavy-duty trucks, and motorcycles. Uptane could potentially also be applied to other ground vehicles such as automated shuttles, recreational vehicles, and military ground vehicles, and Uptane could even be applied to domains such as IoT devices, medical devices, and UAVs. In this section, we define the scope of that applicability by providing sample use cases and possible exceptions, aspects of update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
+
+### Assumptions
+
+We assume the following system preconditions for Uptane: 
+
+* Vehicles have regular connectivity established. The common scenario is cellular connectivity, but Uptane could also be applied via other communication channels such as WiFi and even wired connections. 
+* ECUs are either directly connected to the communication channel, or they are indirectly connected via some sort of gateway. The gateway may not be trusted. 
+* ECUs are programmable and provide sufficient performance to be updated. 
+* ECUs must be able to perform a public key cryptography operation as well as some supporting operations.
+* There are state-of-the-art secure servers in place, such as the director and image repository servers.
 
 ### Use Cases
 
@@ -281,11 +291,11 @@ The following topics will not be addressed in this document, as they represent t
 
 ## Design Requirements
 
-The design requirements for this document are governed by three principal parameters:
+The design requirements for this document are governed by the following principal parameters:
 
 * to clearly mandate the design and implementation steps that are security critical and must be followed as is, while offering flexibility in the implementation of non-critical steps. In this manner, users can adapt to support different use models and deployment scenarios.
-* to delineate best practices to ensure that, should a vehicle be attacked, an attacker must compromise many different systems to control the vehicle, access sensitive data, or seriously impact functionality.
 * to ensure that, if Uptane is implemented, the security practices mandated or suggested in this document do not interfere with the functionality of ECUs, vehicles, or the systems that maintain them.
+* to delineate best practices to ensure that, should any part of the SOTA mechanism of a vehicle be attacked, an attacker must compromise two or more modules to breach the SOTA mechanism.
 
 # Threat Model and Attack Strategies
 
@@ -295,22 +305,20 @@ The overarching goal of Uptane is to provide a system that is resilient in the f
 
 We assume that attackers may want to achieve one or more of the following goals, in increasing order of severity:
 
-* Read the contents of updates to discover confidential information or reverse-engineer firmware
+* Read the contents of updates to discover confidential information, reverse-engineer firmware, or compare two firmware images to identify security fixes and hence determine the fixed security vulnerability
 * Deny installation of updates to prevent vehicles from fixing software problems
 * Cause one or more ECUs in the vehicle to fail, denying use of the vehicle or of certain functions
-* Control the vehicle or ECUs within the vehicle
+* Control ECUs within the vehicle, and possibly the vehicle itself
 
 ## Attacker capabilities {#capabilities}
 
 Uptane is designed with resilience to compromise in mind. We assume that attackers may develop one or more of the following capabilities:
 
-* Read and analyze the contents of previous and/or current versions of software, as well as the update sequence and instructions
 * Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability may be developed in two domains:
     * Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories
     * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g. via an OBD port or using a compromised ECU as a vector)
-* Compromise and control one or more ECUs within a vehicle
-* Compromise signing or encryption keys
-* Compromise and control software repository servers (and any keys stored on the repository)
+* Compromise and control either a director repository or image repository server, and any keys stored on the repository, but not both the director and image repositories. 
+* Compromise either a primary ECU or a secondary ECU, but not both in the same vehicle
 
 ## Description of threats {#threats}
 
@@ -354,7 +362,7 @@ At a high level, Uptane requires:
     * A director repository connected to an inventory database that can sign metadata on demand for images in the image repository
 * Repository tools for generating Uptane-specific metadata about images
 * A public key infrastructure supporting the required metadata production/signing roles on each repository:
-    * Root - Certificate authority for the repo. Distributes public keys for verifying all the other roles' metadata
+    * Root - Certificate authority for the Uptane ecosystem. Distributes public keys for verifying all the other roles' metadata
     * Timestamp - Indicates whether there are new metadata or images
     * Snapshot - Indicates images released by the repository at a point in time, via signing metadata about targets metadata
     * Targets - Indicates metadata about images, such as hashes and file sizes
@@ -576,11 +584,11 @@ A Director repository MUST conform to the following six-step process for directi
 
 1. When the Director receives a vehicle version manifest sent by a primary (as described in {{construct_manifest_primary}}), it decodes the manifest, and determines the unique vehicle identifier.
 1. Using the vehicle identifier, the Director queries its inventory database (as described in {{inventory_db}}) for relevant information about each ECU in the vehicle.
-1. The Director checks the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director drops the request. An implementor MAY make whatever additional checks they wish. At a minimum, the following checks are required:
+1. The Director checks the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director drops the request. An implementor MAY make whatever additional checks they wish. At a minimum, the Director SHALL check the following:
     * Each ECU recorded in the inventory database is also represented in the manifest.
     * The signature of the manifest matches the ECU key of the primary that sent it.
     * The signature of each secondary's contribution to the manifest matches the ECU key of that secondary.
-1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this standard. However, it MUST take into account *dependencies* and *conflicts* between images, and SHOULD consult well-established techniques for dependency resolution.
+1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this standard. However, the Director MUST take into account *dependencies* and *conflicts* between images, and SHOULD consult well-established techniques for dependency resolution.
 1. The Director MAY encrypt images for ECUs that require it.
 1. The Director generates new metadata representing the desired set of images to be installed on the vehicle, based on the dependency resolution in step 4. This includes targets ({{targets_meta}}), snapshot ({{snapshot_meta}}), and timestamp ({{timestamp_meta}}) metadata. It then sends this metadata to the primary as described in {{download_meta_primary}}.
 
@@ -743,7 +751,7 @@ The ECU SHALL verify the latest downloaded metadata ({{metadata_verification}}) 
 
 #### Download latest image {#download_image}
 
-If the ECU does not have secondary storage, it SHALL download the latest image from the primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in {{send_images_primary}}, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the primary).
+If the ECU does not have secondary storage, i.e. buffer storage to temporarily store the latest image before installing it, it SHALL download the latest image from the primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in {{send_images_primary}}, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the primary).
 
 The filename used to identify the latest known image (i.e., the file to request from the primary) SHALL be determined as follows:
 
