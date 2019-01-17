@@ -425,12 +425,12 @@
 <link href="#rfc.authors" rel="Chapter">
 
 
-  <meta name="generator" content="xml2rfc version 2.9.6 - https://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.8.2 - https://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2018-08-28" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-8-28" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -1186,6 +1186,7 @@
 <p></p>
 
 <ul>
+<li>A token (nonce) for the time server. The primary ECU will eventually send this token to the time server, which will sign the token and send it back.</li>
 <li>An attribute containing the signature(s) of the payload, each specified by: <ul>
 <li>The public key identifier of the key being used to sign the payload</li>
 <li>The signing method (e.g. ed25519, rsassa-pss, etc.)</li>
