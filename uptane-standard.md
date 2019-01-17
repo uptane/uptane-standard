@@ -677,6 +677,7 @@ Note that one of the ECU version reports should be the version report for the pr
 
 An ECU version report is a metadata structure that MUST contain the following information:
 
+* A token (nonce) for the time server. The primary ECU will eventually send this token to the time server, which will sign the token and send it back.
 * An attribute containing the signature(s) of the payload, each specified by:
   * The public key identifier of the key being used to sign the payload
   * The signing method (e.g. ed25519, rsassa-pss, etc.)
