@@ -251,7 +251,7 @@ The following use cases provide a number of scenarios illustrating the manner in
 
 #### OEMs initializing Uptane at the factory using SOTA
 
-An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server. The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers' assembly lines, or can choose to add the materials later at the OEM's assembly lines. The OEM's implementation is Uptane-compliant if:
+An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server (if implemented). The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers' assembly lines, or can choose to add the materials later at the OEM's assembly lines. The OEM's implementation is Uptane-compliant if:
 
 1. all primaries perform full verification;
 1. all secondaries that are updated via OTA perform full or partial verification; and
@@ -366,7 +366,7 @@ At a high level, Uptane requires:
     * Timestamp - Indicates whether there are new metadata or images
     * Snapshot - Indicates images released by the repository at a point in time, via signing metadata about targets metadata
     * Targets - Indicates metadata about images, such as hashes and file sizes
-* A time server to deliver cryptographically verifiable time to ECUs
+* A secure way for ECUs to know the time. {{time_server}} describes one way to securely attest time to ECUs.
 * An in-vehicle client on a primary ECU capable of verifying the signatures on all update metadata, handling all server communication, and downloading updates on behalf of secondary ECUs
 * A client or library on each secondary ECU capable of performing either full or partial verification of metadata
 
@@ -553,7 +553,8 @@ An Uptane implementation SHALL make the following services available to vehicles
 
 * Image repository
 * Director repository
-* Time server
+
+Additionally, an Uptane implementation requires ECUs to have a secure way to know the current time. This SHOULD be accomplished using a time server ({{time_server}}), but MAY be implemented in other ways.
 
 ### Image Repository
 
@@ -613,6 +614,8 @@ The inventory database MAY record other information about ECUs and vehicles.
 
 The Time Server exists to inform vehicles about the current time in a cryptographically secure way, since many ECUs in a vehicle will not have a reliable source of time. It receives lists of tokens from vehicles, and returns back a signed sequence that includes the token and the current time.
 
+An Uptane implementation SHOULD include a time server, but MAY use another secure source of time. If the time server is used, it MUST conform to the following requirements:
+
 The Time Server SHALL receive a sequence of tokens from a vehicle representing all of its ECUs. In response, it SHALL sign each token together with the current time.
 
 The Time Server SHALL expose a public interface allowing primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.
@@ -632,8 +635,8 @@ For an ECU to be capable of receiving Uptane-secured updates, it MUST have the f
 1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See [Uptane Deployment Considerations](#DEPLOY) for more information.
     * Partial verification ECUs MUST have the Root and Targets metadata from the Director repository.
     * Full verification ECUs MUST have a complete set of metadata (root, targets, snapshot, and timestamp) from both repositories, as well as the repository mapping metadata ({{repo_mapping_meta}}).
-2. The public key(s) of the time server.
-3. An attestation of time downloaded from the time server.
+2. The public key(s) of the time server (if the time server is implemented).
+3. The current time. This SHOULD be in the form of an attestation of time downloaded from the time server, but MAY come from another source if the time server is not implemented.
 4. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
 
 ### Downloading and distributing updates on a primary ECU
@@ -685,16 +688,21 @@ An ECU version report is a metadata structure that MUST contain the following in
   * The signature of the hash
 * A payload containing:
   * The ECU's unique identifier (e.g. the serial number)
-  * The latest time downloaded from the time server
-  * The previous time downloaded from the time server
+  * The latest time downloaded from the time server, if the time server is implemented
+  * The previous time downloaded from the time server, if the time server is implemented
   * The filename, length, and hashes of its currently installed image (i.e. the non-custom targets metadata for this particular image)
   * An indicator of any detected security attack
+* A token (nonce) for the time server to sign and send back, if the time server is implemented
 
 #### Download and check current time {#check_time_primary}
 
-The primary SHALL download the current time from the time server, for distribution to its secondaries.
+The primary SHALL load the current time from a secure source. This secure source SHOULD be a time server as described in {{time_server}}.
 
-The version report from each secondary ECU (as described in {{version_report}}) contains a nonce, plus a signed ECU version report. The primary SHALL gather each of these nonces from the secondary ECUs, then send them to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time. The primary SHALL verify that the signatures are valid, and that the time the server attests is greater than the previous attested time.
+If the time server is implemented, the primary SHALL use the following procedure to verify the time: 
+
+1. Gather the tokens/nonces from each secondary ECU's version report ({{version_report}}).
+2. Send the list of tokens to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time.
+3. Verify that the signatures are valid, and that the time the server attests is greater than the previous attested time.
 
 #### Download and verify metadata {#download_meta_primary}
 
@@ -708,7 +716,7 @@ There may be several different filenames that all refer to the same image binary
 
 #### Send latest time to secondaries {#send_time_primary}
 
-The primary SHALL send the time server's latest attested time to each ECU. The secondary SHALL verify the time message, then overwrite its current time with the received time.
+The primary SHOULD send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time.
 
 #### Send metadata to secondaries {#send_metadata_primary}
 
@@ -733,9 +741,11 @@ Before installing a new image, an ECU SHALL perform the following five steps:
 1. Create and send version report ({{create_version_report}})
 
 
-#### Verify latest attested time {#verify_time}
+#### Load and verify the latest attested time {#verify_time}
 
-The ECU SHALL verify the latest downloaded time. To do so, it must:
+The ECU SHOULD load and verify the current time, or the most recent time from the time server if it is implemented. 
+
+If an Uptane time server ({{time_server}}) is implemented, the ECU SHALL:
 
 1. Verify that the signatures on the downloaded time are valid.
 2. Verify that the list of nonces/tokens in the downloaded time includes the token that the ECU sent in its previous version report.
@@ -743,7 +753,7 @@ The ECU SHALL verify the latest downloaded time. To do so, it must:
 
 If all three steps complete without error, the ECU SHALL overwrite its current attested time with the time it has just downloaded, and generate a new nonce/token for the next request to the time server.
 
-If any check fails, the ECU SHALL NOT overwrite its current attested time, and SHALL jump to the fifth step ({{create_version_report}}). The ECU MUST reuse its previous token for the next request to the time server.
+If any check fails, the ECU SHALL NOT overwrite its current attested time, and SHALL jump to the fifth step ({{create_version_report}}), and report the error. The ECU MUST reuse its previous token for the next request to the time server.
 
 #### Verify metadata {#verify_metadata}
 
@@ -796,7 +806,7 @@ If a step in the following workflows does not succeed (e.g., the update is abort
 
 In order to perform partial verification, an ECU SHALL perform the following steps:
 
-1. Load the latest attested time from the time server.
+1. Load the latest attested time from the time server, if implemented.
 2. Load the latest top-level Targets metadata file from the Director repository.
 3. Check that the metadata file has been signed by a threshold of keys specified in the previous root metadata file. If not, return an error code indicating an arbitrary software attack.
 4. Check that the version number in the previous targets metadata file, if any, is less than or equal to the version number in this targets metadata file. If not, return an error code indicating a rollback attack.
@@ -816,7 +826,7 @@ A primary ECU SHALL download metadata and images following the rules specified i
 In order to perform full verification, an ECU SHALL perform the following steps:
 
 1. Load the repository mapping metadata ({{repo_mapping_meta}}), and use the information therein to determine from where metadata should be downloaded.
-2. Load the latest attested time from the time server.
+2. Load the latest attested time from the time server, if implemented.
 3. Download and check the Root metadata file from the Director repository:
     1. Load the previous Root metadata file.
     2. Update to the latest Root metadata file.
