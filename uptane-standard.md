@@ -366,7 +366,7 @@ At a high level, Uptane requires:
     * Timestamp - Indicates whether there are new metadata or images
     * Snapshot - Indicates images released by the repository at a point in time, via signing metadata about targets metadata
     * Targets - Indicates metadata about images, such as hashes and file sizes
-* A secure way for ECUs to know the time. {{time_server}} describes the recommended way to securely attest time to ECUs.
+* A secure way for ECUs to know the time. {{time_server}} describes one way to securely attest time to ECUs.
 * An in-vehicle client on a primary ECU capable of verifying the signatures on all update metadata, handling all server communication, and downloading updates on behalf of secondary ECUs
 * A client or library on each secondary ECU capable of performing either full or partial verification of metadata
 
