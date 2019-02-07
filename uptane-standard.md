@@ -240,7 +240,7 @@ This document sets guidelines for implementing Uptane in most systems capable of
 We assume the following system preconditions for Uptane: 
 
 * Vehicles have the ability to establish connectivity to required backend services. For example, this could be done through cellular, Wi-Fi, or hard-wired mechanisms.
-* ECUs are either directly connected to the communication channel, or they are indirectly connected via some sort of gateway. The gateway may not be trusted. 
+* ECUs are either directly connected to the communication channel, or they are indirectly connected via some sort of network gateway.
 * ECUs are programmable and provide sufficient performance to be updated. 
 * ECUs must be able to perform a public key cryptography operation as well as some supporting operations.
 * There are state-of-the-art secure servers in place, such as the director and image repository servers.
