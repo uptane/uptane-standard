@@ -484,7 +484,8 @@ A list of delegations MUST provide the following information:
 
 * A list of public keys of all delegatees. Each key should have a unique public key identifier, and a key type.
 * A list of delegations, each of which contains:
-  * A list of the images or paths to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
+  * A list of the filenames to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
+  * A list of the hardware identifiers to which this role applies.
   * An indicator of whether or not this is a terminating delegation. (See {{targets_role_delegations}}.)
   * A list of the roles to which this delegation applies. Each role needs to specify:
     * A name for the role (e.g. "supplier1-qa")
@@ -794,12 +795,13 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
 1. Load the latest Targets metadata file from the director.
 2. Find the Targets metadata associated with this ECU identifier.
 3. Check that the hardware identifier in the metadata matches the ECUs hardware identifier.
-4. Check that the release counter of the image in the previous metadata, if it exists, is less than or equal to the release counter in the latest metadata.
-5. If the image is encrypted, decrypt the image with a decryption key to be chosen as follows:
+4. Check that the image filename is valid for this ECU. This MAY be a comparison against a wildcard path, and restricts the ECUs a delegation applies to.
+5. Check that the release counter of the image in the previous metadata, if it exists, is less than or equal to the release counter in the latest metadata.
+6. If the image is encrypted, decrypt the image with a decryption key to be chosen as follows:
     * If the ECU key is a symmetric key, the ECU SHALL use the ECU key for image decryption.
     * If the ECU key is asymmetric, the ECU SHALL check the target metadata for an encrypted symmetric key. If such a key is found, the ECU SHALL decrypt the symmetric key using its ECU key, and use the decrypted symmetric key for image decryption.
     * If the ECU key is asymmetric and there is no symmetric key in the target metadata, the ECU SHALL use its ECU key for image decryption.
-6. Check that the hash of the image matches the hash in the metadata.
+7. Check that the hash of the image matches the hash in the metadata.
 
 If the ECU has secondary storage, the checks SHOULD be performed on the image in secondary storage, before it is installed.
 
@@ -881,7 +883,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 11. For each image listed in the Targets metadata file from the Director repository, locate a Targets metadata file that contains an image with exactly the same file name. For each delegated Targets metadata file that is found to contain metadata for the image currently being processed, perform all of the checks in step 10. Use the following process to locate image metadata.  NOTE that if at any point below, a role you attempt to check for image metadata cannot be found and verified, you should abort the search and indicate that image metadata cannot be found because of a missing or invalid role.
     1. If the top-level Targets metadata file contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.
     2. Recursively search the list of delegations, in order of appearance:
-        1. If the delegation does not address the image name being sought -- if none of the delegation's image paths match this image name -- skip this delegation.
+        1. Check whether the delegation has authority over this target. The delegation must include the hardware identifier of the target, and the target name must match one of the delegation's image paths.  If either of these tests fail, skip this delegation.
         2. If it is a multi-role delegation {{TAP-3}}, then:
             1. First, recurse (11.2) for each role listed as if there is a single-role delegation to each.
             2. Inspect the return values from each:
