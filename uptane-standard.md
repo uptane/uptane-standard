@@ -322,7 +322,7 @@ Uptane is designed with resilience to compromise in mind. We assume that attacke
 
 ## Description of threats {#threats}
 
-Uptane's threat model considers the following types of attacks, organized according to the attacker goals listed in {{attacker_goals}}.
+Uptane's threat model includes the following types of attacks, organized according to the attacker goals listed in {{attacker_goals}}.
 
 ### Read updates {#read_updates}
 
