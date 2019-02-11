@@ -322,7 +322,7 @@ Uptane is designed with resilience to compromise in mind. We assume that attacke
 
 ## Description of threats {#threats}
 
-Uptane's threat model considers the following types of attacks, organized according to the attacker goals listed in {{attacker_goals}}.
+Uptane's threat model includes the following types of attacks, organized according to the attacker goals listed in {{attacker_goals}}.
 
 ### Read updates {#read_updates}
 
@@ -330,12 +330,13 @@ Uptane's threat model considers the following types of attacks, organized accord
 
 ### Deny installation of updates {#deny_updates}
 
-An attacker seeking to deny installation of updates may attempt one or more of the following strategies:
+An attacker seeking to deny installation of updates may attempt one or more of the following strategies, among others:
 
 * *Drop-request attack:* Block network traffic outside or inside the vehicle.
 * *Slow retrieval attack:* Slow down network traffic, in the extreme case sending barely enough packets to avoid a timeout. Similar to a drop-request attack, except that both the sender and receiver of the traffic still think network traffic is unimpeded.
 * *Freeze attack:* Continue to send a properly signed, but old, update bundle to the ECUs, even if newer updates exist.
 * *Partial bundle installation attack:* Install a valid (signed) update bundle, and then block selected updates within the bundle.
+* Conduct a denial of service attack against the Uptane repositories or infrastructure.
 
 ### Interfere with ECU functionality {#change_functionality}
 
