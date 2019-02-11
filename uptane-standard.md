@@ -875,7 +875,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
                 2. If the minimum number of roles in agreement threshold is not met:
                     1. If the multi-role delegation was terminating, raise an error indicating that image info could not be verified.
                     2. If the multi-role delegation was not terminating, return no image info and allow the process to proceed to the next delegation.
-        3. If the role specified by the delegation contains signed metadata about the image, return the metadata to be checked and continue to step 11.3.
+        3. If the role specified by the delegation contains signed metadata about the image, return the metadata.
         4. If the role specified by the delegation does NOT contain signed metadata about the image:
             1. If this is a terminating delegation, abort the search for this image, ending the recursion and returning an error code indicating that the image could not be found.
             2. If this is not a terminating delegation, return that no image was found (and continue 11.2 with the next delegation).
