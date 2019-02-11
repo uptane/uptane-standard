@@ -867,11 +867,19 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 11. For each image listed in the Targets metadata file from the Director repository, locate a Targets metadata file that contains an image with exactly the same file name. For each delegated Targets metadata file that is found to contain metadata for the image currently being processed, perform all of the checks in step 10. Use the following process to locate image metadata.  NOTE that if at any point below, a role you attempt to check for image metadata cannot be found and verified, you should abort the search and indicate that image metadata cannot be found because of a missing or invalid role.
     1. If the top-level Targets metadata file contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.
     2. Recursively search the list of delegations, in order of appearance:
-        0. If the delegation does not address the image name being sought -- if none of the delegation's image paths match this image name -- skip this delegation.
-        1. If it is a multi-role delegation {{TAP-3}}, recursively visit each role, and check that each has signed exactly the same non-custom metadata (i.e., length and hashes) about the image. If it is all the same, return the metadata to be checked and skip to step 11.3.
-        2. If it is a terminating delegation and it contains signed metadata about the image, return the metadata to be checked and skip to step 11.3. If metadata about an image is not found in a terminating delegation, return an error code indicating that the image is missing.
-        3. Otherwise, continue processing the next delegation, if any. As soon as a delegation is found that contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.
-        4. If no signed metadata about the image can be found anywhere in the delegation graph, return an error code indicating that the image is missing.
+        1. If the delegation does not address the image name being sought -- if none of the delegation's image paths match this image name -- skip this delegation.
+        2. If it is a multi-role delegation {{TAP-3}}, then:
+            1. First, recurse (11.2) for each role listed as if each is a single-role delegation.
+            2. Inspect the return values from each:
+                1. If a minimum number of roles in agreement for this multi-role delegation return the same non-custom metadata (i.e. length and hashes) for the image, then return that metadata for the image.  If the values returned are such that there are multiple sets of non-custom metadata meeting threshold (e.g. if the threshold is 2/4 and two sets of two roles agree on different metadata), then break the tie in favor of the earliest role in the multi-role delegation.
+                2. If the minimum number of roles in agreement threshold is not met:
+                    1. If the multi-role delegation was terminating, raise an error indicating that image info could not be verified.
+                    2. If the multi-role delegation was not terminating, return no image info and allow the process to proceed to the next delegation.
+        3. If the role specified by the delegation contains signed metadata about the image, return the metadata to be checked and continue to step 11.3.
+        4. If the role specified by the delegation does NOT contain signed metadata about the image:
+            1. If this is a terminating delegation, abort the search for this image, ending the recursion and returning an error code indicating that the image could not be found.
+            2. If this is not a terminating delegation, return that no image was found (and continue 11.2 with the next delegation).
+        5. If no signed metadata about the image can be found anywhere in the delegation graph, return an error code indicating that the image is missing.
     3. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.
         2. Check that the custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
