@@ -2,7 +2,6 @@
 title: Uptane IEEE-ISTO Standard for Design and Implementation
 abbrev: UPTANE
 docname: uptane-standard-design
-date: 2018-08-28
 category: info
 
 ipr: noDerivativesTrust200902
