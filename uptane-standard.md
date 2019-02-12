@@ -445,11 +445,15 @@ The Root metadata distributes the public keys of the top-level Root, Targets, Sn
 * A representation of the public keys for all four roles. Each key should have a unique public key identifier.
 * An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
 
+Additionally, if a Time Server is implemented and partial verification secondaries will be used, the Director's Root metadata SHOULD also list the role of Timeserver along with its public key.
+
 Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded, as described in {{TAP-5}}.
 
 ### Targets Metadata {#targets_meta}
 
 A Targets metadata file contains metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.
+
+Additionally, if a Time Server is implemented, the Director's Targets metadata SHOULD also list the role of Timeserver along with its public key.
 
 #### Metadata about Images {#targets_images_meta}
 
@@ -620,6 +624,8 @@ An Uptane implementation SHOULD include a time server, but MAY use another secur
 The Time Server SHALL receive a sequence of tokens from a vehicle representing all of its ECUs. In response, it SHALL sign each token together with the current time.
 
 The Time Server SHALL expose a public interface allowing primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.
+
+Rotation of the The Time Server's key is performed by listing the new key in the Director's Root metadata, in the same manner as other role keys are listed, and also in the Director's Targets metadata (for partial verification secondaries).
 
 ## In-vehicle implementation requirements
 
@@ -811,10 +817,11 @@ In order to perform partial verification, an ECU SHALL perform the following ste
 2. Load the latest top-level Targets metadata file from the Director repository.
 3. Check that the metadata file has been signed by a threshold of keys specified in the previous root metadata file. If not, return an error code indicating an arbitrary software attack.
 4. Check that the version number in the previous targets metadata file, if any, is less than or equal to the version number in this targets metadata file. If not, return an error code indicating a rollback attack.
-5. Check that the latest attested time is lower than the expiration timestamp in this metadata file. If not, return an error code indicating a freeze attack.
-6. Check that there are no delegations. If there are, return an error code.
-7. Check that each ECU identifier appears only once. If not, return an error code.
-8. Return an indicator of success.
+5. Check that there are no delegations. If there are, return an error code.
+6. Check that each ECU identifier appears only once. If not, return an error code.
+7. If the new Targets metadata file indicates that the Timeserver key should be rotated, then reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence).  It will be updated in the next cycle.
+8. Check that the latest attested time is lower than the expiration timestamp in this metadata file. If not, return an error code indicating a freeze attack.
+9. Return an indicator of success.
 
 #### Full verification {#full_verification}
 
@@ -837,8 +844,9 @@ In order to perform full verification, an ECU SHALL perform the following steps:
         4. The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the Root metadata file. (Checks for a rollback attack.)
         5. Set the latest Root metadata file to the new Root metadata file.
         6. Repeat steps 1 to 6.
-    5. Check that the latest attested time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)
-    6. If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
+    5. If the Timeserver key is listed in the Root metadata and has been rotated, reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence).  It will be updated in the next cycle.
+    6. Check that the latest attested time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)
+    7. If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
 4. Download and check the Timestamp metadata file from the Director repository:
     1. Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).
     2. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
