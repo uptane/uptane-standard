@@ -873,11 +873,11 @@ In order to perform full verification, an ECU SHALL perform the following steps:
             2. Inspect the return values from each:
                 1. If at least a number of roles equal to the minimum number of roles in agreement for this multi-role delegation return the same non-custom metadata (i.e. length and hashes) for the image, then return that metadata for the image.  If the values returned are such that there are multiple sets of non-custom metadata meeting the threshold (e.g. if the threshold is 2/4 and two sets of two roles agree on different metadata), then break the tie in favor of the earliest role in the multi-role delegation.
                 2. If the threshold for the minimum number of roles in agreement is not met:
-                    1. If this multi-role delegation is terminating, abort the search for this image, ending the recursion and returning an error code indicating that verified image metadata could not be found.
+                    1. If this multi-role delegation is terminating, abort the search for this image by ending the recursion and returning an error code indicating that verified image metadata could not be found.
                     2. If this multi-role delegation is not terminating, return that no image metadata was found (and continue 11.2 with the next delegation).
         3. If the role specified by the delegation contains signed metadata about the image, return the metadata.
         4. If the role specified by the delegation does not contain signed metadata about the image:
-            1. If this is a terminating delegation, abort the search for this image, ending the recursion and returning an error code indicating that verified imagine metadata could not be found.
+            1. If this is a terminating delegation, abort the search for this image by ending the recursion and returning an error code indicating that verified image metadata could not be found.
             2. If this is not a terminating delegation, return that no image metadata was found (and continue 11.2 with the next delegation).
         5. If no signed metadata about the image can be found anywhere in the delegation graph, return an error code indicating that the image is missing.
     3. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
