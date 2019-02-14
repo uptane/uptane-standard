@@ -869,9 +869,9 @@ In order to perform full verification, an ECU SHALL perform the following steps:
     2. Recursively search the list of delegations, in order of appearance:
         1. If the delegation does not address the image name being sought -- if none of the delegation's image paths match this image name -- skip this delegation.
         2. If it is a multi-role delegation {{TAP-3}}, then:
-            1. First, recurse (11.2) for each role listed as if each is a single-role delegation.
+            1. First, recurse (11.2) for each role listed as if there is a single-role delegation to each.
             2. Inspect the return values from each:
-                1. If at least a number of roles equal to the minimum number of roles in agreement for this multi-role delegation return the same non-custom metadata (i.e. length and hashes) for the image, then return that metadata for the image.  If the values returned are such that there are multiple sets of non-custom metadata meeting the threshold (e.g. if the threshold is 2/4 and two sets of two roles agree on different metadata), then break the tie in favor of the earliest role in the multi-role delegation.
+                1. If at least a number of roles equal to the minimum number of roles in agreement for this multi-role delegation return the same non-custom metadata (i.e. length and hashes) for the image, then return that metadata for the image.  If the values returned are such that there are multiple sets of non-custom metadata meeting the threshold (e.g. if the minimum number of roles in agreement is two and two sets of at least two roles agree on different metadata), then choose the values returned by the set of roles that includes the earliest role in the multi-role delegation.
                 2. If the threshold for the minimum number of roles in agreement is not met:
                     1. If this multi-role delegation is terminating, abort the search for this image by ending the recursion and returning an error code indicating that verified image metadata could not be found.
                     2. If this multi-role delegation is not terminating, return that no image metadata was found (and continue 11.2 with the next delegation).
