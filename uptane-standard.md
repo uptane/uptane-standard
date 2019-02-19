@@ -443,17 +443,14 @@ The following sections describe the role-specific metadata. All roles SHALL foll
 The Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
 
 * A representation of the public keys for all four roles. Each key should have a unique public key identifier.
+     * If a Time Server is in use, a representation of the Time Server public key is CONDITIONALLY REQUIRED in Director repository root metadata.
 * An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
-
-Additionally, if a Time Server is implemented and partial verification secondaries will be used, the Director's Root metadata SHOULD also list the role of Timeserver along with its public key.
 
 Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded, as described in {{TAP-5}}.
 
 ### Targets Metadata {#targets_meta}
 
 A Targets metadata file contains metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.
-
-Additionally, if a Time Server is implemented, the Director's Targets metadata SHOULD also list the role of Timeserver along with its public key.
 
 #### Metadata about Images {#targets_images_meta}
 
@@ -496,6 +493,14 @@ A list of delegations MUST provide the following information:
     * A threshold of keys that must sign for this role
 
 Note that **any** targets metadata file may contain delegations, and that delegations can be in chains of arbitrary length.
+
+#### Metadata about Time Server
+
+If a Time Server {{time_server}} is implemented AND partial-verification secondaries will be used, the following metadata is CONDITIONALLY REQUIRED in the Director repository's Targets metadata:
+
+* A representation of the public key(s) for the Time Server, similar to the representation of public keys in Root metadata.
+
+Listing the public key of the Time Server in Director targets metadata is necessary to allow partial-verification secondaries to perform time server key rotation.
 
 ### Snapshot Metadata {#snapshot_meta}
 
