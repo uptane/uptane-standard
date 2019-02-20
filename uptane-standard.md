@@ -625,7 +625,7 @@ The Time Server exists to inform vehicles about the current time in a cryptograp
 
 An Uptane implementation SHOULD include a time server, but MAY use another secure source of time. If the time server is used, it MUST conform to the following requirements:
 
-The Time Server SHALL receive a sequence of tokens from a vehicle representing all of its ECUs. In response, it SHALL sign each token together with the current time.
+The Time Server SHALL receive a sequence of tokens from a vehicle representing all of its ECUs. In response, it SHALL return a signed response containing the sequence of tokens, together with the current time.
 
 The Time Server SHALL expose a public interface allowing primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.
 
