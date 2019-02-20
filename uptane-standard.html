@@ -430,7 +430,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-02-15" />
+  <meta name="dct.issued" scheme="ISO8601" content="2019-02-20" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -451,10 +451,10 @@
 </tr>
 <tr>
 <td class="left">Intended status: Informational</td>
-<td class="right">February 15, 2019</td>
+<td class="right">February 20, 2019</td>
 </tr>
 <tr>
-<td class="left">Expires: August 19, 2019</td>
+<td class="left">Expires: August 24, 2019</td>
 <td class="right"></td>
 </tr>
 
@@ -471,7 +471,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at https://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on August 19, 2019.</p>
+<p>This Internet-Draft will expire on August 24, 2019.</p>
 <h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
 <p>Copyright (c) 2019 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
 <p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
@@ -921,16 +921,16 @@
 <h1 id="rfc.section.5.2.3">
 <a href="#rfc.section.5.2.3">5.2.3.</a> <a href="#targets_meta" id="targets_meta">Targets Metadata</a>
 </h1>
-<p id="rfc.section.5.2.3.p.1">A Targets metadata file contains metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.</p>
+<p id="rfc.section.5.2.3.p.1">Targets metadata, whether for the top-level Targets role or for any delegated targets role, MAY contain metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.</p>
 <h1 id="rfc.section.5.2.3.1">
 <a href="#rfc.section.5.2.3.1">5.2.3.1.</a> <a href="#targets_images_meta" id="targets_images_meta">Metadata about Images</a>
 </h1>
-<p id="rfc.section.5.2.3.1.p.1">The Targets metadata MUST contain a list of images on the repository. This list MUST provide, at a minimum, the following information about each image on the repository:</p>
+<p id="rfc.section.5.2.3.1.p.1">To be available to install on clients, all images on the repository MUST have their metadata listed in a targets role.  Each targets role MAY provide a list of some images on the repository.  This list MUST provide, at a minimum, the following information about each image:</p>
 <p></p>
 
 <ul>
 <li>The image filename</li>
-<li>The length of the image file in bytes</li>
+<li>The size of the image in bytes</li>
 <li>One or more hashes of the image file, along with the hashing function used</li>
 </ul>
 <h1 id="rfc.section.5.2.3.1.1">
