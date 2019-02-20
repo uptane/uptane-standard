@@ -449,14 +449,14 @@ Additionally, it MAY contain a mapping of roles to a list of valid URLs from whi
 
 ### Targets Metadata {#targets_meta}
 
-A Targets metadata file contains metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.
+Targets metadata, whether for the top-level Targets role or for any delegated targets role, MAY contain metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.
 
 #### Metadata about Images {#targets_images_meta}
 
-The Targets metadata MUST contain a list of images on the repository. This list MUST provide, at a minimum, the following information about each image on the repository:
+To be available to install on clients, all images on the repository MUST have their metadata listed in a targets role.  Each targets role MAY provide a list of some images on the repository.  This list MUST provide, at a minimum, the following information about each image:
 
 * The image filename
-* The length of the image file in bytes
+* The size of the image in bytes
 * One or more hashes of the image file, along with the hashing function used
 
 ##### Custom metadata about images
