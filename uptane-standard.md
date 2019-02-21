@@ -194,7 +194,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 These terms are defined in greater detail in {{roles}}.
 
 *Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.  
-*Roles*: The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
+*Roles*: Public/private key pairs that are responsible for signing various types of metadata. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
 * *Root Role*: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
 * *Snapshot Role*: Indicates which images the repository has released at the same time.
@@ -236,11 +236,11 @@ This document sets guidelines for implementing Uptane in most systems capable of
 
 ### Assumptions
 
-We assume the following system preconditions for Uptane: 
+We assume the following system preconditions for Uptane:
 
 * Vehicles have the ability to establish connectivity to required backend services. For example, this could be done through cellular, Wi-Fi, or hard-wired mechanisms.
 * ECUs are either directly connected to the communication channel, or they are indirectly connected via some sort of network gateway.
-* ECUs are programmable and provide sufficient performance to be updated. 
+* ECUs are programmable and provide sufficient performance to be updated.
 * ECUs must be able to perform a public key cryptography operation as well as some supporting operations.
 * There are state-of-the-art secure servers in place, such as the director and image repository servers.
 
@@ -316,7 +316,7 @@ Uptane is designed with resilience to compromise in mind. We assume that attacke
 * Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability may be developed in two domains:
     * Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories
     * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g. via an OBD port or using a compromised ECU as a vector)
-* Compromise and control either a director repository or image repository server, and any keys stored on the repository, but not both the director and image repositories. 
+* Compromise and control either a director repository or image repository server, and any keys stored on the repository, but not both the director and image repositories.
 * Compromise either a primary ECU or a secondary ECU, but not both in the same vehicle
 
 ## Description of threats {#threats}
@@ -709,7 +709,7 @@ An ECU version report is a metadata structure that MUST contain the following in
 
 The primary SHALL load the current time from a secure source. This secure source SHOULD be a time server as described in {{time_server}}.
 
-If the time server is implemented, the primary SHALL use the following procedure to verify the time: 
+If the time server is implemented, the primary SHALL use the following procedure to verify the time:
 
 1. Gather the tokens/nonces from each secondary ECU's version report ({{version_report}}).
 2. Send the list of tokens to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time.
@@ -754,7 +754,7 @@ Before installing a new image, an ECU SHALL perform the following five steps:
 
 #### Load and verify the latest attested time {#verify_time}
 
-The ECU SHOULD load and verify the current time, or the most recent time from the time server if it is implemented. 
+The ECU SHOULD load and verify the current time, or the most recent time from the time server if it is implemented.
 
 If an Uptane time server ({{time_server}}) is implemented, the ECU SHALL:
 
