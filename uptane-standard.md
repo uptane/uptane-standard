@@ -198,7 +198,7 @@ These terms are defined in greater detail in {{roles}}.
 
 * *Root Role*: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
 * *Snapshot Role*: Indicates which images the repository has released at the same time.
-* *Targets Role*: Holds the metadata used to verify the image, such as cryptographic hashes and file size.
+* *Targets Role*: Holds the metadata used to verify the image, such as cryptographic hashes and file size. In addition to the top-level targets role, there are delegated targets roles that may be custom-defined on the Image repository.
 * *Timestamp Role*: Indicates if there are any new metadata or images on the repository.
 
 
@@ -236,11 +236,11 @@ This document sets guidelines for implementing Uptane in most systems capable of
 
 ### Assumptions
 
-We assume the following system preconditions for Uptane: 
+We assume the following system preconditions for Uptane:
 
 * Vehicles have the ability to establish connectivity to required backend services. For example, this could be done through cellular, Wi-Fi, or hard-wired mechanisms.
 * ECUs are either directly connected to the communication channel, or they are indirectly connected via some sort of network gateway.
-* ECUs are programmable and provide sufficient performance to be updated. 
+* ECUs are programmable and provide sufficient performance to be updated.
 * ECUs must be able to perform a public key cryptography operation as well as some supporting operations.
 * There are state-of-the-art secure servers in place, such as the director and image repository servers.
 
@@ -316,7 +316,7 @@ Uptane is designed with resilience to compromise in mind. We assume that attacke
 * Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability may be developed in two domains:
     * Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories
     * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g. via an OBD port or using a compromised ECU as a vector)
-* Compromise and control either a director repository or image repository server, and any keys stored on the repository, but not both the director and image repositories. 
+* Compromise and control either a director repository or image repository server, and any keys stored on the repository, but not both the director and image repositories.
 * Compromise either a primary ECU or a secondary ECU, but not both in the same vehicle
 
 ## Description of threats {#threats}
@@ -376,18 +376,18 @@ A repository contains images and metadata. Each role has a particular type of me
 
 ### The Root role {#root_role}
 
-The Root role SHALL be responsible for a Certificate Authority as defined in {{RFC3647}}.
-The Root role SHALL produce and sign Root metadata as described in {{root_meta}}.
-The Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.
-The Root role SHALL revoke keys for the other roles, in case of compromise.
+A repository's Root role SHALL be responsible for a Certificate Authority as defined in {{RFC3647}}.
+A repository's Root role SHALL produce and sign Root metadata as described in {{root_meta}}.
+A repository's Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.
+A repository's Root role SHALL revoke keys for the other roles, in case of compromise.
 
 ### The Targets role {#targets_role}
 
-The Targets role SHALL produce and sign metadata about images and delegations as described in {{targets_meta}}.
+A repository's Targets role SHALL produce and sign metadata about images and delegations as described in {{targets_meta}}.
 
 #### Delegations {#targets_role_delegations}
 
-The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles. If it does, it MUST do so as specified in {{delegations_meta}}.
+The top-level Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it MUST do so as specified in {{delegations_meta}}.
 
 Responsibility for signing images or a subset of images MAY be delegated to more than one role and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.
 
@@ -399,11 +399,11 @@ Delegations only apply to the Image repository. The Targets role on the Director
 
 ### The Snapshot role {#snapshot_role}
 
-The Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the main Targets metadata, and the version numbers and hashes of all delegated targets metadata, as described in {{snapshot_meta}}.
+A repository's Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the top-level Targets metadata, and the version numbers and hashes of all delegated targets metadata, as described in {{snapshot_meta}}.
 
 ### The Timestamp role {#timestamp_role}
 
-The Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.
+A repository's Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.
 
 ## Metadata structures {#meta_structures}
 
@@ -439,7 +439,7 @@ The following sections describe the role-specific metadata. All roles SHALL foll
 
 ### Root Metadata {#root_meta}
 
-The Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
+A repository's Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
 
 * A representation of the public keys for all four roles. Each key should have a unique public key identifier.
      * If a Time Server is in use, a representation of the Time Server public key is CONDITIONALLY REQUIRED in Director repository root metadata.
@@ -709,7 +709,7 @@ An ECU version report is a metadata structure that MUST contain the following in
 
 The primary SHALL load the current time from a secure source. This secure source SHOULD be a time server as described in {{time_server}}.
 
-If the time server is implemented, the primary SHALL use the following procedure to verify the time: 
+If the time server is implemented, the primary SHALL use the following procedure to verify the time:
 
 1. Gather the tokens/nonces from each secondary ECU's version report ({{version_report}}).
 2. Send the list of tokens to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time.
@@ -754,7 +754,7 @@ Before installing a new image, an ECU SHALL perform the following five steps:
 
 #### Load and verify the latest attested time {#verify_time}
 
-The ECU SHOULD load and verify the current time, or the most recent time from the time server if it is implemented. 
+The ECU SHOULD load and verify the current time, or the most recent time from the time server if it is implemented.
 
 If an Uptane time server ({{time_server}}) is implemented, the ECU SHALL:
 
