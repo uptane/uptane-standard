@@ -387,7 +387,7 @@ A repository's Targets role SHALL produce and sign metadata about images and del
 
 #### Delegations {#targets_role_delegations}
 
-The top-level Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it MUST do so as specified in {{delegations_meta}}.
+The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it MUST do so as specified in {{delegations_meta}}.
 
 Responsibility for signing images or a subset of images MAY be delegated to more than one role and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.
 
