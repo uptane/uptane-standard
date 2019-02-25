@@ -4,6 +4,7 @@
 OPEN=$(word 1, $(wildcard /usr/bin/xdg-open /usr/bin/open /bin/echo))
 MKD := uptane-standard.md
 HTML := uptane-standard.html
+RAWHTML := uptane-standard-raw.html
 XML := uptane-standard.xml
 TXT := uptane-standard.txt
 
@@ -20,6 +21,8 @@ open: html ## Create an HTML version from the markdown, then open it in a browse
 
 html: xml ## Create an HTML version from the markdown
 	@xml2rfc --html $(XML) $(HTML)
+	@mv $(HTML) $(RAWHTML)
+	@cat $(RAWHTML) |sed '/<table class="header">/,/<\/table>/d;/<h1 id="rfc.status">/,/except as an Internet-Draft.<\/p>/d' > $(HTML)
 
 xml: ## Create an XML version from the markdown
 	@kramdown-rfc2629 $(MKD) > $(XML)
@@ -32,6 +35,8 @@ open-docker: html-docker ## Create an HTML version from the markdown using docke
 
 html-docker: xml-docker ## Create an HTML version from the markdown, using docker
 	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 xml2rfc --html $(XML) $(HTML)
+	@mv $(HTML) $(RAWHTML)
+	@cat $(RAWHTML) |sed '/<table class="header">/,/<\/table>/d;/<h1 id="rfc.status">/,/except as an Internet-Draft.<\/p>/d' > $(HTML)
 
 xml-docker: ## Create an XML version from the markdown, using docker
 	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 kramdown-rfc2629 $(MKD) > $(XML)
