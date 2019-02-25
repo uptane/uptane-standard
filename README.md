@@ -4,11 +4,9 @@
 
 ## Existing documentation
 
-Several documents are already available which describe Uptane's design and implementation:
+Several documents are already available which describe Uptane's design and implementation. Note that an intial version of the Uptane Standards document has been developed and should be considered the authoritative resource for the framework:
 
-* [Design Overview](https://docs.google.com/document/d/1pBK--40BCg_ofww4GES0weYFB6tZRedAjUy6PJ4Rgzk/edit?usp=sharing)
-* [Implementation Specification](https://docs.google.com/document/d/1wjg3hl0iDLNh7jIRaHl3IXhwm0ssOtDje5NemyTBcaw/edit?usp=sharing)
-* [Deployment Considerations](https://docs.google.com/document/d/17wOs-T7mugwte5_Dt-KLGMsp-3_yAARejpFmrAMefSE/edit?usp=sharing)
+* [Uptane Standards Document](https://uptane.github.io/uptane-standard/uptane-standard.html)
 * [Reference Implementation and Demonstration Code](https://github.com/uptane/uptane)
 
 ## Contributing
