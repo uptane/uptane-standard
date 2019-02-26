@@ -376,18 +376,18 @@ A repository contains images and metadata. Each role has a particular type of me
 
 ### The Root role {#root_role}
 
-The Root role SHALL be responsible for a Certificate Authority as defined in {{RFC3647}}.
-The Root role SHALL produce and sign Root metadata as described in {{root_meta}}.
-The Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.
-The Root role SHALL revoke keys for the other roles, in case of compromise.
+A repository's Root role SHALL be responsible for a Certificate Authority as defined in {{RFC3647}}.
+A repository's Root role SHALL produce and sign Root metadata as described in {{root_meta}}.
+A repository's Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.
+A repository's Root role SHALL revoke keys for the other roles, in case of compromise.
 
 ### The Targets role {#targets_role}
 
-The Targets role SHALL produce and sign metadata about images and delegations as described in {{targets_meta}}.
+A repository's Targets role SHALL produce and sign metadata about images and delegations as described in {{targets_meta}}.
 
 #### Delegations {#targets_role_delegations}
 
-The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles. If it does, it MUST do so as specified in {{delegations_meta}}.
+The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it MUST do so as specified in {{delegations_meta}}.
 
 Responsibility for signing images or a subset of images MAY be delegated to more than one role and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.
 
@@ -399,11 +399,11 @@ Delegations only apply to the Image repository. The Targets role on the Director
 
 ### The Snapshot role {#snapshot_role}
 
-The Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the main Targets metadata, and the version numbers and hashes of all delegated targets metadata, as described in {{snapshot_meta}}.
+A repository's Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the top-level Targets metadata, and the version numbers and hashes of all delegated targets metadata, as described in {{snapshot_meta}}.
 
 ### The Timestamp role {#timestamp_role}
 
-The Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.
+A repository's Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.
 
 ## Metadata structures {#meta_structures}
 
@@ -439,7 +439,7 @@ The following sections describe the role-specific metadata. All roles SHALL foll
 
 ### Root Metadata {#root_meta}
 
-The Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
+A repository's Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
 
 * A representation of the public keys for all four roles. Each key should have a unique public key identifier.
      * If a Time Server is in use, a representation of the Time Server public key is CONDITIONALLY REQUIRED in Director repository root metadata.
@@ -731,9 +731,11 @@ The primary SHOULD send the time to each ECU. The secondary will verify the time
 
 #### Send metadata to secondaries {#send_metadata_primary}
 
-The primary SHALL send its latest downloaded metadata to all of its associated secondaries.
+The primary SHALL send its latest downloaded metadata to all of its associated secondaries. The metadata it sends to each secondary MUST include all of the metadata required for verification on that secondary. For full verification secondaries, this includes the metadata for all four roles from both repositories, plus any delegated targets metadata files the secondary will recurse through to find the proper delegation. For partial verification secondaries, this includes only the targets metadata file from the director repository.
 
-Full verification secondaries SHALL keep a complete copy of all repository metadata. A partial verification secondary SHALL keep the targets metadata file from the director repository, and MAY keep the rest of the metadata.
+The primary SHOULD determine the minimal set of metadata files to send to each secondary, by performing delegation resolution as described in {{full_verification}}.
+
+Each secondary SHALL store the latest copy of all metadata required for its own verification.
 
 #### Send images to secondaries {#send_images_primary}
 
