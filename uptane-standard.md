@@ -194,12 +194,12 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 These terms are defined in greater detail in {{roles}}.
 
 *Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.  
-*Roles*: The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
+*Role*: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
-* *Root Role*: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
-* *Snapshot Role*: Indicates which images the repository has released at the same time.
-* *Targets Role*: Holds the metadata used to verify the image, such as cryptographic hashes and file size. In addition to the top-level targets role, there are delegated targets roles that may be custom-defined on the Image repository.
-* *Timestamp Role*: Indicates if there are any new metadata or images on the repository.
+* *Root Role*: Signs metadata that distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
+* *Snapshot Role*: Signs metadata that indicates which images the repository has released at the same time.
+* *Targets Role*: Sings metadata used to verify the image, such as cryptographic hashes and file size.
+* *Timestamp Role*: Signs metadata that indicates if there are any new metadata or images on the repository.
 
 
 ## Acronyms and Abbreviations
