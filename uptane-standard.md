@@ -445,7 +445,7 @@ A repository's Root metadata distributes the public keys of the top-level Root, 
      * If a Time Server is in use, a representation of the Time Server public key is CONDITIONALLY REQUIRED in Director repository root metadata.
 * An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
 
-Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded, as described in {{TAP-5}}.
+Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded.  If this mapping of URLs is used, the implementer SHOULD implement this functionality following {{TAP-5}} to avoid adding unforeseen security risks.
 
 ### Targets Metadata {#targets_meta}
 
@@ -510,7 +510,7 @@ For each Targets metadata file on the repository, the Snapshot metadata SHALL co
 
 * The filename and version number of the each Targets metadata file on the repository
 
-The Snapshot metadata MAY also list the root metadata filename and version number. This is no longer required because of the implementation of {{TAP-5}}, but MAY be included for backwards compatibility.
+The Snapshot metadata MAY also list the root metadata filename and version number. This is not required, particularly for implementations of {{TAP-5}}, but MAY be included in all cases for backwards compatibility.
 
 ### Timestamp Metadata {#timestamp_meta}
 
@@ -837,7 +837,7 @@ Full verification of metadata means that the ECU checks that the Targets metadat
 
 Full verification MAY be performed by either primary or secondary ECUs. The procedure is the same, except that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, it applies only to primary ECUs.
 
-A primary ECU SHALL download metadata and images following the rules specified in {{TAP-5}}, and the metadata file renaming rules specified in {{metadata_filename_rules}}.
+If {{TAP-5}} is supported, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, the download should follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
