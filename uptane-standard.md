@@ -485,7 +485,7 @@ A list of delegations MUST provide the following information:
 * A list of public keys of all delegatees. Each key should have a unique public key identifier, and a key type.
 * A list of delegations, each of which contains:
   * A list of the filenames to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
-  * A list of the hardware identifiers to which this role applies.
+  * An optional list of the hardware identifiers to which this role applies.  If this is omitted, any hardware identifier will match.
   * An indicator of whether or not this is a terminating delegation. (See {{targets_role_delegations}}.)
   * A list of the roles to which this delegation applies. Each role needs to specify:
     * A name for the role (e.g. "supplier1-qa")
