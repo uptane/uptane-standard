@@ -835,7 +835,7 @@ Full verification of metadata means that the ECU checks that the Targets metadat
 
 Full verification MAY be performed by either primary or secondary ECUs. The procedure is the same, except that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, it applies only to primary ECUs.
 
-A primary ECU SHALL download metadata and images following the rules specified in {{TAP-5}} (if supported) or using the {{TUF-spec}}, and the metadata file renaming rules specified in {{metadata_filename_rules}}.
+If {{TAP-5}} is supported, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, the download should follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
