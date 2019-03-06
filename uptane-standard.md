@@ -119,6 +119,20 @@ informative:
     seriesinfo:
       ISBN: 978-1-931971-38-6
     date: 2017-07-12
+  UPTANEESCAR:
+    target: https://ssl.engineering.nyu.edu/papers/kuppusamy_escar_16.pdf
+    title: "Securing Software Updates for Automobiles"
+    author:
+      - ins: T.K. Kuppusamy
+      - ins: A. Brown 
+      - ins: S. Awwad
+      - ins: D. McCoy
+      - ins: R. Bielawski
+      - ins: C. Mott
+      - ins: S. Lauzon
+      - ins: A. Weimerskirch
+      - ins: J. Cappos
+    date: 2016-10-16
   PEP-458:
     target: https://www.python.org/dev/peps/pep-0458/
     title: "PEP 458 -- Surviving a Compromise of PyPI"
@@ -217,6 +231,8 @@ These terms are defined in greater detail in {{roles}}.
 # Rationale for and Scope of Uptane Standards
 
 This Standards document clarifies the essential components and best practices for the secure design, implementation and deployment of Uptane by OEMs and suppliers. These practices contribute to compromise resilience, or the ability to minimize the extent of the threat posed by any given attack.
+
+However, this specification is intended as an implementation guide, not as a detailed technical argument about the security properties that Uptane provides.  Readers interested in such documentation should refer to published papers that cover this topic.  {{UPTANEESCAR}}
 
 ## Why Uptane requires standards
 
