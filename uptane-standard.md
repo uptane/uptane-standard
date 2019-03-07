@@ -838,14 +838,7 @@ If a step in the following workflows does not succeed (e.g., the update is abort
 In order to perform partial verification, an ECU SHALL perform the following steps:
 
 1. Load the latest attested time from the time server, if implemented.
-2. Load the latest top-level Targets metadata file from the Director repository.
-3. Check that the metadata file has been signed by a threshold of keys specified in the previous root metadata file. If not, return an error code indicating an arbitrary software attack.
-4. Check that the version number in the previous targets metadata file, if any, is less than or equal to the version number in this targets metadata file. If not, return an error code indicating a rollback attack.
-5. Check that there are no delegations. If there are, return an error code.
-6. Check that each ECU identifier appears only once. If not, return an error code.
-7. If the new Targets metadata file indicates that the Timeserver key should be rotated, then reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence).  It will be updated in the next cycle.
-8. Check that the latest attested time is lower than the expiration timestamp in this metadata file. If not, return an error code indicating a freeze attack.
-9. Return an indicator of success.
+2. Download and check the Targets metadata file from the Director repository, following the procedure in {{check_targets}}.
 
 #### Full verification {#full_verification}
 
@@ -913,14 +906,15 @@ If the ECU performing the verification is the primary ECU, it SHOULD also ensure
 #### How to check Targets metadata {#check_targets}
 
 1. Download the number of bytes either specified in the Snapshot metadata file, or some Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.
-2. The hashes (if any), and version number of the new Targets metadata file MUST match the latest Snapshot metadata. If the new Targets metadata file does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
+2. The hashes (if any), and version number of the new Targets metadata file MUST match the latest Snapshot metadata. If the new Targets metadata file does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) Skip this step if checking Targets metadata on a partial-verification ECU; partial-verification ECUs will not have Snapshot metadata.
 3. Check that it has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack):
     1. If checking top-level targets metadata, the threshold of keys is specified in the Root metadata.
     2. If checking delegated targets metadata, the threshold of keys is specified in the targets metadata file that delegated authority to this role.
 4. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
-5. Check that the latest attested time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
-6. If checking targets metadata from the Director repository, verify that there are no delegations.
-7. If checking targets metadata from the Director repository, check that no ECU identifier is represented more than once.
+5. If this Targets metadata file indicates that the Timeserver key should be rotated, then reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence). It will be updated in the next cycle.
+6. Check that the latest attested time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
+7. If checking targets metadata from the Director repository, verify that there are no delegations.
+8. If checking targets metadata from the Director repository, check that no ECU identifier is represented more than once.
 
 #### How to resolve delegations {#resolve_delegations}
 
