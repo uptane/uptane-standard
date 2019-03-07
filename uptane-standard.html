@@ -430,7 +430,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-02-25" />
+  <meta name="dct.issued" scheme="ISO8601" content="2019-03-07" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -579,18 +579,18 @@
 <a href="#rfc.section.2.3">2.3.</a> <a href="#uptane-role-terminology" id="uptane-role-terminology">Uptane Role Terminology</a>
 </h1>
 <p id="rfc.section.2.3.p.1">These terms are defined in greater detail in <a href="#roles" class="xref">Section 5.1</a>.</p>
-<p><em>Delegations</em>: A process by which the responsibility of signing metadata about images is assigned to another party.<br> <em>Roles</em>: The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.</p>
+<p><em>Delegations</em>: A process by which the responsibility of signing metadata about images is assigned to another party.<br> <em>Role</em>: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.</p>
 <p></p>
 
 <ul>
 <li>
-<em>Root Role</em>: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.</li>
+<em>Root Role</em>: Signs metadata that distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.</li>
 <li>
-<em>Snapshot Role</em>: Indicates which images the repository has released at the same time.</li>
+<em>Snapshot Role</em>: Signs metadata that indicates which images the repository has released at the same time.</li>
 <li>
-<em>Targets Role</em>: Holds the metadata used to verify the image, such as cryptographic hashes and file size.</li>
+<em>Targets Role</em>: Sings metadata used to verify the image, such as cryptographic hashes and file size.</li>
 <li>
-<em>Timestamp Role</em>: Indicates if there are any new metadata or images on the repository.</li>
+<em>Timestamp Role</em>: Signs metadata that indicates if there are any new metadata or images on the repository.</li>
 </ul>
 <h1 id="rfc.section.2.4">
 <a href="#rfc.section.2.4">2.4.</a> <a href="#acronyms-and-abbreviations" id="acronyms-and-abbreviations">Acronyms and Abbreviations</a>
@@ -604,6 +604,7 @@
 <a href="#rfc.section.3">3.</a> <a href="#rationale-for-and-scope-of-uptane-standards" id="rationale-for-and-scope-of-uptane-standards">Rationale for and Scope of Uptane Standards</a>
 </h1>
 <p id="rfc.section.3.p.1">This Standards document clarifies the essential components and best practices for the secure design, implementation and deployment of Uptane by OEMs and suppliers. These practices contribute to compromise resilience, or the ability to minimize the extent of the threat posed by any given attack.</p>
+<p id="rfc.section.3.p.2">However, this specification is intended as an implementation guide, not as a detailed technical argument about the security properties that Uptane provides.  Readers interested in such documentation should refer to published papers that cover this topic.  <a href="#UPTANEESCAR" class="xref">[UPTANEESCAR]</a></p>
 <h1 id="rfc.section.3.1">
 <a href="#rfc.section.3.1">3.1.</a> <a href="#why-uptane-requires-standards" id="why-uptane-requires-standards">Why Uptane requires standards</a>
 </h1>
@@ -815,15 +816,15 @@
 <h1 id="rfc.section.5.1.1">
 <a href="#rfc.section.5.1.1">5.1.1.</a> <a href="#root_role" id="root_role">The Root role</a>
 </h1>
-<p id="rfc.section.5.1.1.p.1">The Root role SHALL be responsible for a Certificate Authority as defined in <a href="#RFC3647" class="xref">[RFC3647]</a>.  The Root role SHALL produce and sign Root metadata as described in <a href="#root_meta" class="xref">Section 5.2.2</a>.  The Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.  The Root role SHALL revoke keys for the other roles, in case of compromise.</p>
+<p id="rfc.section.5.1.1.p.1">A repository&#8217;s Root role SHALL be responsible for a Certificate Authority as defined in <a href="#RFC3647" class="xref">[RFC3647]</a>.  A repository&#8217;s Root role SHALL produce and sign Root metadata as described in <a href="#root_meta" class="xref">Section 5.2.2</a>.  A repository&#8217;s Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.  A repository&#8217;s Root role SHALL revoke keys for the other roles, in case of compromise.</p>
 <h1 id="rfc.section.5.1.2">
 <a href="#rfc.section.5.1.2">5.1.2.</a> <a href="#targets_role" id="targets_role">The Targets role</a>
 </h1>
-<p id="rfc.section.5.1.2.p.1">The Targets role SHALL produce and sign metadata about images and delegations as described in <a href="#targets_meta" class="xref">Section 5.2.3</a>.</p>
+<p id="rfc.section.5.1.2.p.1">A repository&#8217;s Targets role SHALL produce and sign metadata about images and delegations as described in <a href="#targets_meta" class="xref">Section 5.2.3</a>.</p>
 <h1 id="rfc.section.5.1.2.1">
 <a href="#rfc.section.5.1.2.1">5.1.2.1.</a> <a href="#targets_role_delegations" id="targets_role_delegations">Delegations</a>
 </h1>
-<p id="rfc.section.5.1.2.1.p.1">The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles. If it does, it MUST do so as specified in <a href="#delegations_meta" class="xref">Section 5.2.3.2</a>.</p>
+<p id="rfc.section.5.1.2.1.p.1">The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it MUST do so as specified in <a href="#delegations_meta" class="xref">Section 5.2.3.2</a>.</p>
 <p id="rfc.section.5.1.2.1.p.2">Responsibility for signing images or a subset of images MAY be delegated to more than one role and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.</p>
 <p id="rfc.section.5.1.2.1.p.3">A particular delegation for a subset of images MAY be designated as <strong>terminating</strong>. For terminating delegations, the client SHALL NOT search any further if it does not find validly signed metadata about those images in the terminating delegation. Delegations SHOULD NOT be terminating by default; terminating delegations SHOULD only be used when there is a compelling technical reason to do so.</p>
 <p id="rfc.section.5.1.2.1.p.4">A delegation for a subset of images MAY be a multi-role delegation <a href="#TAP-3" class="xref">[TAP-3]</a>. A multi-role delegation indicates that multiple roles are needed to sign a particular image and so each of the delegatee roles MUST sign the same metadata.</p>
@@ -831,11 +832,11 @@
 <h1 id="rfc.section.5.1.3">
 <a href="#rfc.section.5.1.3">5.1.3.</a> <a href="#snapshot_role" id="snapshot_role">The Snapshot role</a>
 </h1>
-<p id="rfc.section.5.1.3.p.1">The Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the main Targets metadata, and the version numbers and hashes of all delegated targets metadata, as described in <a href="#snapshot_meta" class="xref">Section 5.2.4</a>.</p>
+<p id="rfc.section.5.1.3.p.1">A repository&#8217;s Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the top-level Targets metadata, and the version numbers and hashes of all delegated targets metadata, as described in <a href="#snapshot_meta" class="xref">Section 5.2.4</a>.</p>
 <h1 id="rfc.section.5.1.4">
 <a href="#rfc.section.5.1.4">5.1.4.</a> <a href="#timestamp_role" id="timestamp_role">The Timestamp role</a>
 </h1>
-<p id="rfc.section.5.1.4.p.1">The Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.</p>
+<p id="rfc.section.5.1.4.p.1">A repository&#8217;s Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.</p>
 <h1 id="rfc.section.5.2">
 <a href="#rfc.section.5.2">5.2.</a> <a href="#meta_structures" id="meta_structures">Metadata structures</a>
 </h1>
@@ -877,7 +878,7 @@
 <h1 id="rfc.section.5.2.2">
 <a href="#rfc.section.5.2.2">5.2.2.</a> <a href="#root_meta" id="root_meta">Root Metadata</a>
 </h1>
-<p id="rfc.section.5.2.2.p.1">The Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:</p>
+<p id="rfc.section.5.2.2.p.1">A repository&#8217;s Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:</p>
 <p></p>
 
 <ul>
@@ -885,7 +886,7 @@
 </li>
 <li>An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role</li>
 </ul>
-<p id="rfc.section.5.2.2.p.3">Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded, as described in <a href="#TAP-5" class="xref">[TAP-5]</a>.</p>
+<p id="rfc.section.5.2.2.p.3">Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded.  If this mapping of URLs is used, the implementer SHOULD implement this functionality following <a href="#TAP-5" class="xref">[TAP-5]</a> to avoid adding unforeseen security risks.</p>
 <h1 id="rfc.section.5.2.3">
 <a href="#rfc.section.5.2.3">5.2.3.</a> <a href="#targets_meta" id="targets_meta">Targets Metadata</a>
 </h1>
@@ -931,7 +932,8 @@
 <ul>
 <li>A list of public keys of all delegatees. Each key should have a unique public key identifier, and a key type.</li>
 <li>A list of delegations, each of which contains: <ul>
-<li>A list of the images or paths to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.</li>
+<li>A list of the filenames to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.</li>
+<li>An optional list of the hardware identifiers to which this role applies.  If this is omitted, any hardware identifier will match.</li>
 <li>An indicator of whether or not this is a terminating delegation. (See <a href="#targets_role_delegations" class="xref">Section 5.1.2.1</a>.)</li>
 <li>A list of the roles to which this delegation applies. Each role needs to specify: <ul>
 <li>A name for the role (e.g. &#8220;supplier1-qa&#8221;)</li>
@@ -959,7 +961,7 @@
 <p></p>
 
 <ul><li>The filename and version number of the each Targets metadata file on the repository</li></ul>
-<p id="rfc.section.5.2.4.p.4">The Snapshot metadata MAY also list the root metadata filename and version number. This is no longer required because of the implementation of <a href="#TAP-5" class="xref">[TAP-5]</a>, but MAY be included for backwards compatibility.</p>
+<p id="rfc.section.5.2.4.p.4">The Snapshot metadata MAY also list the root metadata filename and version number. This is not required, particularly for implementations of <a href="#TAP-5" class="xref">[TAP-5]</a>, but MAY be included in all cases for backwards compatibility.</p>
 <h1 id="rfc.section.5.2.5">
 <a href="#rfc.section.5.2.5">5.2.5.</a> <a href="#timestamp_meta" id="timestamp_meta">Timestamp Metadata</a>
 </h1>
@@ -1089,7 +1091,7 @@
 </h1>
 <p id="rfc.section.5.3.3.p.1">The Time Server exists to inform vehicles about the current time in a cryptographically secure way, since many ECUs in a vehicle will not have a reliable source of time. It receives lists of tokens from vehicles, and returns back a signed sequence that includes the token and the current time.</p>
 <p id="rfc.section.5.3.3.p.2">An Uptane implementation SHOULD include a time server, but MAY use another secure source of time. If the time server is used, it MUST conform to the following requirements:</p>
-<p id="rfc.section.5.3.3.p.3">The Time Server SHALL receive a sequence of tokens from a vehicle representing all of its ECUs. In response, it SHALL sign each token together with the current time.</p>
+<p id="rfc.section.5.3.3.p.3">When the Time Server receives a sequence of tokens from a vehicle, it SHALL provide one or more signed responses, containing the time along with these tokens. It MAY produce either one signed time attestation containing the current time and all tokens, or multiple time attestations each containing the current time and one or more tokens.</p>
 <p id="rfc.section.5.3.3.p.4">The Time Server SHALL expose a public interface allowing primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.</p>
 <p id="rfc.section.5.3.3.p.5">Rotation of the The Time Server&#8217;s key is performed by listing the new key in the Director&#8217;s Root metadata, in the same manner as other role keys are listed, and also in the Director&#8217;s Targets metadata (for partial verification secondaries).</p>
 <h1 id="rfc.section.5.4">
@@ -1276,6 +1278,7 @@
 <li>Load the latest Targets metadata file from the director.</li>
 <li>Find the Targets metadata associated with this ECU identifier.</li>
 <li>Check that the hardware identifier in the metadata matches the ECUs hardware identifier.</li>
+<li>Check that the image filename is valid for this ECU. This MAY be a comparison against a wildcard path, and restricts the ECUs a delegation applies to.</li>
 <li>Check that the release counter of the image in the previous metadata, if it exists, is less than or equal to the release counter in the latest metadata.</li>
 <li>If the image is encrypted, decrypt the image with a decryption key to be chosen as follows: <ul>
 <li>If the ECU key is a symmetric key, the ECU SHALL use the ECU key for image decryption.</li>
@@ -1318,7 +1321,7 @@
 </h1>
 <p id="rfc.section.5.4.4.2.p.1">Full verification of metadata means that the ECU checks that the Targets metadata about images from the Director repository matches the Targets metadata about the same images from the Image repository. This provides resilience to a key compromise in the system.</p>
 <p id="rfc.section.5.4.4.2.p.2">Full verification MAY be performed by either primary or secondary ECUs. The procedure is the same, except that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, it applies only to primary ECUs.</p>
-<p id="rfc.section.5.4.4.2.p.3">A primary ECU SHALL download metadata and images following the rules specified in <a href="#TAP-5" class="xref">[TAP-5]</a>, and the metadata file renaming rules specified in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>.</p>
+<p id="rfc.section.5.4.4.2.p.3">If <a href="#TAP-5" class="xref">[TAP-5]</a> is supported, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If <a href="#TAP-5" class="xref">[TAP-5]</a> is not supported, the download should follow the <a href="#TUF-spec" class="xref">[TUF-spec]</a> and the metadata file renaming rules specified in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>.</p>
 <p id="rfc.section.5.4.4.2.p.4">In order to perform full verification, an ECU SHALL perform the following steps:</p>
 <p></p>
 
@@ -1375,7 +1378,7 @@
 <li>For each image listed in the Targets metadata file from the Director repository, locate a Targets metadata file that contains an image with exactly the same file name. For each delegated Targets metadata file that is found to contain metadata for the image currently being processed, perform all of the checks in step 10. Use the following process to locate image metadata.  NOTE that if at any point below, a role you attempt to check for image metadata cannot be found and verified, you should abort the search and indicate that image metadata cannot be found because of a missing or invalid role.  <ol>
 <li>If the top-level Targets metadata file contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.</li>
 <li>Recursively search the list of delegations, in order of appearance: <ol>
-<li>If the delegation does not address the image name being sought &#8211; if none of the delegation&#8217;s image paths match this image name &#8211; skip this delegation.</li>
+<li>Check whether the delegation has authority over this target. The delegation must include the hardware identifier of the target, and the target name must match one of the delegation&#8217;s image paths.  If either of these tests fail, skip this delegation.</li>
 <li>If it is a multi-role delegation <a href="#TAP-3" class="xref">[TAP-3]</a>, then: <ol>
 <li>First, recurse (11.2) for each role listed as if there is a single-role delegation to each.</li>
 <li>Inspect the return values from each: <ol>
@@ -1515,6 +1518,11 @@
 <td class="reference"><b id="RFC1321">[RFC1321]</b></td>
 <td class="top">
 <a>Rivest, R.</a>, "<a href="https://tools.ietf.org/html/rfc1321">The MD5 Message-Digest Algorithm</a>", RFC 1321, DOI 10.17487/RFC1321, April 1992.</td>
+</tr>
+<tr>
+<td class="reference"><b id="UPTANEESCAR">[UPTANEESCAR]</b></td>
+<td class="top">
+<a>Kuppusamy, T.</a>, <a>Brown, A.</a>, <a>Awwad, S.</a>, <a>McCoy, D.</a>, <a>Bielawski, R.</a>, <a>Mott, C.</a>, <a>Lauzon, S.</a>, <a>Weimerskirch, A.</a> and <a>J. Cappos</a>, "<a href="https://ssl.engineering.nyu.edu/papers/kuppusamy_escar_16.pdf">Securing Software Updates for Automobiles</a>", October 2016.</td>
 </tr>
 <tr>
 <td class="reference"><b id="USATODAY">[USATODAY]</b></td>
