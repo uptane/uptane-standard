@@ -418,7 +418,7 @@
 <link href="#rfc.section.5.4.1" rel="Chapter" title="5.4.1 Build-time prerequisite requirements for ECUs">
 <link href="#rfc.section.5.4.2" rel="Chapter" title="5.4.2 Downloading and distributing updates on a primary ECU">
 <link href="#rfc.section.5.4.3" rel="Chapter" title="5.4.3 Installing images on ECUs">
-<link href="#rfc.section.5.4.4" rel="Chapter" title="5.4.4 Metadata verification">
+<link href="#rfc.section.5.4.4" rel="Chapter" title="5.4.4 Metadata verification procedures">
 <link href="#rfc.references" rel="Chapter" title="6 References">
 <link href="#rfc.references.1" rel="Chapter" title="6.1 Normative References">
 <link href="#rfc.references.2" rel="Chapter" title="6.2 Informative References">
@@ -430,7 +430,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-03-07" />
+  <meta name="dct.issued" scheme="ISO8601" content="2019-03-09" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -538,7 +538,7 @@
 </li>
 <li>5.4.3.   <a href="#rfc.section.5.4.3">Installing images on ECUs</a>
 </li>
-<li>5.4.4.   <a href="#rfc.section.5.4.4">Metadata verification</a>
+<li>5.4.4.   <a href="#rfc.section.5.4.4">Metadata verification procedures</a>
 </li>
 </ul></ul><li>6.   <a href="#rfc.references">References</a>
 </li>
@@ -1295,7 +1295,7 @@
 </h1>
 <p id="rfc.section.5.4.3.5.p.1">The ECU SHALL create a version report as described in <a href="#version_report" class="xref">Section 5.4.2.1.2</a>, and send it to the primary (or simply save it to disk, if the ECU is a primary). The primary SHOULD write the version reports it receives to disk and associate them with the secondaries that sent them.</p>
 <h1 id="rfc.section.5.4.4">
-<a href="#rfc.section.5.4.4">5.4.4.</a> <a href="#metadata_verification" id="metadata_verification">Metadata verification</a>
+<a href="#rfc.section.5.4.4">5.4.4.</a> <a href="#metadata_verification" id="metadata_verification">Metadata verification procedures</a>
 </h1>
 <p id="rfc.section.5.4.4.p.1">A primary ECU MUST perform full verification of metadata. A secondary ECU SHOULD perform full verification of metadata, but MAY perform partial verification instead.</p>
 <p id="rfc.section.5.4.4.p.2">If a step in the following workflows does not succeed (e.g., the update is aborted because a new metadata file was not signed), an ECU SHOULD still be able to update again in the future. Errors raised during the update process SHOULD NOT leave ECUs in an unrecoverable state.</p>
@@ -1307,14 +1307,7 @@
 
 <ol>
 <li>Load the latest attested time from the time server, if implemented.</li>
-<li>Load the latest top-level Targets metadata file from the Director repository.</li>
-<li>Check that the metadata file has been signed by a threshold of keys specified in the previous root metadata file. If not, return an error code indicating an arbitrary software attack.</li>
-<li>Check that the version number in the previous targets metadata file, if any, is less than or equal to the version number in this targets metadata file. If not, return an error code indicating a rollback attack.</li>
-<li>Check that there are no delegations. If there are, return an error code.</li>
-<li>Check that each ECU identifier appears only once. If not, return an error code.</li>
-<li>If the new Targets metadata file indicates that the Timeserver key should be rotated, then reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence).  It will be updated in the next cycle.</li>
-<li>Check that the latest attested time is lower than the expiration timestamp in this metadata file. If not, return an error code indicating a freeze attack.</li>
-<li>Return an indicator of success.</li>
+<li>Download and check the Targets metadata file from the Director repository, following the procedure in <a href="#check_targets" class="xref">Section 5.4.4.6</a>.</li>
 </ol>
 <h1 id="rfc.section.5.4.4.2">
 <a href="#rfc.section.5.4.4.2">5.4.4.2.</a> <a href="#full_verification" id="full_verification">Full verification</a>
@@ -1328,79 +1321,16 @@
 <ol>
 <li>Load the repository mapping metadata (<a href="#repo_mapping_meta" class="xref">Section 5.2.6</a>), and use the information therein to determine from where metadata should be downloaded.</li>
 <li>Load the latest attested time from the time server, if implemented.</li>
-<li>Download and check the Root metadata file from the Director repository: <ol>
-<li>Load the previous Root metadata file.</li>
-<li>Update to the latest Root metadata file.  <ol>
-<li>Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous root metadata file).</li>
-<li>Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, then go to step 3.5.</li>
-<li>Version N+1 of the Root metadata file MUST have been signed by: (1) a threshold of keys specified in the latest Root metadata file (version N), and (2) a threshold of keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at step 0 and version N of the root metadata file. (Checks for an arbitrary software attack.)</li>
-<li>The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the Root metadata file. (Checks for a rollback attack.)</li>
-<li>Set the latest Root metadata file to the new Root metadata file.</li>
-<li>Repeat steps 1 to 6.</li>
-</ol>
-</li>
-<li>If the Timeserver key is listed in the Root metadata and has been rotated, reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence).  It will be updated in the next cycle.</li>
-<li>Check that the latest attested time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)</li>
-<li>If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks <a href="#MERCURY" class="xref">[MERCURY]</a>.)</li>
-</ol>
-</li>
-<li>Download and check the Timestamp metadata file from the Director repository: <ol>
-<li>Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).</li>
-<li>Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</li>
-<li>Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)</li>
-<li>Check that the latest attested time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)</li>
-</ol>
-</li>
-<li>Download and check the Snapshot metadata file from the Director repository: <ol>
-<li>Download up to the number of bytes specified in the Timestamp metadata file, constructing the metadata filename as defined in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>.</li>
-<li>The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)</li>
-<li>Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</li>
-<li>Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)</li>
-<li>Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to the its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)</li>
-<li>Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)</li>
-<li>Check that the latest attested time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)</li>
-</ol>
-</li>
-<li>Download and check the Targets metadata file from the Director repository: <ol>
-<li>Download the number of bytes either specified in the Snapshot metadata file, or some Z number of bytes, constructing the metadata filename as defined in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.</li>
-<li>The hashes (if any), and version number of the new Targets metadata file MUST match the latest Snapshot metadata. If the new Targets metadata file does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)</li>
-<li>Check that it has been signed by the threshold of keys specified in the latest Root metadata file. (Checks for an arbitrary software attack.)</li>
-<li>Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)</li>
-<li>Check that the latest attested time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)</li>
-<li>Check that there are no delegations. (Targets metadata from the director MUST NOT contain delegations.)</li>
-<li>Check that no ECU identifier is represented more than once.</li>
-</ol>
-</li>
-<li>Download and check the Root metadata file from the Image repository as in Step 3.</li>
-<li>Download and check the Timestamp metadata file from the Image repository as in Step 4.</li>
-<li>Download and check the Snapshot metadata file from the Image repository as in Step 5.</li>
-<li>Download and check the top-level Targets metadata file from the Image repository as in Step 6 (except for Steps 6.6-6.7).</li>
-<li>For each image listed in the Targets metadata file from the Director repository, locate a Targets metadata file that contains an image with exactly the same file name. For each delegated Targets metadata file that is found to contain metadata for the image currently being processed, perform all of the checks in step 10. Use the following process to locate image metadata.  NOTE that if at any point below, a role you attempt to check for image metadata cannot be found and verified, you should abort the search and indicate that image metadata cannot be found because of a missing or invalid role.  <ol>
-<li>If the top-level Targets metadata file contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.</li>
-<li>Recursively search the list of delegations, in order of appearance: <ol>
-<li>Check whether the delegation has authority over this target. The delegation must include the hardware identifier of the target, and the target name must match one of the delegation&#8217;s image paths.  If either of these tests fail, skip this delegation.</li>
-<li>If it is a multi-role delegation <a href="#TAP-3" class="xref">[TAP-3]</a>, then: <ol>
-<li>First, recurse (11.2) for each role listed as if there is a single-role delegation to each.</li>
-<li>Inspect the return values from each: <ol>
-<li>If at least a number of roles equal to the minimum number of roles in agreement for this multi-role delegation return the same non-custom metadata (i.e. length and hashes) for the image, then return that metadata for the image. A conflict exists if there are multiple different sets of non-custom metadata with enough roles in agreement about them to meet the role threshold (for example, if the minimum number of roles in agreement is two and two sets of at least two roles agree on different metadata). To resolve such a conflict, choose the metadata returned by the set of roles that includes the earliest role in the multi-role delegation.</li>
-<li>If the threshold for the minimum number of roles in agreement is not met: <ol>
-<li>If this multi-role delegation is terminating, abort the search for this image by ending the recursion and returning an error code indicating that verified image metadata could not be found.</li>
-<li>If this multi-role delegation is not terminating, return that no image metadata was found (and continue 11.2 with the next delegation).</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>If the role specified by the delegation contains signed metadata about the image, return the metadata.</li>
-<li>If the role specified by the delegation does not contain signed metadata about the image: <ol>
-<li>If this is a terminating delegation, abort the search for this image by ending the recursion and returning an error code indicating that verified image metadata could not be found.</li>
-<li>If this is not a terminating delegation, return that no image metadata was found (and continue 11.2 with the next delegation).</li>
-</ol>
-</li>
-<li>If no signed metadata about the image can be found anywhere in the delegation graph, return an error code indicating that the image is missing.</li>
-</ol>
-</li>
+<li>Download and check the Root metadata file from the Director repository, following the procedure in <a href="#check_root" class="xref">Section 5.4.4.3</a>.</li>
+<li>Download and check the Timestamp metadata file from the Director repository, following the procedure in <a href="#check_timestamp" class="xref">Section 5.4.4.4</a>.</li>
+<li>Download and check the Snapshot metadata file from the Director repository, following the procedure in <a href="#check_snapshot" class="xref">Section 5.4.4.5</a>.</li>
+<li>Download and check the Targets metadata file from the Director repository, following the procedure in <a href="#check_targets" class="xref">Section 5.4.4.6</a>.</li>
+<li>Download and check the Root metadata file from the Image repository, following the procedure in <a href="#check_root" class="xref">Section 5.4.4.3</a>.</li>
+<li>Download and check the Timestamp metadata file from the Image repository, following the procedure in <a href="#check_timestamp" class="xref">Section 5.4.4.4</a>.</li>
+<li>Download and check the Snapshot metadata file from the Image repository, following the procedure in <a href="#check_snapshot" class="xref">Section 5.4.4.5</a>.</li>
+<li>Download and check the top-level Targets metadata file from the Image repository, following the procedure in <a href="#check_targets" class="xref">Section 5.4.4.6</a>.</li>
+<li>For each image listed in the Targets metadata file from the Director repository downloaded in step 6, complete the following procedure: <ol>
+<li>Locate and download a Targets metadata file that contains an image with exactly the same file name, following the procedure in <a href="#resolve_delegations" class="xref">Section 5.4.4.7</a>.</li>
 <li>Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository: <ol>
 <li>Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.</li>
 <li>Check that the custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.</li>
@@ -1412,6 +1342,104 @@
 </ol>
 <p id="rfc.section.5.4.4.2.p.6">If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.</p>
 <p id="rfc.section.5.4.4.2.p.7">If the ECU performing the verification is the primary ECU, it SHOULD also ensure that the ECU identifiers present in the targets metadata from the director repository are a subset of the actual ECU identifiers of ECUs in the vehicle.</p>
+<h1 id="rfc.section.5.4.4.3">
+<a href="#rfc.section.5.4.4.3">5.4.4.3.</a> <a href="#check_root" id="check_root">How to check Root metadata</a>
+</h1>
+<p></p>
+
+<ol>
+<li>Load the previous Root metadata file.</li>
+<li>Update to the latest Root metadata file.  <ol>
+<li>Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous root metadata file).</li>
+<li>Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, the current Root metadata file is the latest; continue with step 3.</li>
+<li>Version N+1 of the Root metadata file MUST have been signed by: (1) a threshold of keys specified in the latest Root metadata file (version N), and (2) a threshold of keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at version N of the root metadata file. (Checks for an arbitrary software attack.)</li>
+<li>The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the Root metadata file. (Checks for a rollback attack.)</li>
+<li>Set the latest Root metadata file to the new Root metadata file.</li>
+<li>Repeat steps 2.1 to 2.6.</li>
+</ol>
+</li>
+<li>If the Timeserver key is listed in the Root metadata and has been rotated, reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence).  It will be updated in the next cycle.</li>
+<li>Check that the latest attested time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)</li>
+<li>If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks <a href="#MERCURY" class="xref">[MERCURY]</a>.)</li>
+</ol>
+<h1 id="rfc.section.5.4.4.4">
+<a href="#rfc.section.5.4.4.4">5.4.4.4.</a> <a href="#check_timestamp" id="check_timestamp">How to check Timestamp metadata</a>
+</h1>
+<p></p>
+
+<ol>
+<li>Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).</li>
+<li>Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</li>
+<li>Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)</li>
+<li>Check that the latest attested time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)</li>
+</ol>
+<h1 id="rfc.section.5.4.4.5">
+<a href="#rfc.section.5.4.4.5">5.4.4.5.</a> <a href="#check_snapshot" id="check_snapshot">How to check Snapshot metadata</a>
+</h1>
+<p></p>
+
+<ol>
+<li>Download up to the number of bytes specified in the Timestamp metadata file, constructing the metadata filename as defined in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>.</li>
+<li>The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)</li>
+<li>Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</li>
+<li>Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)</li>
+<li>Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to the its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)</li>
+<li>Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)</li>
+<li>Check that the latest attested time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)</li>
+</ol>
+<h1 id="rfc.section.5.4.4.6">
+<a href="#rfc.section.5.4.4.6">5.4.4.6.</a> <a href="#check_targets" id="check_targets">How to check Targets metadata</a>
+</h1>
+<p></p>
+
+<ol>
+<li>Download the number of bytes either specified in the Snapshot metadata file, or some Z number of bytes, constructing the metadata filename as defined in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.</li>
+<li>The hashes (if any), and version number of the new Targets metadata file MUST match the latest Snapshot metadata. If the new Targets metadata file does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) Skip this step if checking Targets metadata on a partial-verification ECU; partial-verification ECUs will not have Snapshot metadata.</li>
+<li>Check that it has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack): <ol>
+<li>If checking top-level targets metadata, the threshold of keys is specified in the Root metadata.</li>
+<li>If checking delegated targets metadata, the threshold of keys is specified in the targets metadata file that delegated authority to this role.</li>
+</ol>
+</li>
+<li>Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)</li>
+<li>If this Targets metadata file indicates that the Timeserver key should be rotated, then reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence). It will be updated in the next cycle.</li>
+<li>Check that the latest attested time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)</li>
+<li>If checking targets metadata from the Director repository, verify that there are no delegations.</li>
+<li>If checking targets metadata from the Director repository, check that no ECU identifier is represented more than once.</li>
+</ol>
+<h1 id="rfc.section.5.4.4.7">
+<a href="#rfc.section.5.4.4.7">5.4.4.7.</a> <a href="#resolve_delegations" id="resolve_delegations">How to resolve delegations</a>
+</h1>
+<p id="rfc.section.5.4.4.7.p.1">To properly check targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level targets metadata, but it also may be delegated to another role&#8211;or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level targets metadata file.</p>
+<p></p>
+
+<ol>
+<li>Download the current metadata file, and check it following the procedure in <a href="#check_targets" class="xref">Section 5.4.4.6</a>. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.</li>
+<li>If the current metadata file contains signed metadata about the image, end the delegation resolution and return the metadata to be checked.</li>
+<li>If the current metadata file was reached via a terminating delegation and does not contain signed metadata about the image, abort the delegation resolution for this image and return an error indicating that image metadata could not be found.</li>
+<li>Search the list of delegations, in listed order. For each delegation: <ol>
+<li>Check if the delegation applies to the image being processed. For the delegation to apply, it MUST include the hardware identifier of the target, and the target name must match one of the delegation&#8217;s image paths. If either of these tests fail, move on to the next delegation in the list.</li>
+<li>If the delegation is a multi-role delegation, follow the procedure described in <a href="#multirole_delegations" class="xref">Section 5.4.4.8</a>. If the multi-role delegation is terminating and no valid image metadata is found, abort the delegation resolution and return an error indicating that image metadata could not be found.</li>
+<li>If the delegation is a normal delegation, perform delegation resolution, starting at step 1. Note that this may recurse an arbitrary number of levels deep. If a delegation that applies to the image is found but no image metadata is found in the delegated roles or any of its sub-delegations, simply continue on with the next delegation in the list. The search is only completed/aborted if image metadata or a terminating delegation that applies to the image is found.</li>
+</ol>
+</li>
+<li>If the end of the list of delegations in the top-level metadata is reached without finding valid image metadata, return an error indicating that image metadata could not be found.</li>
+</ol>
+<h1 id="rfc.section.5.4.4.8">
+<a href="#rfc.section.5.4.4.8">5.4.4.8.</a> <a href="#multirole_delegations" id="multirole_delegations">Multi-role delegations</a>
+</h1>
+<p id="rfc.section.5.4.4.8.p.1">It is possible to delegate signing authority to multiple delegated roles as described in <a href="#TAP-3" class="xref">[TAP-3]</a>. Each multi-role delegation effectively contains a list of ordinary delegations, plus a threshold of those roles that must be in agreement about the non-custom metadata for the image. All multi-role delegations MUST be resolved using the following procedure. Note that there may be sub-delegations inside multi-role delegations.</p>
+<p></p>
+
+<ol>
+<li>For each of the roles in the delegation, find and load the image metadata (or error) following the procedure in <a href="#resolve_delegations" class="xref">Section 5.4.4.7</a>.</li>
+<li>Inspect the non-custom part of the metadata loaded in step 1: <ol>
+<li>Locate all sets of roles which have agreeing (i.e. identical) non-custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.</li>
+<li>Check for a conflict. A conflict exists if there remains more than one agreeing set of roles, each set having different metadata. If a conflict is found, choose and return the metadata from the set of roles which includes the earliest role in the multi-delegation list.</li>
+<li>If there is no conflict, check if there is any single set of roles with matching non-custom metadata. If there is, choose and return the metadata from this set.</li>
+<li>If no agreeing set can be found that meets the agreement threshold, return an error indicating that image metadata could not be found.</li>
+</ol>
+</li>
+</ol>
 <h1 id="rfc.references">
 <a href="#rfc.references">6.</a> References</h1>
 <h1 id="rfc.references.1">
