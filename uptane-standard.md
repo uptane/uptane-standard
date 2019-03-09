@@ -918,16 +918,16 @@ If the ECU performing the verification is the primary ECU, it SHOULD also ensure
 
 #### How to resolve delegations {#resolve_delegations}
 
-To properly check targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level targets metadata, but it also may be delegated to another role--or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level targets metadata file. (Note: "Stack" here is used as defined in RFC TODO.)
+To properly check targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level targets metadata, but it also may be delegated to another role--or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level targets metadata file.
 
-1. Add the current targets metadata file to the stack, and check it following the procedure in {{check_targets}}. If the file cannot be loaded, or if any verification step fails, abort the search, and indicate that image metadata cannot be found because of a missing or invalid role.
-2. If the current metadata file contains signed metadata about the image, end the search and return the metadata to be checked.
+1. Download the current metadata file, and check it following the procedure in {{check_targets}}. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.
+2. If the current metadata file contains signed metadata about the image, end the delegation resolution and return the metadata to be checked.
 3. If the current metadata file was reached via a terminating delegation and does not contain signed metadata about the image, abort the delegation resolution for this image and return an error indicating that image metadata could not be found.
 4. Search the list of delegations, in listed order. For each delegation:
-    1. Check if the delegation applies to the image being processed. For the delegation to apply, it MUST include the hardware identifier of the target, and the target name must match one of the delegation's image paths. If either of these tests fail, skip this delegation.
+    1. Check if the delegation applies to the image being processed. For the delegation to apply, it MUST include the hardware identifier of the target, and the target name must match one of the delegation's image paths. If either of these tests fail, move on to the next delegation in the list.
     2. If the delegation is a multi-role delegation, follow the procedure described in {{multirole_delegations}}. If the multi-role delegation is terminating and no valid image metadata is found, abort the delegation resolution and return an error indicating that image metadata could not be found.
-    3. If the delegation is a normal delegation, add it to the stack and perform delegation resolution starting at step 1.
-    4. If the end of the list of delegations is reached without finding valid image metadata, go back to the next-highest metadata file in the stack and continue searching its list of delegations. If there are no more files in the stack (i.e. if the end of the delegations list in the top-level targets metadata file is reached), return an error indicating that image metadata could not be found.
+    3. If the delegation is a normal delegation, perform delegation resolution, starting at step 1. Note that this may recurse an arbitrary number of levels deep. If a delegation that applies to the image is found but no image metadata is found in the delegated roles or any of its sub-delegations, simply continue on with the next delegation in the list. The search is only completed/aborted if image metadata or a terminating delegation that applies to the image is found.
+5. If the end of the list of delegations in the top-level metadata is reached without finding valid image metadata, return an error indicating that image metadata could not be found.
 
 #### Multi-role delegations {#multirole_delegations}
 
