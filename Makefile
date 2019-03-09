@@ -7,6 +7,7 @@ HTML := uptane-standard.html
 RAWHTML := uptane-standard-raw.html
 XML := uptane-standard.xml
 TXT := uptane-standard.txt
+RAWTXT := uptane-standard.raw.txt
 
 clean: ## Remove the generated files
 	@rm -rf $(HTML) $(XML) $(TXT) .refcache/
@@ -23,12 +24,15 @@ html: xml ## Create an HTML version from the markdown
 	@xml2rfc --html $(XML) $(HTML)
 	@mv $(HTML) $(RAWHTML)
 	@cat $(RAWHTML) |sed '/<table class="header">/,/<\/table>/d;/<h1 id="rfc.status">/,/except as an Internet-Draft.<\/p>/d' > $(HTML)
+	@rm $(RAWHTML)
 
 xml: ## Create an XML version from the markdown
 	@kramdown-rfc2629 $(MKD) > $(XML)
 
 plaintext: xml ## Create an RFC plaintext version from the markdown
-	@xml2rfc $(XML) $(TXT)
+	@xml2rfc $(XML) $(TXT) --raw
+	@cat $(RAWTXT) |sed '/Status of This Memo/,/may not be published except as an Internet-Draft/d' |tail -n +10 > $(TXT)
+	@rm $(RAWTXT)
 
 open-docker: html-docker ## Create an HTML version from the markdown using docker, then open it in a browser
 	@$(OPEN) $(HTML)
@@ -37,9 +41,12 @@ html-docker: xml-docker ## Create an HTML version from the markdown, using docke
 	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 xml2rfc --html $(XML) $(HTML)
 	@mv $(HTML) $(RAWHTML)
 	@cat $(RAWHTML) |sed '/<table class="header">/,/<\/table>/d;/<h1 id="rfc.status">/,/except as an Internet-Draft.<\/p>/d' > $(HTML)
+	@rm $(RAWHTML)
 
 xml-docker: ## Create an XML version from the markdown, using docker
 	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 kramdown-rfc2629 $(MKD) > $(XML)
 
 plaintext-docker: xml-docker ## Create an RFC plaintext version from the markdown, using docker
-	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 xml2rfc $(XML) $(TXT)
+	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 xml2rfc $(XML) $(TXT) --raw
+	@cat $(RAWTXT) |sed '/Status of This Memo/,/may not be published except as an Internet-Draft/d' |tail -n +10 > $(TXT)
+	@rm $(RAWTXT)
