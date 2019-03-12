@@ -860,7 +860,8 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 8. Download and check the Timestamp metadata file from the Image repository, following the procedure in {{check_timestamp}}.
 9. Download and check the Snapshot metadata file from the Image repository, following the procedure in {{check_snapshot}}.
 10. Download and check the top-level Targets metadata file from the Image repository, following the procedure in {{check_targets}}.
-11. For each image listed in the Targets metadata file from the Director repository downloaded in step 6, complete the following procedure:
+11. Determine which image(s) to verify metadata for. If this is a primary ECU, verify metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. If this is a secondary ECU, verify only the metadata for the image that includes the ECU identifier for this ECU.
+12. For each image in the previous step, complete the following procedure:
     1. Locate and download a Targets metadata file that contains an image with exactly the same file name, following the procedure in {{resolve_delegations}}.
     2. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.
