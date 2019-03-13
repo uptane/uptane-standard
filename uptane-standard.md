@@ -38,10 +38,20 @@ normative:
   RFC4634:
   # base64
   RFC4648:
+  # Network Unicode for comparing strings
+  RFC5198:
   # RSA updates
   RFC5756:
   # JSON
   RFC7159:
+  # Unicode Normalization Form C
+  NFC:
+    target: http://www.unicode.org/reports/tr15/
+    title: "Unicode Standard Annex #15: Unicode Normalization Forms"
+    author:
+      - ins: M. Davis
+      - ins: M. Duerst
+    date: 2018-10
   # TAP 3 at rev d0818e5
   TAP-3:
     target: https://github.com/theupdateframework/taps/blob/d0818e580c322815a473520f2e8cc5f5eb8df499/tap3.md
@@ -423,7 +433,9 @@ A repository's Timestamp role SHALL produce and sign metadata indicating whether
 
 ## Metadata structures {#meta_structures}
 
-Uptane's security guarantees all rely on properly created metadata that follow a designated structure. The Uptane standard **does not** mandate any particular format or encoding for this metadata. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.
+Uptane's security guarantees all rely on properly created metadata that follow a designated structure. The Uptane standard **does not** mandate any particular format or encoding for the metadata as a whole. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.
+
+However, string comparison is required as part of metadata verification. To ensure an accurate basis for comparing strings, all strings MUST be encoded in the Unicode Format for Network Interchange as defined in {{RFC5198}}, including normalization into Unicode Normalization Form C ({{NFC}}).
 
 In the Deployment Considerations document, the Uptane Alliance provides some examples of compliant metadata structures in ASN.1 and JSON.
 
