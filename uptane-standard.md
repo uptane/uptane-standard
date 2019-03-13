@@ -477,18 +477,21 @@ To be available to install on clients, all images on the repository MUST have th
 
 ##### Custom metadata about images
 
-In addition to the required metadata, the Targets metadata file SHOULD contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations.
+In addition to the required metadata, the Targets metadata file SHOULD contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the targets metadata from the director.
 
 The following information SHOULD be provided for each image on both the Image repository and the Director repository:
 
 * A release counter, to be incremented each time a new version of the image is released. This can be used to prevent rollback attacks even in cases where the director repository is compromised.
 * A hardware identifier, or list of hardware identifiers, representing models of ECUs with which the image is compatible. This can be used to ensure that an ECU can not be ordered to install an incompatible image, even in cases where the Director repository is compromised.
 
-The following information SHOULD be provided for each image on the director repository:
+The following information is CONDITIONALLY REQUIRED for each image on the Director repository IF that image is encrypted:
 
-* An ECU identifier, specifying (by serial number, for example) the ECU that should install the image.
-* If encrypted images are desired, information about filenames, hashes, and file size of the encrypted image
-* If encrypted images are desired, information about the encryption method, and other relevant information--for example, a symmetric encryption key encrypted by the ECU's asymmetric key could be included in the Director repository metadata.
+* Information about filenames, hashes, and file size of the encrypted image
+* Information about the encryption method, and other relevant information--for example, a symmetric encryption key encrypted by the ECU's asymmetric key could be included in the Director repository metadata.
+
+The following information MUST be provided for each image in the targets metadata from the Director repository:
+
+* An ECU identifier (such as a serial number), specifying the ECU that should install the image.
 
 The Director repository MAY provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the director wishes to provide a signed URL.
 
