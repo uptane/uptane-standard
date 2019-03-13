@@ -2,7 +2,6 @@
 title: Uptane IEEE-ISTO Standard for Design and Implementation
 abbrev: UPTANE
 docname: uptane-standard-design
-date: 2018-08-28
 category: info
 
 ipr: noDerivativesTrust200902
@@ -120,6 +119,20 @@ informative:
     seriesinfo:
       ISBN: 978-1-931971-38-6
     date: 2017-07-12
+  UPTANEESCAR:
+    target: https://ssl.engineering.nyu.edu/papers/kuppusamy_escar_16.pdf
+    title: "Securing Software Updates for Automobiles"
+    author:
+      - ins: T.K. Kuppusamy
+      - ins: A. Brown 
+      - ins: S. Awwad
+      - ins: D. McCoy
+      - ins: R. Bielawski
+      - ins: C. Mott
+      - ins: S. Lauzon
+      - ins: A. Weimerskirch
+      - ins: J. Cappos
+    date: 2016-10-16
   PEP-458:
     target: https://www.python.org/dev/peps/pep-0458/
     title: "PEP 458 -- Surviving a Compromise of PyPI"
@@ -195,12 +208,12 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 These terms are defined in greater detail in {{roles}}.
 
 *Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.  
-*Roles*: The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
+*Role*: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
-* *Root Role*: Distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
-* *Snapshot Role*: Indicates which images the repository has released at the same time.
-* *Targets Role*: Holds the metadata used to verify the image, such as cryptographic hashes and file size.
-* *Timestamp Role*: Indicates if there are any new metadata or images on the repository.
+* *Root Role*: Signs metadata that distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
+* *Snapshot Role*: Signs metadata that indicates which images the repository has released at the same time.
+* *Targets Role*: Sings metadata used to verify the image, such as cryptographic hashes and file size.
+* *Timestamp Role*: Signs metadata that indicates if there are any new metadata or images on the repository.
 
 
 ## Acronyms and Abbreviations
@@ -218,6 +231,8 @@ These terms are defined in greater detail in {{roles}}.
 # Rationale for and Scope of Uptane Standards
 
 This Standards document clarifies the essential components and best practices for the secure design, implementation and deployment of Uptane by OEMs and suppliers. These practices contribute to compromise resilience, or the ability to minimize the extent of the threat posed by any given attack.
+
+However, this specification is intended as an implementation guide, not as a detailed technical argument about the security properties that Uptane provides.  Readers interested in such documentation should refer to published papers that cover this topic.  {{UPTANEESCAR}}
 
 ## Why Uptane requires standards
 
@@ -237,11 +252,11 @@ This document sets guidelines for implementing Uptane in most systems capable of
 
 ### Assumptions
 
-We assume the following system preconditions for Uptane: 
+We assume the following system preconditions for Uptane:
 
 * Vehicles have the ability to establish connectivity to required backend services. For example, this could be done through cellular, Wi-Fi, or hard-wired mechanisms.
 * ECUs are either directly connected to the communication channel, or they are indirectly connected via some sort of network gateway.
-* ECUs are programmable and provide sufficient performance to be updated. 
+* ECUs are programmable and provide sufficient performance to be updated.
 * ECUs must be able to perform a public key cryptography operation as well as some supporting operations.
 * There are state-of-the-art secure servers in place, such as the director and image repository servers.
 
@@ -317,12 +332,12 @@ Uptane is designed with resilience to compromise in mind. We assume that attacke
 * Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability may be developed in two domains:
     * Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories
     * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g. via an OBD port or using a compromised ECU as a vector)
-* Compromise and control either a director repository or image repository server, and any keys stored on the repository, but not both the director and image repositories. 
+* Compromise and control either a director repository or image repository server, and any keys stored on the repository, but not both the director and image repositories.
 * Compromise either a primary ECU or a secondary ECU, but not both in the same vehicle
 
 ## Description of threats {#threats}
 
-Uptane's threat model considers the following types of attacks, organized according to the attacker goals listed in {{attacker_goals}}.
+Uptane's threat model includes the following types of attacks, organized according to the attacker goals listed in {{attacker_goals}}.
 
 ### Read updates {#read_updates}
 
@@ -330,12 +345,13 @@ Uptane's threat model considers the following types of attacks, organized accord
 
 ### Deny installation of updates {#deny_updates}
 
-An attacker seeking to deny installation of updates may attempt one or more of the following strategies:
+An attacker seeking to deny installation of updates may attempt one or more of the following strategies, among others:
 
 * *Drop-request attack:* Block network traffic outside or inside the vehicle.
 * *Slow retrieval attack:* Slow down network traffic, in the extreme case sending barely enough packets to avoid a timeout. Similar to a drop-request attack, except that both the sender and receiver of the traffic still think network traffic is unimpeded.
 * *Freeze attack:* Continue to send a properly signed, but old, update bundle to the ECUs, even if newer updates exist.
 * *Partial bundle installation attack:* Install a valid (signed) update bundle, and then block selected updates within the bundle.
+* Conduct a denial of service attack against the Uptane repositories or infrastructure.
 
 ### Interfere with ECU functionality {#change_functionality}
 
@@ -376,18 +392,18 @@ A repository contains images and metadata. Each role has a particular type of me
 
 ### The Root role {#root_role}
 
-The Root role SHALL be responsible for a Certificate Authority as defined in {{RFC3647}}.
-The Root role SHALL produce and sign Root metadata as described in {{root_meta}}.
-The Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.
-The Root role SHALL revoke keys for the other roles, in case of compromise.
+A repository's Root role SHALL be responsible for a Certificate Authority as defined in {{RFC3647}}.
+A repository's Root role SHALL produce and sign Root metadata as described in {{root_meta}}.
+A repository's Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.
+A repository's Root role SHALL revoke keys for the other roles, in case of compromise.
 
 ### The Targets role {#targets_role}
 
-The Targets role SHALL produce and sign metadata about images and delegations as described in {{targets_meta}}.
+A repository's Targets role SHALL produce and sign metadata about images and delegations as described in {{targets_meta}}.
 
 #### Delegations {#targets_role_delegations}
 
-The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles. If it does, it MUST do so as specified in {{delegations_meta}}.
+The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it MUST do so as specified in {{delegations_meta}}.
 
 Responsibility for signing images or a subset of images MAY be delegated to more than one role and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.
 
@@ -399,11 +415,11 @@ Delegations only apply to the Image repository. The Targets role on the Director
 
 ### The Snapshot role {#snapshot_role}
 
-The Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the main Targets metadata, and the version numbers and hashes of all delegated targets metadata, as described in {{snapshot_meta}}.
+A repository's Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the top-level Targets metadata, and the version numbers and hashes of all delegated targets metadata, as described in {{snapshot_meta}}.
 
 ### The Timestamp role {#timestamp_role}
 
-The Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.
+A repository's Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.
 
 ## Metadata structures {#meta_structures}
 
@@ -439,39 +455,43 @@ The following sections describe the role-specific metadata. All roles SHALL foll
 
 ### Root Metadata {#root_meta}
 
-The Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
+A repository's Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
 
 * A representation of the public keys for all four roles. Each key should have a unique public key identifier.
+     * If a Time Server is in use, a representation of the Time Server public key is CONDITIONALLY REQUIRED in Director repository root metadata.
 * An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
 
-Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded, as described in {{TAP-5}}.
+Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded.  If this mapping of URLs is used, the implementer SHOULD implement this functionality following {{TAP-5}} to avoid adding unforeseen security risks.
 
 ### Targets Metadata {#targets_meta}
 
-A Targets metadata file contains metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.
+Targets metadata, whether for the top-level Targets role or for any delegated targets role, MAY contain metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.
 
 #### Metadata about Images {#targets_images_meta}
 
-The Targets metadata MUST contain a list of images on the repository. This list MUST provide, at a minimum, the following information about each image on the repository:
+To be available to install on clients, all images on the repository MUST have their metadata listed in a targets role.  Each targets role MAY provide a list of some images on the repository.  This list MUST provide, at a minimum, the following information about each image:
 
 * The image filename
-* The length of the image file in bytes
+* The size of the image in bytes
 * One or more hashes of the image file, along with the hashing function used
 
 ##### Custom metadata about images
 
-In addition to the required metadata, the Targets metadata file SHOULD contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations.
+In addition to the required metadata, the Targets metadata file SHOULD contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the targets metadata from the director.
 
 The following information SHOULD be provided for each image on both the Image repository and the Director repository:
 
 * A release counter, to be incremented each time a new version of the image is released. This can be used to prevent rollback attacks even in cases where the director repository is compromised.
 * A hardware identifier, or list of hardware identifiers, representing models of ECUs with which the image is compatible. This can be used to ensure that an ECU can not be ordered to install an incompatible image, even in cases where the Director repository is compromised.
 
-The following information SHOULD be provided for each image on the director repository:
+The following information is CONDITIONALLY REQUIRED for each image on the Director repository IF that image is encrypted:
 
-* An ECU identifier, specifying (by serial number, for example) the ECU that should install the image.
-* If encrypted images are desired, information about filenames, hashes, and file size of the encrypted image
-* If encrypted images are desired, information about the encryption method, and other relevant information--for example, a symmetric encryption key encrypted by the ECU's asymmetric key could be included in the Director repository metadata.
+* Information about filenames, hashes, and file size of the encrypted image
+* Information about the encryption method, and other relevant information--for example, a symmetric encryption key encrypted by the ECU's asymmetric key could be included in the Director repository metadata.
+
+The following information MUST be provided for each image in the targets metadata from the Director repository:
+
+* An ECU identifier (such as a serial number), specifying the ECU that should install the image.
 
 The Director repository MAY provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the director wishes to provide a signed URL.
 
@@ -483,7 +503,8 @@ A list of delegations MUST provide the following information:
 
 * A list of public keys of all delegatees. Each key should have a unique public key identifier, and a key type.
 * A list of delegations, each of which contains:
-  * A list of the images or paths to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
+  * A list of the filenames to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
+  * An optional list of the hardware identifiers to which this role applies.  If this is omitted, any hardware identifier will match.
   * An indicator of whether or not this is a terminating delegation. (See {{targets_role_delegations}}.)
   * A list of the roles to which this delegation applies. Each role needs to specify:
     * A name for the role (e.g. "supplier1-qa")
@@ -491,6 +512,14 @@ A list of delegations MUST provide the following information:
     * A threshold of keys that must sign for this role
 
 Note that **any** targets metadata file may contain delegations, and that delegations can be in chains of arbitrary length.
+
+#### Metadata about Time Server
+
+If a Time Server {{time_server}} is implemented AND partial-verification secondaries will be used, the following metadata is CONDITIONALLY REQUIRED in the Director repository's Targets metadata:
+
+* A representation of the public key(s) for the Time Server, similar to the representation of public keys in Root metadata.
+
+Listing the public key of the Time Server in Director targets metadata is necessary to allow partial-verification secondaries to perform time server key rotation.
 
 ### Snapshot Metadata {#snapshot_meta}
 
@@ -500,7 +529,7 @@ For each Targets metadata file on the repository, the Snapshot metadata SHALL co
 
 * The filename and version number of the each Targets metadata file on the repository
 
-The Snapshot metadata MAY also list the root metadata filename and version number. This is no longer required because of the implementation of {{TAP-5}}, but MAY be included for backwards compatibility.
+The Snapshot metadata MAY also list the root metadata filename and version number. This is not required, particularly for implementations of {{TAP-5}}, but MAY be included in all cases for backwards compatibility.
 
 ### Timestamp Metadata {#timestamp_meta}
 
@@ -616,9 +645,11 @@ The Time Server exists to inform vehicles about the current time in a cryptograp
 
 An Uptane implementation SHOULD include a time server, but MAY use another secure source of time. If the time server is used, it MUST conform to the following requirements:
 
-The Time Server SHALL receive a sequence of tokens from a vehicle representing all of its ECUs. In response, it SHALL sign each token together with the current time.
+When the Time Server receives a sequence of tokens from a vehicle, it SHALL provide one or more signed responses, containing the time along with these tokens. It MAY produce either one signed time attestation containing the current time and all tokens, or multiple time attestations each containing the current time and one or more tokens.
 
 The Time Server SHALL expose a public interface allowing primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.
+
+Rotation of the The Time Server's key is performed by listing the new key in the Director's Root metadata, in the same manner as other role keys are listed, and also in the Director's Targets metadata (for partial verification secondaries).
 
 ## In-vehicle implementation requirements
 
@@ -698,7 +729,7 @@ An ECU version report is a metadata structure that MUST contain the following in
 
 The primary SHALL load the current time from a secure source. This secure source SHOULD be a time server as described in {{time_server}}.
 
-If the time server is implemented, the primary SHALL use the following procedure to verify the time: 
+If the time server is implemented, the primary SHALL use the following procedure to verify the time:
 
 1. Gather the tokens/nonces from each secondary ECU's version report ({{version_report}}).
 2. Send the list of tokens to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time.
@@ -720,9 +751,11 @@ The primary SHOULD send the time to each ECU. The secondary will verify the time
 
 #### Send metadata to secondaries {#send_metadata_primary}
 
-The primary SHALL send its latest downloaded metadata to all of its associated secondaries.
+The primary SHALL send its latest downloaded metadata to all of its associated secondaries. The metadata it sends to each secondary MUST include all of the metadata required for verification on that secondary. For full verification secondaries, this includes the metadata for all four roles from both repositories, plus any delegated targets metadata files the secondary will recurse through to find the proper delegation. For partial verification secondaries, this includes only the targets metadata file from the director repository.
 
-Full verification secondaries SHALL keep a complete copy of all repository metadata. A partial verification secondary SHALL keep the targets metadata file from the director repository, and MAY keep the rest of the metadata.
+The primary SHOULD determine the minimal set of metadata files to send to each secondary, by performing delegation resolution as described in {{full_verification}}.
+
+Each secondary SHALL store the latest copy of all metadata required for its own verification.
 
 #### Send images to secondaries {#send_images_primary}
 
@@ -743,7 +776,7 @@ Before installing a new image, an ECU SHALL perform the following five steps:
 
 #### Load and verify the latest attested time {#verify_time}
 
-The ECU SHOULD load and verify the current time, or the most recent time from the time server if it is implemented. 
+The ECU SHOULD load and verify the current time, or the most recent time from the time server if it is implemented.
 
 If an Uptane time server ({{time_server}}) is implemented, the ECU SHALL:
 
@@ -781,12 +814,13 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
 1. Load the latest Targets metadata file from the director.
 2. Find the Targets metadata associated with this ECU identifier.
 3. Check that the hardware identifier in the metadata matches the ECUs hardware identifier.
-4. Check that the release counter of the image in the previous metadata, if it exists, is less than or equal to the release counter in the latest metadata.
-5. If the image is encrypted, decrypt the image with a decryption key to be chosen as follows:
+4. Check that the image filename is valid for this ECU. This MAY be a comparison against a wildcard path, and restricts the ECUs a delegation applies to.
+5. Check that the release counter of the image in the previous metadata, if it exists, is less than or equal to the release counter in the latest metadata.
+6. If the image is encrypted, decrypt the image with a decryption key to be chosen as follows:
     * If the ECU key is a symmetric key, the ECU SHALL use the ECU key for image decryption.
     * If the ECU key is asymmetric, the ECU SHALL check the target metadata for an encrypted symmetric key. If such a key is found, the ECU SHALL decrypt the symmetric key using its ECU key, and use the decrypted symmetric key for image decryption.
     * If the ECU key is asymmetric and there is no symmetric key in the target metadata, the ECU SHALL use its ECU key for image decryption.
-6. Check that the hash of the image matches the hash in the metadata.
+7. Check that the hash of the image matches the hash in the metadata.
 
 If the ECU has secondary storage, the checks SHOULD be performed on the image in secondary storage, before it is installed.
 
@@ -796,7 +830,7 @@ If any step fails, the ECU SHALL jump to the fifth step ({{create_version_report
 
 The ECU SHALL create a version report as described in {{version_report}}, and send it to the primary (or simply save it to disk, if the ECU is a primary). The primary SHOULD write the version reports it receives to disk and associate them with the secondaries that sent them.
 
-### Metadata verification {#metadata_verification}
+### Metadata verification procedures {#metadata_verification}
 
 A primary ECU MUST perform full verification of metadata. A secondary ECU SHOULD perform full verification of metadata, but MAY perform partial verification instead.
 
@@ -807,13 +841,7 @@ If a step in the following workflows does not succeed (e.g., the update is abort
 In order to perform partial verification, an ECU SHALL perform the following steps:
 
 1. Load the latest attested time from the time server, if implemented.
-2. Load the latest top-level Targets metadata file from the Director repository.
-3. Check that the metadata file has been signed by a threshold of keys specified in the previous root metadata file. If not, return an error code indicating an arbitrary software attack.
-4. Check that the version number in the previous targets metadata file, if any, is less than or equal to the version number in this targets metadata file. If not, return an error code indicating a rollback attack.
-5. Check that the latest attested time is lower than the expiration timestamp in this metadata file. If not, return an error code indicating a freeze attack.
-6. Check that there are no delegations. If there are, return an error code.
-7. Check that each ECU identifier appears only once. If not, return an error code.
-8. Return an indicator of success.
+2. Download and check the Targets metadata file from the Director repository, following the procedure in {{check_targets}}.
 
 #### Full verification {#full_verification}
 
@@ -821,56 +849,23 @@ Full verification of metadata means that the ECU checks that the Targets metadat
 
 Full verification MAY be performed by either primary or secondary ECUs. The procedure is the same, except that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, it applies only to primary ECUs.
 
-A primary ECU SHALL download metadata and images following the rules specified in {{TAP-5}}, and the metadata file renaming rules specified in {{metadata_filename_rules}}.
+If {{TAP-5}} is supported, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, the download should follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
 1. Load the repository mapping metadata ({{repo_mapping_meta}}), and use the information therein to determine from where metadata should be downloaded.
 2. Load the latest attested time from the time server, if implemented.
-3. Download and check the Root metadata file from the Director repository:
-    1. Load the previous Root metadata file.
-    2. Update to the latest Root metadata file.
-        1. Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous root metadata file).
-        2. Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, then go to step 3.5.
-        3. Version N+1 of the Root metadata file MUST have been signed by: (1) a threshold of keys specified in the latest Root metadata file (version N), and (2) a threshold of keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at step 0 and version N of the root metadata file. (Checks for an arbitrary software attack.)
-        4. The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the Root metadata file. (Checks for a rollback attack.)
-        5. Set the latest Root metadata file to the new Root metadata file.
-        6. Repeat steps 1 to 6.
-    5. Check that the latest attested time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)
-    6. If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
-4. Download and check the Timestamp metadata file from the Director repository:
-    1. Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).
-    2. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
-    3. Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
-    4. Check that the latest attested time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
-5. Download and check the Snapshot metadata file from the Director repository:
-    1. Download up to the number of bytes specified in the Timestamp metadata file, constructing the metadata filename as defined in {{metadata_filename_rules}}.
-    2. The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
-    3. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
-    4. Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
-    5. Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to the its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
-    6. Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
-    7. Check that the latest attested time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
-6. Download and check the Targets metadata file from the Director repository:
-    1. Download the number of bytes either specified in the Snapshot metadata file, or some Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.
-    2. The hashes (if any), and version number of the new Targets metadata file MUST match the latest Snapshot metadata. If the new Targets metadata file does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
-    3. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. (Checks for an arbitrary software attack.)
-    4. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
-    5. Check that the latest attested time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
-    6. Check that there are no delegations. (Targets metadata from the director MUST NOT contain delegations.)
-    7. Check that no ECU identifier is represented more than once.
-7. Download and check the Root metadata file from the Image repository as in Step 3.
-8. Download and check the Timestamp metadata file from the Image repository as in Step 4.
-9. Download and check the Snapshot metadata file from the Image repository as in Step 5.
-10. Download and check the top-level Targets metadata file from the Image repository as in Step 6 (except for Steps 6.6-6.7).
-11. For each image listed in the Targets metadata file from the Director repository, locate a Targets metadata file that contains an image with exactly the same file name. For each delegated Targets metadata file that is found to contain metadata for the image currently being processed, perform all of the checks in step 10. Use the following process to locate image metadata:
-    1. If the top-level Targets metadata file contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.
-    2. Recursively search the list of delegations, in order of appearance:
-        1. If it is a multi-role delegation {{TAP-3}}, recursively visit each role, and check that each has signed exactly the same non-custom metadata (i.e., length and hashes) about the image. If it is all the same, return the metadata to be checked and skip to step 11.3.
-        2. If it is a terminating delegation and it contains signed metadata about the image, return the metadata to be checked and skip to step 11.3. If metadata about an image is not found in a terminating delegation, return an error code indicating that the image is missing.
-        3. Otherwise, continue processing the next delegation, if any. As soon as a delegation is found that contains signed metadata about the image, return the metadata to be checked and skip to step 11.3.
-        4. If no signed metadata about the image can be found anywhere in the delegation graph, return an error code indicating that the image is missing.
-    3. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
+3. Download and check the Root metadata file from the Director repository, following the procedure in {{check_root}}.
+4. Download and check the Timestamp metadata file from the Director repository, following the procedure in {{check_timestamp}}.
+5. Download and check the Snapshot metadata file from the Director repository, following the procedure in {{check_snapshot}}.
+6. Download and check the Targets metadata file from the Director repository, following the procedure in {{check_targets}}.
+7. Download and check the Root metadata file from the Image repository, following the procedure in {{check_root}}.
+8. Download and check the Timestamp metadata file from the Image repository, following the procedure in {{check_timestamp}}.
+9. Download and check the Snapshot metadata file from the Image repository, following the procedure in {{check_snapshot}}.
+10. Download and check the top-level Targets metadata file from the Image repository, following the procedure in {{check_targets}}.
+11. For each image listed in the Targets metadata file from the Director repository downloaded in step 6, complete the following procedure:
+    1. Locate and download a Targets metadata file that contains an image with exactly the same file name, following the procedure in {{resolve_delegations}}.
+    2. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.
         2. Check that the custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
@@ -878,3 +873,72 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
 If the ECU performing the verification is the primary ECU, it SHOULD also ensure that the ECU identifiers present in the targets metadata from the director repository are a subset of the actual ECU identifiers of ECUs in the vehicle.
+
+#### How to check Root metadata {#check_root}
+
+1. Load the previous Root metadata file.
+2. Update to the latest Root metadata file.
+    1. Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous root metadata file).
+    2. Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, the current Root metadata file is the latest; continue with step 3.
+    3. Version N+1 of the Root metadata file MUST have been signed by: (1) a threshold of keys specified in the latest Root metadata file (version N), and (2) a threshold of keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at version N of the root metadata file. (Checks for an arbitrary software attack.)
+    4. The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the Root metadata file. (Checks for a rollback attack.)
+    5. Set the latest Root metadata file to the new Root metadata file.
+    6. Repeat steps 2.1 to 2.6.
+3. If the Timeserver key is listed in the Root metadata and has been rotated, reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence).  It will be updated in the next cycle.
+4. Check that the latest attested time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)
+5. If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
+
+#### How to check Timestamp metadata {#check_timestamp}
+
+1. Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).
+2. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
+3. Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
+4. Check that the latest attested time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
+
+
+#### How to check Snapshot metadata {#check_snapshot}
+
+1. Download up to the number of bytes specified in the Timestamp metadata file, constructing the metadata filename as defined in {{metadata_filename_rules}}.
+2. The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
+3. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
+4. Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
+5. Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to the its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
+6. Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
+7. Check that the latest attested time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
+
+#### How to check Targets metadata {#check_targets}
+
+1. Download the number of bytes either specified in the Snapshot metadata file, or some Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.
+2. The hashes (if any), and version number of the new Targets metadata file MUST match the latest Snapshot metadata. If the new Targets metadata file does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) Skip this step if checking Targets metadata on a partial-verification ECU; partial-verification ECUs will not have Snapshot metadata.
+3. Check that it has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack):
+    1. If checking top-level targets metadata, the threshold of keys is specified in the Root metadata.
+    2. If checking delegated targets metadata, the threshold of keys is specified in the targets metadata file that delegated authority to this role.
+4. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
+5. If this Targets metadata file indicates that the Timeserver key should be rotated, then reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence). It will be updated in the next cycle.
+6. Check that the latest attested time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
+7. If checking targets metadata from the Director repository, verify that there are no delegations.
+8. If checking targets metadata from the Director repository, check that no ECU identifier is represented more than once.
+
+#### How to resolve delegations {#resolve_delegations}
+
+To properly check targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level targets metadata, but it also may be delegated to another role--or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level targets metadata file.
+
+1. Download the current metadata file, and check it following the procedure in {{check_targets}}. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.
+2. If the current metadata file contains signed metadata about the image, end the delegation resolution and return the metadata to be checked.
+3. If the current metadata file was reached via a terminating delegation and does not contain signed metadata about the image, abort the delegation resolution for this image and return an error indicating that image metadata could not be found.
+4. Search the list of delegations, in listed order. For each delegation:
+    1. Check if the delegation applies to the image being processed. For the delegation to apply, it MUST include the hardware identifier of the target, and the target name must match one of the delegation's image paths. If either of these tests fail, move on to the next delegation in the list.
+    2. If the delegation is a multi-role delegation, follow the procedure described in {{multirole_delegations}}. If the multi-role delegation is terminating and no valid image metadata is found, abort the delegation resolution and return an error indicating that image metadata could not be found.
+    3. If the delegation is a normal delegation, perform delegation resolution, starting at step 1. Note that this may recurse an arbitrary number of levels deep. If a delegation that applies to the image is found but no image metadata is found in the delegated roles or any of its sub-delegations, simply continue on with the next delegation in the list. The search is only completed/aborted if image metadata or a terminating delegation that applies to the image is found.
+5. If the end of the list of delegations in the top-level metadata is reached without finding valid image metadata, return an error indicating that image metadata could not be found.
+
+#### Multi-role delegations {#multirole_delegations}
+
+It is possible to delegate signing authority to multiple delegated roles as described in {{TAP-3}}. Each multi-role delegation effectively contains a list of ordinary delegations, plus a threshold of those roles that must be in agreement about the non-custom metadata for the image. All multi-role delegations MUST be resolved using the following procedure. Note that there may be sub-delegations inside multi-role delegations.
+
+1. For each of the roles in the delegation, find and load the image metadata (or error) following the procedure in {{resolve_delegations}}.
+2. Inspect the non-custom part of the metadata loaded in step 1:
+    1. Locate all sets of roles which have agreeing (i.e. identical) non-custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.
+    2. Check for a conflict. A conflict exists if there remains more than one agreeing set of roles, each set having different metadata. If a conflict is found, choose and return the metadata from the set of roles which includes the earliest role in the multi-delegation list.
+    3. If there is no conflict, check if there is any single set of roles with matching non-custom metadata. If there is, choose and return the metadata from this set.
+    4. If no agreeing set can be found that meets the agreement threshold, return an error indicating that image metadata could not be found.
