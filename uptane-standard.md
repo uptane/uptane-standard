@@ -682,7 +682,7 @@ For an ECU to be capable of receiving Uptane-secured updates, it MUST have the f
 3. The current time. This SHOULD be in the form of an attestation of time downloaded from the time server, but MAY come from another source if the time server is not implemented.
 4. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
 
-### Downloading and distributing updates on a primary ECU
+### What the primary does
 
 A primary downloads, verifies, and distributes the latest time, metadata and images. To do so, it SHALL perform the following seven steps:
 
@@ -775,7 +775,7 @@ The primary SHALL send the latest image to each of its associated secondaries th
 
 For secondaries without storage, the primary SHOULD wait for a request from the secondary to stream the new image file to it. The secondary will send the request once it has verified the metadata sent in the previous step.
 
-### Installing images on ECUs
+### Installing images on primary or secondary ECUs
 
 Before installing a new image, an ECU SHALL perform the following five steps:
 
@@ -784,7 +784,6 @@ Before installing a new image, an ECU SHALL perform the following five steps:
 1. Download latest image ({{download_image}})
 1. Verify image ({{verify_image}})
 1. Create and send version report ({{create_version_report}})
-
 
 #### Load and verify the latest attested time {#verify_time}
 
