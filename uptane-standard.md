@@ -270,6 +270,8 @@ We assume the following system preconditions for Uptane:
 * ECUs must be able to perform a public key cryptography operation as well as some supporting operations.
 * There are state-of-the-art secure servers in place, such as the director and image repository servers.
 
+It is also ecpected that any bugs detected in Uptane implementations will be patched promptly. Failure to do so could interfere wth the effectiveness of Uptane's operations.
+
 ### Use Cases
 
 The following use cases provide a number of scenarios illustrating the manner in which software updates could be accomplished using Uptane.
