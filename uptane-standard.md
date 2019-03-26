@@ -315,6 +315,7 @@ The following topics will not be addressed in this document, as they represent t
 * Physical attacks, such as manual tampering with ECUs outside the vehicle.
 * Compromise of the supply chain (e.g., build system, version control system, packaging process). A number of strategies (e.g., git signing, TPMs, in-toto {{IN-TOTO}})  already exist to address this problem. Therefore, there is no need to duplicate those techniques here.
 * Problems associated with OBD or UDS programming of ECUs, such as authentication of communications between ECUs.
+* Malicious mirrors of package repositories, which may substitute original packages with malicious packages with matching version numbers {{MERCURY}}.
 
 ## Design Requirements
 
@@ -427,7 +428,7 @@ Delegations only apply to the Image repository. The Targets role on the Director
 
 ### The Snapshot role {#snapshot_role}
 
-A repository's Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number and hash of the top-level Targets metadata, and the version numbers and hashes of all delegated targets metadata, as described in {{snapshot_meta}}.
+A repository's Snapshot role SHALL produce and sign metadata about all Targets metadata the repository releases, including the current version number of the top-level Targets metadata, and the version numbers of all delegated targets metadata, as described in {{snapshot_meta}}.
 
 ### The Timestamp role {#timestamp_role}
 
@@ -922,7 +923,7 @@ If the ECU performing the verification is the primary ECU, it SHOULD also ensure
 #### How to check Targets metadata {#check_targets}
 
 1. Download the number of bytes either specified in the Snapshot metadata file, or some Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.
-2. The hashes (if any), and version number of the new Targets metadata file MUST match the latest Snapshot metadata. If the new Targets metadata file does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) Skip this step if checking Targets metadata on a partial-verification ECU; partial-verification ECUs will not have Snapshot metadata.
+2. The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) Skip this step if checking Targets metadata on a partial-verification ECU; partial-verification ECUs will not have Snapshot metadata.
 3. Check that it has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack):
     1. If checking top-level targets metadata, the threshold of keys is specified in the Root metadata.
     2. If checking delegated targets metadata, the threshold of keys is specified in the targets metadata file that delegated authority to this role.
