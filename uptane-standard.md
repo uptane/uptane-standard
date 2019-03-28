@@ -748,9 +748,10 @@ If the time server is implemented, the primary SHALL use the following procedure
 
 1. Gather the tokens/nonces from each secondary ECU's version report ({{version_report}}).
 2. Send the list of tokens to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time.
-3. Verify that the signatures are valid, and check that the time the server attests is greater than the previous attested time. 
-
-If the time attestation is greater than the previous time, the time on the device will be updated. If, however, the time attestation is not greater, the update procedure will continue, but the time on the device will not be updated.
+3. If the time server's response meets the criteria below, update the device's clock and retain the time server's response for distribution to Secondaries, otherwise discard it and proceed without an updated time.  The criteria for checking the time server's response are:
+  - The signature over the time server's response is valid.
+  - The tokens/nonces provided to the time server have been included in the response.
+  - The time in the time server's response is later than the last time verified in this manner.
 
 #### Download and verify metadata {#download_meta_primary}
 
