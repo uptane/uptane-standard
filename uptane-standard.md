@@ -746,11 +746,11 @@ The primary SHALL load the current time from a secure source. This secure source
 
 If the time server is implemented, the primary SHALL use the following procedure to verify the time:
 
-1. Gather the tokens/nonces from each secondary ECU's version report ({{version_report}}).
+1. Gather the tokens from each secondary ECU's version report ({{version_report}}).
 2. Send the list of tokens to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time.
-3. If the time server's response meets the criteria below, update the device's clock and retain the time server's response for distribution to Secondaries, otherwise discard it and proceed without an updated time.  The criteria for checking the time server's response are:
+3. If the time server's response meets the criteria below, update the primary ECU's clock and retain the time server's response for distribution to secondary ECUs, otherwise discard it and proceed without an updated time.  The criteria for checking the time server's response are:
   - The signature over the time server's response is valid.
-  - The tokens/nonces provided to the time server have been included in the response.
+  - The tokens provided to the time server have been included in the response.
   - The time in the time server's response is later than the last time verified in this manner.
 
 #### Download and verify metadata {#download_meta_primary}
