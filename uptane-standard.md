@@ -207,7 +207,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 *Primary/Secondary ECUs*: Terms used to describe the control units within a ground vehicle. A primary ECU downloads from a repository and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a connection to the internet. Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.  
 
-*Profile*: A document that contains information about a specific Uptane implementation. The profile contains decisions about SHOULDs and MAYs in this document, as well as descriptions of data binding formats. Profiles MAY be used to create compatible Uptane implementations.
+*Profile*: A document that contains information about a specific Uptane implementation. The profile contains decisions about SHOULDs and MAYs in an implementation, as well as descriptions of data binding formats. Profiles MAY be used to create compatible Uptane implementations.
 
 *Repository*: A server containing metadata about images. May also contain the images themselves. Other data may be stored on the repository to be accessed by ECUs during the update process.
 
