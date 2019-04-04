@@ -860,9 +860,8 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 8. Download and check the Timestamp metadata file from the Image repository, following the procedure in {{check_timestamp}}.
 9. Download and check the Snapshot metadata file from the Image repository, following the procedure in {{check_snapshot}}.
 10. Download and check the top-level Targets metadata file from the Image repository, following the procedure in {{check_targets}}.
-11. Determine which image(s) to verify metadata for. If this is a primary ECU, verify metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. If this is a secondary ECU, verify only the metadata for the image that includes the ECU identifier for this ECU.
-12. For each image in the previous step, complete the following procedure:
-    1. Locate and download a Targets metadata file that contains an image with exactly the same file name, following the procedure in {{resolve_delegations}}.
+11. Verify that Targets metadata from the Director and Image repositories match. A primary ECU MUST perform this check on metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. A secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the metadata from the Director that contains the ECU identifier of the current ECU.) To check that the metadata for an image matches, complete the following procedure:
+    1. Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same file name listed in the Director metadata, following the procedure in {{resolve_delegations}}.
     2. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.
         2. Check that the custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
@@ -870,7 +869,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
-If the ECU performing the verification is the primary ECU, it SHOULD also ensure that the ECU identifiers present in the targets metadata from the director repository are a subset of the actual ECU identifiers of ECUs in the vehicle.
+If the ECU performing the verification is the primary ECU, it SHOULD also ensure that the targets metadata from the director repository doesn't contain any ECU identifiers for ECUs not actually present in the vehicle.
 
 #### How to check Root metadata {#check_root}
 
