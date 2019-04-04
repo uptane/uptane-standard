@@ -648,11 +648,11 @@ The inventory database MUST record the following pieces of information:
 * Per ECU:
     * A unique identifier (such as a serial number)
     * The vehicle identifier the ECU is associated with
-    * A public key
-    * The format of the public key
+    * An ECU key (symmetric or asymmetric; for asymmetric keys only the public part SHOULD be stored)
+    * The format of the ECU key
     * Whether the ECU is a primary or a secondary
 
-The inventory database MAY record other information about ECUs and vehicles.
+The inventory database MAY record other information about ECUs and vehicles. It SHOULD record a hardware identifier for each ECU, to protect against the possibility of directing the ECU to install an incompatible firmware.
 
 ### Time Server {#time_server}
 
