@@ -134,7 +134,7 @@ informative:
     title: "Securing Software Updates for Automobiles"
     author:
       - ins: T.K. Kuppusamy
-      - ins: A. Brown 
+      - ins: A. Brown
       - ins: S. Awwad
       - ins: D. McCoy
       - ins: R. Bielawski
@@ -187,7 +187,7 @@ This document describes a framework for securing ground vehicle software update 
 
 Uptane is a secure software update framework for ground vehicles. This document describes procedures to enable programmers for OEMs and suppliers to securely design and implement this framework in a manner that better protects connected units on ground vehicles. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to compromise critical systems. It also assures a faster and easier recovery process should a compromise occur.
 
-These instructions specify the components necessary for a compliant implementation. Individual implementors can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers.
+These instructions specify the components necessary for a compliant implementation. Individual implementors can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementors wish to have compatible formats, they may use profiles. Profiles contain a description of implementation choices as well as data binding formats. An implementor who follows a profile as well as the Uptane standard will be able to interoperate with other implementations using that profile.
 
 # Terminology
 
@@ -206,6 +206,8 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 *Image*: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.  
 
 *Primary/Secondary ECUs*: Terms used to describe the control units within a ground vehicle. A primary ECU downloads from a repository and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a connection to the internet. Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.  
+
+*Profile*: A document that contains information about a specific Uptane implementation. The profile contains decisions about SHOULDs and MAYs in an implementation, as well as descriptions of data binding formats. Profiles MAY be used to create compatible Uptane implementations.
 
 *Repository*: A server containing metadata about images. May also contain the images themselves. Other data may be stored on the repository to be accessed by ECUs during the update process.
 
