@@ -496,7 +496,9 @@ To be available to install on clients, all images on the repository MUST have th
 
 In addition to the required metadata, the Targets metadata file SHOULD contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the targets metadata from the director.
 
-The following information SHOULD be provided for each image on both the Image repository and the Director repository:
+Custom metadata also MAY contain a field or section that is demarcated as custom metadata that MUST match whenever two pieces of metadata are checked against each other--most commonly, when targets metadata from the Director and Image repositories are checked against each other.
+
+The following information SHOULD be provided for each image on both the Image repository and the Director repository, and SHOULD be included in the "MUST match" section, if it is implemented:
 
 * A release counter, to be incremented each time a new version of the image is released. This can be used to prevent rollback attacks even in cases where the director repository is compromised.
 * A hardware identifier, or list of hardware identifiers, representing models of ECUs with which the image is compatible. This can be used to ensure that an ECU can not be ordered to install an incompatible image, even in cases where the Director repository is compromised.
@@ -886,7 +888,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
     1. Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same file name listed in the Director metadata, following the procedure in {{resolve_delegations}}.
     2. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.
-        2. Check that the custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
+        2. Check that all "MUST match" custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
@@ -957,7 +959,7 @@ It is possible to delegate signing authority to multiple delegated roles as desc
 
 1. For each of the roles in the delegation, find and load the image metadata (or error) following the procedure in {{resolve_delegations}}.
 2. Inspect the non-custom part of the metadata loaded in step 1:
-    1. Locate all sets of roles which have agreeing (i.e. identical) non-custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.
+    1. Locate all sets of roles which have agreeing (i.e. identical) non-custom metadata and "MUST match" custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.
     2. Check for a conflict. A conflict exists if there remains more than one agreeing set of roles, each set having different metadata. If a conflict is found, choose and return the metadata from the set of roles which includes the earliest role in the multi-delegation list.
     3. If there is no conflict, check if there is any single set of roles with matching non-custom metadata. If there is, choose and return the metadata from this set.
     4. If no agreeing set can be found that meets the agreement threshold, return an error indicating that image metadata could not be found.
