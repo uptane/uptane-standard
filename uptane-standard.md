@@ -882,22 +882,19 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 
 1. Load the repository mapping metadata ({{repo_mapping_meta}}).
 2. Check each mapping, in the listed order, and identify the first mapping that matches the requested image.
-3. Once a mapping is identified for the requested file, metadata is downloaded and verified from the assigned repositories listed in the mapping. Verification occurs if the length and hashes about the target match across a threshold of repositories.
+3. Once a mapping is identified for the requested file, metadata is downloaded and verified from the assigned repositories listed in the mapping. To do so, an ECU SHALL perform the following steps:
+    1. Load the latest attested time from the time server, if implemented.
+    2. Download and check the Root metadata file from the repository, following the procedure in {{check_root}}.
+    3. Download and check the Timestamp metadata file from the repository, following the procedure in {{check_timestamp}}.
+    4. Download and check the Snapshot metadata file from the repository, following the procedure in {{check_snapshot}}.
+    5. Download and check the top-level Targets metadata file from the repository, following the procedure in {{check_targets}}.
+    6. If necessary, locate and download a Targets metadata file from the repository that contains an image with with the given file name, following the procedure in {{resolve_delegations}}. (This SHOULD NOT be necessary to perform on a Director repository, as its top-level Targets metadata SHOULD NOT have delegations.) Also, check that the release counter for the image in the custom targets metadata in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
 4. If the targets metadata is a match across the specified threshold of repositories, return this metadata. A match means that:
     1. The non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in all sets of metadata.
     2. The "MUST match" custom metadata (e.g., hardware identifier and release counter) are the same in all sets of metadata.
 5. If the metadata is not a match, or if fewer than the threshold of repositories signed metadata about the desired target, then the client should take one of the following actions:
     5.1. If the terminating flag is set to true, report that either the repositories do not agree on the target, or that none of them have signed for the target.
     5.2. Otherwise, go back to step 2 and process the next mapping that matches the requested file.
-
-To download metadata metadata from a Directory / Image repository, an ECU SHALL perform the following steps:
-
-1. Load the latest attested time from the time server, if implemented.
-2. Download and check the Root metadata file from the repository, following the procedure in {{check_root}}.
-3. Download and check the Timestamp metadata file from the repository, following the procedure in {{check_timestamp}}.
-4. Download and check the Snapshot metadata file from the repository, following the procedure in {{check_snapshot}}.
-5. Download and check the top-level Targets metadata file from the repository, following the procedure in {{check_targets}}.
-6. If necessary, locate and download a Targets metadata file from the repository that contains an image with with the given file name, following the procedure in {{resolve_delegations}}. (This SHOULD NOT be necessary to perform on a Director repository, as its top-level Targets metadata SHOULD NOT have delegations.) Also, check that the release counter for the image in the custom targets metadata in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
 
 A primary ECU MUST verify that Targets metadata from the Director and Image repositories match. A secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the target metadata from the Director that contains the ECU identifier of the current ECU.)
 
