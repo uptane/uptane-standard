@@ -888,15 +888,16 @@ In order to perform full verification, an ECU SHALL perform the following steps:
     3. Download and check the Timestamp metadata file from the repository, following the procedure in {{check_timestamp}}.
     4. Download and check the Snapshot metadata file from the repository, following the procedure in {{check_snapshot}}.
     5. Download and check the top-level Targets metadata file from the repository, following the procedure in {{check_targets}}.
-    6. If necessary, locate and download a Targets metadata file from the repository that contains an image with with the given file name, following the procedure in {{resolve_delegations}}. (This SHOULD NOT be necessary to perform on a Director repository, as its top-level Targets metadata SHOULD NOT have delegations.) Also, check that the release counter for the image in the custom targets metadata in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
-4. If the targets metadata is a match across the specified threshold of repositories, return this metadata. A match means that:
-    1. The non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in all sets of metadata.
-    2. The "MUST match" custom metadata (e.g., hardware identifier and release counter) are the same in all sets of metadata.
+    6. If necessary, locate and download a Targets metadata file from the repository that contains an image with with the given file name, following the procedure in {{resolve_delegations}}. (It is not necessary to perform this on a Director repository, as its top-level Targets metadata MUST NOT have delegations.) Also, check that the release counter for the image in the custom targets metadata in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
+4. If the targets metadata is a match across the specified threshold of repositories (which MUST include one Image repository, and one Director repository), return this metadata. A match means that:
+    1. The non-custom Targets metadata (i.e., length and hashes) of the unencrypted image are the same in metadata from the threshold of repositories.
+    2. The "MUST match" custom Targets metadata (e.g., hardware identifier and release counter) are the same in metadata from the threshold of repositories.
+    3. If there are multiple Director repositories, then the ECU identifier MUST be the same in all sets of custom Targets metadata. (The ECU identifier cannot be in the "MUST match" section of the custom Targets metadata, because it may not be listed in the custom Targets metadata of any Image repository.)
 5. If the metadata is not a match, or if fewer than the threshold of repositories signed metadata about the desired target, then the client should take one of the following actions:
     5.1. If the terminating flag is set to true, report that either the repositories do not agree on the target, or that none of them have signed for the target.
     5.2. Otherwise, go back to step 2 and process the next mapping that matches the requested file.
 
-A primary ECU MUST verify that Targets metadata from the Director and Image repositories match. A secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the target metadata from the Director that contains the ECU identifier of the current ECU.)
+A primary ECU MUST verify that Targets metadata from the threshold of Director and Image repositories specified in a mapping match. A secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the target metadata from a Director repository that contains the ECU identifier of the current ECU.)
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
