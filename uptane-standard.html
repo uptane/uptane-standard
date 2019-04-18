@@ -425,12 +425,12 @@
 <link href="#rfc.authors" rel="Chapter">
 
 
-  <meta name="generator" content="xml2rfc version 2.15.3 - https://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.9.6 - https://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-04-04" />
+  <meta name="dct.issued" scheme="ISO8601" content="2019-04-18" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -909,26 +909,27 @@
 <h1 id="rfc.section.5.2.3.1.1">
 <a href="#rfc.section.5.2.3.1.1">5.2.3.1.1.</a> <a href="#custom-metadata-about-images" id="custom-metadata-about-images">Custom metadata about images</a>
 </h1>
-<p id="rfc.section.5.2.3.1.1.p.1">In addition to the required metadata, the Targets metadata file SHOULD contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the targets metadata from the director.</p>
-<p id="rfc.section.5.2.3.1.1.p.2">The following information SHOULD be provided for each image on both the Image repository and the Director repository:</p>
+<p id="rfc.section.5.2.3.1.1.p.1">In addition to the required metadata, the Targets metadata file MAY contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the targets metadata from the director.</p>
+<p id="rfc.section.5.2.3.1.1.p.2">Custom metadata also MAY contain a field or section that is demarcated as custom metadata that MUST match whenever two pieces of metadata are checked against each other&#8211;most commonly, when targets metadata from the Director and Image repositories are checked against each other.</p>
+<p id="rfc.section.5.2.3.1.1.p.3">The following information SHOULD be provided for each image on both the Image repository and the Director repository, and SHOULD be included in the &#8220;MUST match&#8221; section, if it is implemented:</p>
 <p></p>
 
 <ul>
 <li>A release counter, to be incremented each time a new version of the image is released. This can be used to prevent rollback attacks even in cases where the director repository is compromised.</li>
 <li>A hardware identifier, or list of hardware identifiers, representing models of ECUs with which the image is compatible. This can be used to ensure that an ECU can not be ordered to install an incompatible image, even in cases where the Director repository is compromised.</li>
 </ul>
-<p id="rfc.section.5.2.3.1.1.p.4">The following information is CONDITIONALLY REQUIRED for each image on the Director repository IF that image is encrypted:</p>
+<p id="rfc.section.5.2.3.1.1.p.5">The following information is CONDITIONALLY REQUIRED for each image on the Director repository IF that image is encrypted:</p>
 <p></p>
 
 <ul>
 <li>Information about filenames, hashes, and file size of the encrypted image</li>
 <li>Information about the encryption method, and other relevant information&#8211;for example, a symmetric encryption key encrypted by the ECU&#8217;s asymmetric key could be included in the Director repository metadata.</li>
 </ul>
-<p id="rfc.section.5.2.3.1.1.p.6">The following information MUST be provided for each image in the targets metadata from the Director repository:</p>
+<p id="rfc.section.5.2.3.1.1.p.7">The following information MUST be provided for each image in the targets metadata from the Director repository:</p>
 <p></p>
 
 <ul><li>An ECU identifier (such as a serial number), specifying the ECU that should install the image.</li></ul>
-<p id="rfc.section.5.2.3.1.1.p.8">The Director repository MAY provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the director wishes to provide a signed URL.</p>
+<p id="rfc.section.5.2.3.1.1.p.9">The Director repository MAY provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the director wishes to provide a signed URL.</p>
 <h1 id="rfc.section.5.2.3.2">
 <a href="#rfc.section.5.2.3.2">5.2.3.2.</a> <a href="#delegations_meta" id="delegations_meta">Metadata about Delegations</a>
 </h1>
@@ -1340,7 +1341,7 @@
 <li>Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same file name listed in the Director metadata, following the procedure in <a href="#resolve_delegations" class="xref">Section 5.4.4.7</a>.</li>
 <li>Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository: <ol>
 <li>Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.</li>
-<li>Check that the custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.</li>
+<li>Check that all &#8220;MUST match&#8221; custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.</li>
 <li>Check that the release counter in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.</li>
 </ol>
 </li>
@@ -1440,7 +1441,7 @@
 <ol>
 <li>For each of the roles in the delegation, find and load the image metadata (or error) following the procedure in <a href="#resolve_delegations" class="xref">Section 5.4.4.7</a>.</li>
 <li>Inspect the non-custom part of the metadata loaded in step 1: <ol>
-<li>Locate all sets of roles which have agreeing (i.e. identical) non-custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.</li>
+<li>Locate all sets of roles which have agreeing (i.e. identical) non-custom metadata and &#8220;MUST match&#8221; custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.</li>
 <li>Check for a conflict. A conflict exists if there remains more than one agreeing set of roles, each set having different metadata. If a conflict is found, choose and return the metadata from the set of roles which includes the earliest role in the multi-delegation list.</li>
 <li>If there is no conflict, check if there is any single set of roles with matching non-custom metadata. If there is, choose and return the metadata from this set.</li>
 <li>If no agreeing set can be found that meets the agreement threshold, return an error indicating that image metadata could not be found.</li>
