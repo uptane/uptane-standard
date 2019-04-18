@@ -561,14 +561,14 @@ The Timestamp metadata SHALL contain the following information:
 
 Repository mapping metadata informs a primary ECU about which repositories to trust for images or image paths. Repository mapping metadata MUST be present on all primary ECUs, and MUST contain the following information:
 
-* A list of repository names, one or more URLs at which each named repository can be accessed, and a Boolean flag which indicates whether each named repository is a Director repository.
-* A list of mappings of image paths to repositories, each of which contains:
+* A list of repository names, each with one or more URLs at which the repository can be accessed.  The first repository name in this list SHALL be known as the Director repository.
+* A list of mappings of image paths to repositories.  Each mapping MUST contain:
     * A list of image paths. Image paths MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
-    * A list of repositories that MAY sign the targets metadata for the image paths.
-    * A Boolean "terminating" flag which indicates whether the client MUST continue searching subsequent mappings (after failing to find the requested image from at least one of the repositories specified in this mapping, and given that this mapping matches the request image).
-    * A threshold which indicates the minimum number of repositories that MUST sign off the same non-custom targets metadata on any matching image.
+    * A list of repositories (at least two) that MAY sign the targets metadata for the image paths.  The first must always be the Director repository (the same repository that is listed first in the list of repository names).
+    * A Boolean "terminating" flag which indicates whether the client MUST NOT continue searching subsequent mappings (after failing to find the requested image from at least one of the repositories specified in this mapping, and given that this mapping matches the request image).
+    * A threshold which indicates the minimum number of repositories that MUST sign off the same non-custom targets metadata on any matching image.  This threshold MUST be at least two, and SHOULD be equal to the number of repositories listed in this mapping.
 
-At a minimum, the repository mapping metadata MUST include at least one Director and Image repository. For example, in the most basic Uptane case, the repository mapping metadata would contain:
+For example, in the most basic Uptane case, the repository mapping metadata would contain:
 
 * The name and URLs of the Director repository
 * The name and URLs of the Image repository
@@ -576,7 +576,7 @@ At a minimum, the repository mapping metadata MUST include at least one Director
 
 However, more complex repository mapping metadata can permit more complicated use cases. For example:
 
-* A second Director repository might be useful for fleet management of after-market vehicles, such as a rental car company that might wish to only install approved updates.
+* A third repository might be useful for fleet management of after-market vehicles, such as a rental car company that might wish to only install approved updates.
 * For dynamic content with lower security sensitivity, an OEM might want to allow a certain subset of images to only require trust from the Director repository.
 
 The *Deployment Considerations* document gives more guidance on how to implement repository mapping metadata for these use cases. It also discusses strategies for updating repository mapping metadata, if required. {{TAP-4}} also contains detailed guidance on repository mapping metadata implementation.
@@ -622,14 +622,14 @@ The Image repository MAY require authentication for read access.
 
 ### Director Repository {#director_repository}
 
+The first repository name listed in the repository mapping metadata {{repo_mapping_meta}} is to be known as the Director repository.
+
 The Director repository instructs ECUs as to which images should be installed by producing signed metadata on demand. Unlike the Image repository, it is mostly controlled by automated, online processes. It also consults a private inventory database containing information on vehicles, ECUs, and software revisions.
 
 The Director repository SHALL expose an interface for primaries to upload vehicle version manifests ({{vehicle_version_manifest}}) and download metadata. This interface SHOULD be public.
 The Director MAY encrypt images for ECUs that require them, either by encrypting on-the-fly or by storing encrypted images in the repository.
 
 The Director repository SHALL implement storage which permits an automated service to write generated metadata files. It MAY use any filesystem, key-value store, or database that fulfills this requirement.
-
-The implementor MUST use the repository mapping metadata_verification {{repo_mapping_meta}} to list one or more Director repositories.
 
 #### Directing installation of images on vehicles
 
@@ -705,7 +705,6 @@ A primary downloads, verifies, and distributes the latest time, metadata and ima
 1. Send metadata to secondaries ({{send_metadata_primary}})
 1. Send images to secondaries ({{send_images_primary}})
 
-In the rest of this section, a primary MUST use the repository mapping metadata_verification {{repo_mapping_meta}} in order to find one or more Director repositories.
 
 #### Construct and send vehicle version manifest {#construct_manifest_primary}
 
@@ -874,34 +873,38 @@ In order to perform partial verification, an ECU SHALL perform the following ste
 
 Full verification of metadata means that the ECU checks that the Targets metadata about images from the Director repository matches the Targets metadata about the same images from the Image repository. This provides resilience to a key compromise in the system.
 
-Full verification MAY be performed by either primary or secondary ECUs. The procedure is the same, except that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, it applies only to primary ECUs.
+Full verification MAY be performed by either primary or secondary ECUs.  Note that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, primary ECUs are to download it from the repositories, and secondary ECUs are to either request it from the primary ECU or refer to the cache of metadata already provided by the primary ECU.
 
 If {{TAP-5}} is supported, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, the download should follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
 1. Load the repository mapping metadata ({{repo_mapping_meta}}).
-2. Check each mapping, in the listed order, and identify the first mapping that matches the requested image.
-3. Once a mapping is identified for the requested file, metadata is downloaded and verified from the assigned repositories listed in the mapping. To do so, an ECU SHALL perform the following steps:
-    1. Load the latest attested time from the time server, if implemented.
-    2. Download and check the Root metadata file from the repository, following the procedure in {{check_root}}.
-    3. Download and check the Timestamp metadata file from the repository, following the procedure in {{check_timestamp}}.
-    4. Download and check the Snapshot metadata file from the repository, following the procedure in {{check_snapshot}}.
-    5. Download and check the top-level Targets metadata file from the repository, following the procedure in {{check_targets}}.
-    6. If necessary, locate and download a Targets metadata file from the repository that contains an image with with the given file name, following the procedure in {{resolve_delegations}}. (It is not necessary to perform this on a Director repository, as its top-level Targets metadata MUST NOT have delegations.) Also, check that the release counter for the image in the custom targets metadata in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
-4. If the targets metadata is a match across the specified threshold of repositories (which MUST include one Image repository, and one Director repository), return this metadata. A match means that:
-    1. The non-custom Targets metadata (i.e., length and hashes) of the unencrypted image are the same in metadata from the threshold of repositories.
-    2. The "MUST match" custom Targets metadata (e.g., hardware identifier and release counter) are the same in metadata from the threshold of repositories.
-    3. If there are multiple Director repositories, then the ECU identifier MUST be the same in all sets of custom Targets metadata. (The ECU identifier cannot be in the "MUST match" section of the custom Targets metadata, because it may not be listed in the custom Targets metadata of any Image repository.)
-5. If the metadata is not a match, or if fewer than the threshold of repositories signed metadata about the desired target, then the client should take one of the following actions:
-    5.1. If the terminating flag is set to true, report that either the repositories do not agree on the target, or that none of them have signed for the target.
-    5.2. Otherwise, go back to step 2 and process the next mapping that matches the requested file.
-
-A primary ECU MUST verify that Targets metadata from the threshold of Director and Image repositories specified in a mapping match. A secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the target metadata from a Director repository that contains the ECU identifier of the current ECU.)
+2. Load the latest verified time from the time server, if implemented.
+3. Refresh the top-level metadata for the Director repository, by following the steps in {#refresh_toplevel_metadata}, for the first repository in the list of repositories in the mapping metadata.
+4. If this ECU is a primary ECU, then iterate through the image metadata listed in the Director repository's top-level Targets metadata, and **store** all image metadata.  The primary ECU SHOULD also ensure that the image metadata from the director repository doesn't contain any ECU identifiers for ECUs not actually present in the vehicle.
+5. If instead this ECU is a secondary ECU, then iterate through the image metadata listed in the Director repository's top-level Targets metadata, and **store** the first image metadata listed that includes this secondary ECU's ECU identifier and hardware ID.
+6. For each image name for which the previous two steps **stored** image metadata, obtain verified image metadata for that image by iterating over each mapping in the repository mapping metadata, in order, and performing the following steps:
+    1. If the image name does not match the image paths listed in the mapping, skip to the next mapping.
+    2. For each repository listed in this mapping, if top-level metadata has not been refreshed for that repository using {#refresh_toplevel_metadata} in this iteration of the {#full_verification} procedure, refresh top-level metadata for that repository using the steps in {#refresh_toplevel_metadata}.
+    3. For each repository listed in this mapping, perform the procedure in {{resolve_delegations}}, beginning at the top-level Targets metadata in that repository, to find metadata for the image if it exists, and **store** it if it does.
+    4. Find the first set of at least the mapping's threshold number of repositories, including the Director repository, for which all of the following is true for the stored image metadata for each repository:
+        1. The non-custom Targets metadata (i.e., length and hashes) of the unencrypted image are the same.
+        2. If listed, the "MUST match" custom Targets metadata (e.g., hardware identifier and release counter) are the same.
+        3. Any ECU identifiers, if listed, are the same.
+        4. If this image is for this ECU (if the ECU identifier associated with this image in the image metadata from the Director is this ECU's ECU identifier), then the release counter, if listed, is greater than or equal to that of the image already installed on this ECU.  ((Note: It MAY be that this check is better put in a later section, but there are edge cases in which that results in no update when there is an available update, so that has to be considered.))
+    5. If there is no such set (of at least the mapping's threshold number of repositories meeting the criteria in the prior step), then check the terminating property on this mapping.  If the terminating value for this mapping is true, then abort the search for image metadata for this image, discarding metadata **stored** for this image, as there is no verifiable update for it, and proceed to the next image for which there is **stored** image metadata, if any.  If the terminating value for this mapping is false, continue the search for verified image metadata for this image by continuing to the next mapping, discarding the image metadata for this image from the repositories other than the Director repository.  ((Note: In order to maintain the semantics of the mapping order in the face of man-in-the-middle attacks that interfere with the obtaining metadata for a prior mapping, it may be necessary to also abort the search if ANY of the repositories in a prior mapping provide metadata for an image, even if the mapping is not terminating.  If anyone has thoughts, please LMK, but this is probably fine.))
+7. The image metadata **stored** for each image is now verified.
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
-If the ECU performing the verification is the primary ECU, it SHOULD also ensure that the targets metadata from the director repository doesn't contain any ECU identifiers for ECUs not actually present in the vehicle.
+
+#### How to refresh top-level metadata for a Repository {#refresh_toplevel_metadata}
+1. Download and check the Root metadata file from the repository, following the procedure in {{check_root}}.
+2. Download and check the Timestamp metadata file from the repository, following the procedure in {{check_timestamp}}.
+3. Download and check the Snapshot metadata file from the repository, following the procedure in {{check_snapshot}}.
+4. Download and check the top-level Targets metadata file from the repository, following the procedure in {{check_targets}}.
+5. If any of these top-level metadata files fail to verify, abort the update.
 
 #### How to check Root metadata {#check_root}
 
