@@ -892,8 +892,9 @@ In order to perform full verification, an ECU SHALL perform the following steps:
         1. The non-custom Targets metadata (i.e., length and hashes) of the unencrypted image are the same.
         2. If listed, the "MUST match" custom Targets metadata (e.g., hardware identifier and release counter) are the same.
         3. Any ECU identifiers, if listed, are the same.
-        4. If this image is for this ECU (if the ECU identifier associated with this image in the image metadata from the Director is this ECU's ECU identifier), then the release counter, if listed, is greater than or equal to that of the image already installed on this ECU.
     5. If there is no such set (of at least the mapping's threshold number of repositories meeting the criteria in the prior step), then check the terminating property on this mapping.  If the terminating value for this mapping is true, then abort the search for image metadata for this image, discarding metadata **stored** for this image, as there is no verifiable update for it, and proceed to the next image for which there is **stored** image metadata, if any.  If the terminating value for this mapping is false, continue the search for verified image metadata for this image by continuing to the next mapping, discarding the image metadata for this image from the repositories other than the Director repository.
+    6. If this image is for this ECU (if the ECU identifier associated with this image in the image metadata from the Director is this ECU's ECU identifier), then this ECU SHOULD discard the image metadata for this image if the release counter, if listed, is less than the release counter of the image already installed on this ECU.
+
 7. The image metadata **stored** for each image is now verified.
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
