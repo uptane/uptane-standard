@@ -873,7 +873,7 @@ In order to perform partial verification, an ECU SHALL perform the following ste
 
 Full verification of metadata means that the ECU checks that the Targets metadata about images from the Director repository matches the Targets metadata about the same images from the Image repository. This provides resilience to a key compromise in the system.
 
-Full verification MAY be performed by either primary or secondary ECUs.  Note that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, primary ECUs are to download it from the repositories, and secondary ECUs are to either request it from the primary ECU or refer to the cache of metadata already provided by the primary ECU.
+Full verification MAY be performed by either primary or secondary ECUs.  Note that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, primary ECUs are to download it from the repositories, and secondary ECUs are to either request it from the primary ECU, or refer to its cache of metadata previously downloaded from the primary ECU.
 
 If {{TAP-5}} is supported, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, the download should follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
