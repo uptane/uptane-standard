@@ -26,24 +26,10 @@ author:
 normative:
   # Keyword def (MUST, SHALL, MAY, etc.)
   RFC2119:
-  # HTTP/1.1
-  RFC2616:
-  # X.509
-  RFC3280:
-  # PKCS:RSA
-  RFC3447:
   # X.509 PKI spec
   RFC3647:
-  # SHA
-  RFC4634:
-  # base64
-  RFC4648:
   # Network Unicode for comparing strings
   RFC5198:
-  # RSA updates
-  RFC5756:
-  # JSON
-  RFC7159:
   # Unicode Normalization Form C
   NFC:
     target: http://www.unicode.org/reports/tr15/
@@ -108,17 +94,6 @@ normative:
     date: 2018-09-19
 
 informative:
-  # MD5
-  RFC1321:
-  ED25519:
-    title: '"High-Speed High-Security Signatures", Journal of Cryptographic Engineering, Vol. 2'
-    author:
-      - ins: D. J. Bernstein
-      - ins: N. Duif
-      - ins: T. Lange
-      - ins: P. Schwabe
-      - ins: B-Y. Yang
-    date: 2011-09-26
   MERCURY:
     target: https://www.usenix.org/system/files/conference/atc17/atc17-kuppusamy.pdf
     title: "Mercury: Bandwidth-Effective Prevention of Rollback Attacks Against Community Repositories"
