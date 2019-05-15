@@ -567,30 +567,32 @@ For example:
 
 An Uptane implementation SHALL make the following services available to vehicles:
 
-* Image repository
-* Director repository
+* A Director repository
+* At least one Image repository
 
-Additionally, an Uptane implementation requires ECUs to have a secure way to know the current time.
+Additionally, an Uptane implementation requires ECUs to have a secure way to know the current time; this MAY be implemented as a server.
+
+Uptane implementations MAY contain multiple repositories. The simplest case is to have a Director repository and a single Image repository. More complex configurations are possible, however.
 
 ### Image Repository
 
-The Image repository exists to allow an OEM and/or its suppliers to upload images and their associated metadata. It makes these images and their metadata available to vehicles. The Image repository is designed to be primarily controlled by human actors, and updated relatively infrequently.
+An Image repository allows an OEM and/or its suppliers to upload images and their associated metadata. It makes these images and their metadata available to vehicles. Image repositories are designed to be primarily controlled by human actors, and updated relatively infrequently.
 
-The Image repository SHALL expose an interface permitting the download of metadata and images. This interface SHOULD be public.
+An Image repository SHALL expose an interface permitting the download of metadata and images. This interface SHOULD be public.
 
-The Image repository SHALL require authorization for writing metadata and images.
+An Image repository SHALL require authorization for writing metadata and images.
 
-The Image repository SHALL provide a method for authorized users to upload images and their associated metadata. It SHALL check that a user writing metadata and images is authorized to do so for that specific image by checking the chain of delegations as described in {{delegations_meta}}.
+An Image repository SHALL provide a method for authorized users to upload images and their associated metadata. It SHALL check that a user writing metadata and images is authorized to do so for that specific image by checking the chain of delegations as described in {{delegations_meta}}.
 
-The Image repository SHALL implement storage which permits authorized users to write an image file using a unique filename, and later read the same file using the same name. It MAY use any filesystem, key-value store, or database that fulfills this requirement.
+An Image repository SHALL implement storage which permits authorized users to write an image file using a unique filename, and later read the same file using the same name. It MAY use any filesystem, key-value store, or database that fulfills this requirement.
 
-The Image repository MAY require authentication for read access.
+An Image repository MAY require authentication for read access.
 
 ### Director Repository {#director_repository}
 
-The first repository name listed in the repository mapping metadata {{repo_mapping_meta}} is to be known as the Director repository.
-
 The Director repository instructs ECUs as to which images should be installed by producing signed metadata on demand. Unlike the Image repository, it is mostly controlled by automated, online processes. It also consults a private inventory database containing information on vehicles, ECUs, and software revisions.
+
+Using repository mapping metadata ({{repo_mapping_meta}}), it is possible to have more than one repository performing the functions of a Director--that is, producing signed metadata on demand and instructing ECUs as to which images they should install. However, to avoid overcomplicating the standard, we only specify the procedure for verification for implementations with a single Director. The Director MUST be the first repository name listed in the repository mapping metadata {{repo_mapping_meta}}.
 
 The Director repository SHALL expose an interface for primaries to upload vehicle version manifests ({{vehicle_version_manifest}}) and download metadata. This interface SHOULD be public.
 The Director MAY encrypt images for ECUs that require them, either by encrypting on-the-fly or by storing encrypted images in the repository.
