@@ -456,7 +456,9 @@ Additionally, it MAY contain a mapping of roles to a list of valid URLs from whi
 
 ### Targets Metadata {#targets_meta}
 
-Targets metadata, whether for the top-level Targets role or for any delegated targets role, MAY contain metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.
+The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filnames, hashes, file sizes, and MAY also include other useful information about images, such as the types of hardware a particular image is compatible with.
+
+Targets metadata can also contain metadata about delegations, allowing one Targets role to delegate its authority to another. This means that an individual Targets metadata file might contain only metadata about delegations, only metadata about images, or some combination of the two. The details of how ECUs traverse the delegation tree to find valid metadata about images is specified in {{resolve_delegations}}.
 
 #### Metadata about Images {#targets_images_meta}
 
@@ -468,7 +470,7 @@ To be available to install on clients, all images on the repository MUST have th
 
 ##### Custom metadata about images
 
-In addition to the required metadata, the Targets metadata file MAY contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the targets metadata from the director.
+In addition to the required metadata, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the targets metadata from the director.
 
 Custom metadata also MAY contain a field or section that is demarcated as custom metadata that MUST match whenever two pieces of metadata are checked against each other--most commonly, when targets metadata from the Director and Image repositories are checked against each other.
 
