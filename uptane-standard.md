@@ -881,12 +881,12 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 
 1. Load the repository mapping metadata ({{repo_mapping_meta}}).
 2. Load the latest verified time from the time server, if implemented.
-3. Refresh the top-level metadata for the Director repository, by following the steps in {#refresh_toplevel_metadata}, for the first repository in the list of repositories in the mapping metadata.
+3. Refresh the top-level metadata for the Director repository, by following the steps in {{refresh_toplevel_metadata}}, for the first repository in the list of repositories in the mapping metadata.
 4. If this ECU is a primary ECU, then iterate through the image metadata listed in the Director repository's top-level Targets metadata, and **store** all image metadata.  The primary ECU SHOULD also ensure that the image metadata from the director repository doesn't contain any ECU identifiers for ECUs not actually present in the vehicle.
 5. If instead this ECU is a secondary ECU, then iterate through the image metadata listed in the Director repository's top-level Targets metadata, and **store** the image metadata listed that includes this secondary ECU's ECU identifier and hardware ID.
 6. For each image name for which the previous two steps **stored** image metadata, obtain verified image metadata for that image by iterating over each mapping in the repository mapping metadata, in order, and performing the following steps for each mapping:
     1. If the image name does not match the image paths listed in the mapping, skip to the next mapping.
-    2. For each repository listed in this mapping, if top-level metadata has not been refreshed for that repository using {#refresh_toplevel_metadata} in this iteration of the {#full_verification} procedure, refresh top-level metadata for that repository using the steps in {#refresh_toplevel_metadata}.
+    2. For each repository listed in this mapping, if top-level metadata has not been refreshed for that repository using the process in {{refresh_toplevel_metadata}} in this iteration of the {{full_verification}} procedure, refresh top-level metadata for that repository using the steps in {{refresh_toplevel_metadata}}.
     3. For each repository listed in this mapping, perform the procedure in {{resolve_delegations}}, beginning at the top-level Targets metadata in that repository, to find metadata for the image if it exists, and **store** it if it does.
     4. Find the first set of at least X repositories -- where X is the mapping's threshold, and such that the Director repository is in the set -- for which all of the following is true for the stored image metadata for each repository:
         1. The non-custom Targets metadata (i.e., length and hashes) of the unencrypted image are the same.
