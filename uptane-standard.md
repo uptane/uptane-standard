@@ -255,7 +255,7 @@ The following use cases provide a number of scenarios illustrating the manner in
 
 #### OEMs initializing Uptane at the factory using SOTA
 
-An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server (if implemented). The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers' assembly lines, or can choose to add the materials later at the OEM's assembly lines. The OEM's implementation is Uptane-compliant if:
+An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and an accurate attestation of the latest time. The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers' assembly lines, or can choose to add the materials later at the OEM's assembly lines. The OEM's implementation is Uptane-compliant if:
 
 1. all primaries perform full verification;
 1. all secondaries that are updated via OTA perform full or partial verification; and
@@ -372,7 +372,7 @@ At a high level, Uptane requires:
     * Timestamp - Indicates whether there are new metadata or images
     * Snapshot - Indicates images released by the repository at a point in time, via signing metadata about targets metadata
     * Targets - Indicates metadata about images, such as hashes and file sizes
-* A secure way for ECUs to know the time. {{time_server}} describes one way to securely attest time to ECUs.
+* A secure way for ECUs to know the time.
 * An in-vehicle client on a primary ECU capable of verifying the signatures on all update metadata, handling all server communication, and downloading updates on behalf of secondary ECUs
 * A client or library on each secondary ECU capable of performing either full or partial verification of metadata
 
@@ -450,7 +450,6 @@ The following sections describe the role-specific metadata. All roles SHALL foll
 A repository's Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
 
 * A representation of the public keys for all four roles. Each key should have a unique public key identifier.
-     * If a Time Server is in use, a representation of the Time Server public key is CONDITIONALLY REQUIRED in Director repository root metadata.
 * An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
 
 Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded.  If this mapping of URLs is used, the implementer SHOULD implement this functionality following {{TAP-5}} to avoid adding unforeseen security risks.
@@ -506,14 +505,6 @@ A list of delegations MUST provide the following information:
     * A threshold of keys that must sign for this role
 
 Note that **any** targets metadata file may contain delegations, and that delegations can be in chains of arbitrary length.
-
-#### Metadata about Time Server
-
-If a Time Server {{time_server}} is implemented AND partial-verification secondaries will be used, the following metadata is CONDITIONALLY REQUIRED in the Director repository's Targets metadata:
-
-* A representation of the public key(s) for the Time Server, similar to the representation of public keys in Root metadata.
-
-Listing the public key of the Time Server in Director targets metadata is necessary to allow partial-verification secondaries to perform time server key rotation.
 
 ### Snapshot Metadata {#snapshot_meta}
 
@@ -579,7 +570,7 @@ An Uptane implementation SHALL make the following services available to vehicles
 * Image repository
 * Director repository
 
-Additionally, an Uptane implementation requires ECUs to have a secure way to know the current time. This SHOULD be accomplished using a time server ({{time_server}}), but MAY be implemented in other ways.
+Additionally, an Uptane implementation requires ECUs to have a secure way to know the current time.
 
 ### Image Repository
 
@@ -637,23 +628,11 @@ The inventory database MUST record the following pieces of information:
 
 The inventory database MAY record other information about ECUs and vehicles. It SHOULD record a hardware identifier for each ECU, to protect against the possibility of directing the ECU to install an incompatible firmware.
 
-### Time Server {#time_server}
-
-The Time Server exists to inform vehicles about the current time in a cryptographically secure way, since many ECUs in a vehicle will not have a reliable source of time. It receives lists of tokens from vehicles, and returns back a signed sequence that includes the token and the current time.
-
-An Uptane implementation SHOULD include a time server, but MAY use another secure source of time. If the time server is used, it MUST conform to the following requirements:
-
-When the Time Server receives a sequence of tokens from a vehicle, it SHALL provide one or more signed responses, containing the time along with these tokens. It MAY produce either one signed time attestation containing the current time and all tokens, or multiple time attestations each containing the current time and one or more tokens.
-
-The Time Server SHALL expose a public interface allowing primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.
-
-Rotation of the The Time Server's key is performed by listing the new key in the Director's Root metadata, in the same manner as other role keys are listed, and also in the Director's Targets metadata (for partial verification secondaries).
-
 ## In-vehicle implementation requirements
 
-An Uptane-compliant ECU SHALL be able to download and verify the time, metadata, and image binaries before installing a new image.
+An Uptane-compliant ECU SHALL be able to download and verify image metadata and image binaries before installing a new image, and MUST have a secure way of verifying the current time, or a sufficiently recent attestation of the time.
 
-Each ECU in a vehicle receiving over-the-air updates is either a primary or a secondary ECU. A primary ECU collects and delivers to the Director vehicle manifests ({{vehicle_version_manifest}}) containing information about which images have been installed on ECUs in the vehicle. It also downloads and verifies the latest time, metadata, and images for itself and for its secondaries. A secondary ECU downloads and verifies the latest time, metadata, and images for itself from its associated primary ECU. It also sends signed information about its installed images to its associated primary.
+Each ECU in a vehicle receiving over-the-air updates is either a primary or a secondary ECU. A primary ECU collects and delivers to the Director vehicle manifests ({{vehicle_version_manifest}}) containing information about which images have been installed on ECUs in the vehicle. It also verifies the time and downloads and verifies the latest metadata and images for itself and for its secondaries. A secondary ECU verifies the time and downloads and verifies the latest metadata and images for itself from its associated primary ECU. It also sends signed information about its installed images to its associated primary.
 
 All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A primary ECU MUST perform full verification ({{full_verification}}). A secondary ECU SHOULD perform full verification if possible. See [Uptane Deployment Considerations](#DEPLOY) for a discussion of how to choose between partial and full verification.
 
@@ -664,9 +643,8 @@ For an ECU to be capable of receiving Uptane-secured updates, it MUST have the f
 1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See [Uptane Deployment Considerations](#DEPLOY) for more information.
     * Partial verification ECUs MUST have the Root and Targets metadata from the Director repository.
     * Full verification ECUs MUST have a complete set of metadata (root, targets, snapshot, and timestamp) from both repositories, as well as the repository mapping metadata ({{repo_mapping_meta}}).
-2. The public key(s) of the time server (if the time server is implemented).
-3. The current time. This SHOULD be in the form of an attestation of time downloaded from the time server, but MAY come from another source if the time server is not implemented.
-4. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
+2. The current time, or a secure attestation of a sufficiently recent time.
+3. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
 
 ### What the primary does
 
@@ -676,7 +654,7 @@ A primary downloads, verifies, and distributes the latest time, metadata and ima
 1. Download and check current time ({{check_time_primary}})
 1. Download and verify metadata ({{download_meta_primary}})
 1. Download and verify images ({{download_images_primary}})
-1. Send latest time to secondaries ({{send_time_primary}})
+1. OPTIONAL: Send latest time to secondaries ({{send_time_primary}})
 1. Send metadata to secondaries ({{send_metadata_primary}})
 1. Send images to secondaries ({{send_images_primary}})
 
@@ -718,24 +696,14 @@ An ECU version report is a metadata structure that MUST contain the following in
   * The signature of the hash
 * A payload containing:
   * The ECU's unique identifier (e.g. the serial number)
-  * The latest time downloaded from the time server, if the time server is implemented
-  * The previous time downloaded from the time server, if the time server is implemented
   * The filename, length, and hashes of its currently installed image (i.e. the non-custom targets metadata for this particular image)
   * An indicator of any detected security attack
-* A token (nonce) for the time server to sign and send back, if the time server is implemented
+  * The latest time the ECU can verify at the time this version report was generated
+  * A cryptographic nonce
 
 #### Download and check current time {#check_time_primary}
 
-The primary SHALL load the current time from a secure source. This secure source SHOULD be a time server as described in {{time_server}}.
-
-If the time server is implemented, the primary SHALL use the following procedure to verify the time:
-
-1. Gather the tokens from each secondary ECU's version report ({{version_report}}).
-2. Send the list of tokens to the time server to fetch the current time. The time server responds as described in {{time_server}}, providing a cryptographic attestation of the last known time.
-3. If the time server's response meets the criteria below, update the primary ECU's clock and retain the time server's response for distribution to secondary ECUs, otherwise discard it and proceed without an updated time.  The criteria for checking the time server's response are:
-  - The signature over the time server's response is valid.
-  - The tokens provided to the time server have been included in the response.
-  - The time in the time server's response is later than the last time verified in this manner.
+The primary SHALL load the current time from a secure source.
 
 #### Download and verify metadata {#download_meta_primary}
 
@@ -749,7 +717,7 @@ There may be several different filenames that all refer to the same image binary
 
 #### Send latest time to secondaries {#send_time_primary}
 
-The primary SHOULD send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time.
+The primary SHOULD send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time. The primary MAY omit this step if the secondary has its own way of loading and verifying the time.
 
 #### Send metadata to secondaries {#send_metadata_primary}
 
@@ -777,17 +745,7 @@ Before installing a new image, an ECU SHALL perform the following five steps:
 
 #### Load and verify the latest attested time {#verify_time}
 
-The ECU SHOULD load and verify the current time, or the most recent time from the time server if it is implemented.
-
-If an Uptane time server ({{time_server}}) is implemented, the ECU SHALL:
-
-1. Verify that the signatures on the downloaded time are valid.
-2. Verify that the list of nonces/tokens in the downloaded time includes the token that the ECU sent in its previous version report.
-3. Verify that the time downloaded is greater than the previous time.
-
-If all three steps complete without error, the ECU SHALL overwrite its current attested time with the time it has just downloaded, and generate a new nonce/token for the next request to the time server.
-
-If any check fails, the ECU SHALL NOT overwrite its current attested time, and SHALL jump to the fifth step ({{create_version_report}}), and report the error. The ECU MUST reuse its previous token for the next request to the time server.
+The ECU SHALL load and verify the current time, or the most recent securely attested time.
 
 #### Verify metadata {#verify_metadata}
 
@@ -841,7 +799,7 @@ If a step in the following workflows does not succeed (e.g., the update is abort
 
 In order to perform partial verification, an ECU SHALL perform the following steps:
 
-1. Load the latest attested time from the time server, if implemented.
+1. Load and verify the current time, or the most recent securely attested time.
 2. Download and check the Targets metadata file from the Director repository, following the procedure in {{check_targets}}.
 
 #### Full verification {#full_verification}
@@ -889,16 +847,15 @@ If all of the steps complete without error, full verification of metadata is com
     4. The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the Root metadata file. (Checks for a rollback attack.)
     5. Set the latest Root metadata file to the new Root metadata file.
     6. Repeat steps 2.1 to 2.6.
-3. If the Timeserver key is listed in the Root metadata and has been rotated, reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence).  It will be updated in the next cycle.
-4. Check that the latest attested time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)
-5. If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
+3. Check that the current (or latest securely attested) time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)
+4. If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
 
 #### How to check Timestamp metadata {#check_timestamp}
 
 1. Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).
 2. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
 3. Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
-4. Check that the latest attested time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
+4. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
 
 
 #### How to check Snapshot metadata {#check_snapshot}
@@ -909,7 +866,7 @@ If all of the steps complete without error, full verification of metadata is com
 4. Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
 5. Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to the its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
 6. Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
-7. Check that the latest attested time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
+7. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
 
 #### How to check Targets metadata {#check_targets}
 
@@ -920,7 +877,7 @@ If all of the steps complete without error, full verification of metadata is com
     2. If checking delegated targets metadata, the threshold of keys is specified in the targets metadata file that delegated authority to this role.
 4. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
 5. If this Targets metadata file indicates that the Timeserver key should be rotated, then reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence). It will be updated in the next cycle.
-6. Check that the latest attested time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
+6. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
 7. If checking targets metadata from the Director repository, verify that there are no delegations.
 8. If checking targets metadata from the Director repository, check that no ECU identifier is represented more than once.
 
