@@ -492,7 +492,7 @@ To be available to install on clients, all images on the repository MUST have th
 * The size of the image in bytes
 * One or more hashes of the image file, along with the hashing function used
 
-##### Custom metadata about images
+##### Custom metadata about images {#custom_image_metadata}
 
 In addition to the required metadata, the Targets metadata file SHOULD contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the targets metadata from the director.
 
@@ -564,9 +564,9 @@ Repository mapping metadata informs a primary ECU about which repositories to tr
 * A list of repository names, each with one or more URLs at which the repository can be accessed.  The first repository name in this list SHALL be known as the Director repository.
 * A list of mappings of image paths to repositories.  Each mapping MUST contain:
     * A list of image paths. Image paths MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
-    * A list of repositories (at least two) that MAY sign the targets metadata for the image paths.  The first MUST always be the Director repository (the same repository that is listed first in the list of repository names).
-    * A Boolean "terminating" flag which indicates whether the client MUST NOT continue searching subsequent mappings (after failing to find the requested image from at least one of the repositories specified in this mapping, and given that this mapping matches the request image).
-    * A threshold which indicates the minimum number of repositories that MUST sign off the same non-custom targets metadata on any matching image.  This threshold MUST be at least two, and SHOULD be equal to the number of repositories listed in this mapping.
+    * A list of repositories that are permitted to sign the targets metadata for the image paths. The first repository listed MUST be the Director repository (the same repository that is listed first in the list of repository names).
+    * A threshold which indicates the minimum number of repositories that MUST sign off the same non-custom targets metadata on any matching image.  This threshold SHOULD be equal to the number of repositories listed in this mapping.
+    * A Boolean "terminating" flag, which indicates whether the client is permitted to continue searching subsequent mappings if it fails to verify targets metadata for an image that matches this mapping's image paths.
 
 For example, in the most basic Uptane case, the repository mapping metadata would contain:
 
@@ -880,23 +880,22 @@ If {{TAP-5}} is supported, a primary ECU SHALL download metadata and images foll
 In order to perform full verification, an ECU SHALL perform the following steps:
 
 1. Load the repository mapping metadata ({{repo_mapping_meta}}).
-2. Load the latest verified time from the time server, if implemented.
-3. Refresh the top-level metadata for the Director repository, by following the steps in {{refresh_toplevel_metadata}}, for the first repository in the list of repositories in the mapping metadata.
-4. If this ECU is a primary ECU, then iterate through the image metadata listed in the Director repository's top-level Targets metadata, and **store** all image metadata.  The primary ECU SHOULD also ensure that the image metadata from the director repository doesn't contain any ECU identifiers for ECUs not actually present in the vehicle.
-5. If instead this ECU is a secondary ECU, then iterate through the image metadata listed in the Director repository's top-level Targets metadata, and **store** the image metadata listed that includes this secondary ECU's ECU identifier and hardware ID.
-6. For each image name for which the previous two steps **stored** image metadata, obtain verified image metadata for that image by iterating over each mapping in the repository mapping metadata, in order, and performing the following steps for each mapping:
-    1. If the image name does not match the image paths listed in the mapping, skip to the next mapping.
-    2. For each repository listed in this mapping, if top-level metadata has not been refreshed for that repository using the process in {{refresh_toplevel_metadata}} in this iteration of the {{full_verification}} procedure, refresh top-level metadata for that repository using the steps in {{refresh_toplevel_metadata}}.
-    3. For each repository listed in this mapping, perform the procedure in {{resolve_delegations}}, beginning at the top-level Targets metadata in that repository, to find metadata for the image if it exists, and **store** it if it does.
-    4. Find the first set of at least X repositories -- where X is the mapping's threshold, and such that the Director repository is in the set -- for which all of the following is true for the stored image metadata for each repository:
-        1. The non-custom Targets metadata (i.e., length and hashes) of the unencrypted image are the same.
-        2. If listed, the "MUST match" custom Targets metadata (e.g., hardware identifier and release counter) are the same.
-        3. The ECU Identifier is the same across repositories, for all repositories that list it.
-    5. If there is no such set (of at least the mapping's threshold number of repositories meeting the criteria in the prior step), then check the terminating property on this mapping.  If the terminating value for this mapping is true, then abort the search for image metadata for this image, discarding metadata **stored** for this image, as there is no verifiable update for it, and proceed to the next image for which there is **stored** image metadata, if any.  If the terminating value for this mapping is false, continue the search for verified image metadata for this image by continuing to the next mapping, discarding the image metadata for this image from the repositories other than the Director repository.
-7. The image metadata **stored** for each image is now verified.
+2. Refresh the top-level metadata for the Director repository, by following the steps in {{refresh_toplevel_metadata}}. The first repository listed in the repository mapping metadata is always the Director repository.
+3. Iterate through the image metadata listed in the Director repository's Targets metadata file, and **store** the image metadata this ECU is responsible for verifying. A primary ECU is responsible for verifying ALL image metadata; a secondary ECU is responsible for verifying only image metadata that includes its own ECU identifier and hardware ID.
+4. For all images this ECU is responsible for, look for matching image metadata from other repositories until the threshold listed in the repository mapping metadata is met, **or** until a terminating mapping fails. The repository mapping metadata contains a list of mappings that determine which repositories are required to have signed metadata for a particular image. For each piece of image metadata this ECU stored in the previous step, iterate through those mappings as follows:
+    1. If the name of the image currently being processed does not match the image paths listed in the current mapping, skip to the next mapping.
+    2. Following the procedure in {{refresh_toplevel_metadata}}, refresh the top-level metadata for each repository listed in this mapping that has not yet been refreshed during this run-through of full verification.
+    3. Attempt to locate metadata for the image currently being processed in each repository listed in this mapping, using the procedure for resolving delegations listed in {{resolve_delegations}}.
+    4. Determine if there is a set of matching metadata (from the metadata located in the previous step) that meets the threshold specified in the current mapping. For a set to match, the following criteria MUST be met:
+        * The non-custom metadata of the image (i.e., length and hashes) are identical.
+        * If any member of the set contains "MUST match" custom metadata (as described in {{custom_image_metadata}}), all members of the set must have identical "MUST match" custom metadata.
+        * If the custom metadata from any repository other than the Director contains an ECU identifier, it MUST be the same as the ECU identifier in the Director's custom metadata.
+    5. If a set is found, move on to the next piece of image metadata; the rest of the mappings do not need to be checked. If no such set is found, check if the current mapping is a terminating mapping. If it is, abort the verification and return an error code indicating the failure.
+    6. If the end of the list of mappings in the repository mapping metadata is reached without finding a set of matching metadata for the image currently being processed, abort the verification and return an error code indicating the failure.
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
+If all of the steps complete without error, full verification of metadata is complete.
 
 #### How to refresh top-level metadata for a Repository {#refresh_toplevel_metadata}
 1. Download and check the Root metadata file from the repository, following the procedure in {{check_root}}.
