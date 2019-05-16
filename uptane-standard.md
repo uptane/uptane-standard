@@ -658,9 +658,9 @@ A primary downloads, verifies, and distributes the latest time, metadata and ima
 
 The primary SHALL build a *vehicle version manifest* as described in {{vehicle_version_manifest}}.
 
-Once it has the complete manifest built, it MAY send the manifest to the Director repository. However, it is not strictly required that the primary send the manifest until step three.
+Once it has the complete manifest built, it MAY send the manifest to the Director repository. However, it is not strictly required that the primary send the manifest until step three. If permitted by the implementation, a primary MAY send only a diff of the manifest, to save bandwidth. If an implementation permits diffs, the Director SHOULD have a way to request a full manifest.
 
-Secondaries MAY send their version report at any time, so that it is already stored on the primary  when it wishes to check for updates. Alternatively, the primary MAY request a version report from each secondary at the time of the update check.
+Secondaries MAY send their version report at any time, so that it is already stored on the primary when it wishes to check for updates. Alternatively, the primary MAY request a version report from each secondary at the time of the update check.
 
 ##### Vehicle version manifest {#vehicle_version_manifest}
 
