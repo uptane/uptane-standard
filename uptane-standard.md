@@ -887,14 +887,13 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 6. For each image for which image metadata was stored in the previous two steps, obtain verified image metadata for that image by iterating over each mapping in the repository mapping metadata, in order, and performing the following steps for each mapping:
     1. If the image name does not match the image paths listed in the mapping, skip to the next mapping.
     2. For each repository listed in this mapping, if top-level metadata has not been refreshed for that repository using {#refresh_toplevel_metadata} in this iteration of the {#full_verification} procedure, refresh top-level metadata for that repository using the steps in {#refresh_toplevel_metadata}.
-    3. For each repository listed in this mapping, perform the procedure in {{resolve_delegations}}, beginning at the top-level Targets metadata in that repository, to find metadata for the image if it exists, and store it if it does.
+    3. For each repository listed in this mapping, perform the procedure in {{resolve_delegations}}, beginning at the top-level Targets metadata in that repository, to find metadata for the image if it exists, and store it if it does. Note that the Director repository MUST NOT list delegations, and so this step SHOULD NOT be performed for this repository.
     4. Find the first set of at least X repositories -- where X is the mapping's threshold, and such that the Director repository is in the set -- for which all of the following is true for the stored image metadata for each repository:
         1. The non-custom Targets metadata (i.e., length and hashes) of the unencrypted image are the same.
         2. If listed, the "MUST match" custom Targets metadata (e.g., hardware identifier and release counter) are the same.
         3. Check that the release counter in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
         4. The ECU Identifier is the same across repositories, for all repositories that list it.
     5. If there is no such set (of at least the mapping's threshold number of repositories meeting the criteria in the prior step), then check the terminating property on this mapping.  If the terminating value for this mapping is true, then abort the search for image metadata for this image, discarding metadata stored for this image, as there is no verifiable update for it, and proceed to the next image for which there is stored image metadata, if any.  If the terminating value for this mapping is false, continue the search for verified image metadata for this image by continuing to the next mapping, discarding the image metadata for this image from the repositories other than the Director repository.
-7. The image metadata stored for each image is now verified.
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
