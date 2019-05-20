@@ -566,7 +566,7 @@ Repository mapping metadata informs a primary ECU about which repositories to tr
     * A list of image paths. Image paths MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
     * A list of repositories (at least two) that MAY sign the targets metadata for the image paths.  The first MUST always be the Director repository (the same repository that is listed first in the list of repository names).
     * A Boolean "terminating" flag which indicates whether the client MUST NOT continue searching subsequent mappings (after failing to find the requested image from at least one of the repositories specified in this mapping, and given that this mapping matches the request image).
-    * A threshold which indicates the minimum number of repositories that MUST sign off the same non-custom targets metadata on any matching image.  This threshold MUST be at least two, and SHOULD be equal to the number of repositories listed in this mapping.
+    * A threshold which indicates the minimum number of repositories that MUST sign off the same non-custom targets metadata on any matching image.  This threshold MUST be at least two (with at least one Director repository), and SHOULD be equal to the number of repositories listed in this mapping.
 
 For example, in the most basic Uptane case, the repository mapping metadata would contain:
 
