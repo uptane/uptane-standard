@@ -174,9 +174,15 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 ## Terminology
 
-*Bundle*: A set of images released by the repository that is meant to be installed by one or more target ECUs on a vehicle at the same time.
+*Bundle*: A set of images released by the repository that is meant to be installed by one or more target ECUs on a vehicle during the same update cycle.
 
 *Bus*: An internal communications network that interconnects components within a vehicle. A vehicle can have a number of buses that will vary in terms of power, speed and resources.
+
+*ECU Identifier*: A characteristic used to identify a specific ECU (e.g., such as a unique serial number).
+
+*ECU Version Manifest*: A file which details the software version currently installed on the ECU.
+
+*Hardware Identifier*: A characteristic used to identify a model of an ECU.
 
 *Image*: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.  
 
@@ -209,7 +215,9 @@ These terms are defined in greater detail in {{roles}}.
 
 *ECUs*: Electronic Control Units, the computing units on a vehicle
 
-*LIN Bus*: Local Interconnect Bus  
+*LIN Bus*: Local Interconnect Bus 
+
+*RXSWIN*: RX Software Identification Number, defined in UN WP29 as "a dedicated identifier, defined by the vehicle manufacturer, representing information about the type approval relevant software of the Electronic Control System contributing to the Regulation N*X type approval relevant characteristics of the vehicle." 
 
 *SOTA*: Software Updates Over-the-Air  
 
@@ -263,7 +271,7 @@ An OEM plans to install Uptane on new vehicles. This entails the following compo
 
 #### Updating one ECU with a complete image
 
-A tier-1 supplier completes work on a revised image for an electronic brake control module. This module will control the brakes on all models of an SUV produced by the OEM mentioned above. Each tier-1 supplier digitally signs the image, then delivers the signature and all of its metadata, including delegations, and associated images to the OEM. The OEM adds these metadata and images to its image repository, along with information about any dependencies and conflicts between this image and those on other ECUs used in the OEM's vehicles. The OEM also updates the inventory database, so that the director repository can instruct the ECU on how to install these updated images.
+A tier-1 supplier completes work on a revised image for an electronic brake control module. This module will control the brakes on all models of an SUV produced by the OEM mentioned above. Assuming supplier delegation is supported by the OEM for this ECU, each tier-1 supplier digitally signs the image, then delivers the signature and all of its metadata, including delegations, and associated images to the OEM. The OEM adds these metadata and images to its image repository, along with information about any dependencies and conflicts between this image and those on other ECUs used in the OEM's vehicles. The OEM also updates the inventory database, so that the director repository can instruct the ECU on how to install these updated images.
 
 ####  Updating individual ECUs on demand
 
@@ -449,14 +457,14 @@ The following sections describe the role-specific metadata. All roles SHALL foll
 
 A repository's Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
 
-* A representation of the public keys for all four roles. Each key should have a unique public key identifier.
+* A representation of the public keys for all four roles. Each key shall have a unique public key identifier.
 * An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
 
 Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded.  If this mapping of URLs is used, the implementer SHOULD implement this functionality following {{TAP-5}} to avoid adding unforeseen security risks.
 
 ### Targets Metadata {#targets_meta}
 
-The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filnames, hashes, file sizes, and MAY also include other useful information about images, such as the types of hardware a particular image is compatible with.
+The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filenames, hashes, file sizes, and MAY also include other useful information about images, such as the types of hardware a particular image is compatible with.
 
 Targets metadata can also contain metadata about delegations, allowing one Targets role to delegate its authority to another. This means that an individual Targets metadata file might contain only metadata about delegations, only metadata about images, or some combination of the two. The details of how ECUs traverse the delegation tree to find valid metadata about images is specified in {{resolve_delegations}}.
 
@@ -467,6 +475,8 @@ To be available to install on clients, all images on the repository MUST have th
 * The image filename
 * The size of the image in bytes
 * One or more hashes of the image file, along with the hashing function used
+
+This list MAY also include an RXSWIN identifier.
 
 ##### Custom metadata about images
 
@@ -481,7 +491,6 @@ The following information SHOULD be provided for each image on both the Image re
 
 The following information is CONDITIONALLY REQUIRED for each image on the Director repository IF that image is encrypted:
 
-* Information about filenames, hashes, and file size of the encrypted image
 * Information about the encryption method, and other relevant information--for example, a symmetric encryption key encrypted by the ECU's asymmetric key could be included in the Director repository metadata.
 
 The following information MUST be provided for each image in the targets metadata from the Director repository:
@@ -506,7 +515,7 @@ A list of delegations MUST provide the following information:
     * The key identifiers for each key this role uses
     * A threshold of keys that must sign for this role
 
-Note that **any** targets metadata file may contain delegations, and that delegations can be in chains of arbitrary length.
+Note that **any** targets metadata file stored on the Image repository may contain delegations, and these delegations can be in chains of arbitrary length.
 
 ### Snapshot Metadata {#snapshot_meta}
 
@@ -599,7 +608,7 @@ The Director repository SHALL implement storage which permits an automated servi
 
 A Director repository MUST conform to the following six-step process for directing the installation of software images on a vehicle.
 
-1. When the Director receives a vehicle version manifest sent by a primary (as described in {{construct_manifest_primary}}), it decodes the manifest, and determines the unique vehicle identifier.
+1. The Director must first identify the vehicle. This MAY be done when the Director receives a vehicle version manifest sent by a primary (as described in {{construct_manifest_primary}}), decoding the manifest, and determine the unique vehicle identifier. Additionally, the Director MAY utilize other mechanisms to uniquely identify a vehicle (e.g., 2-way TLS with unique client certificates, RXSWIN, etc.).
 1. Using the vehicle identifier, the Director queries its inventory database (as described in {{inventory_db}}) for relevant information about each ECU in the vehicle.
 1. The Director checks the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director drops the request. An implementor MAY make whatever additional checks they wish. At a minimum, the Director SHALL check the following:
     * Each ECU recorded in the inventory database is also represented in the manifest.
@@ -632,7 +641,7 @@ An Uptane-compliant ECU SHALL be able to download and verify image metadata and 
 
 Each ECU in a vehicle receiving over-the-air updates is either a primary or a secondary ECU. A primary ECU collects and delivers to the Director vehicle manifests ({{vehicle_version_manifest}}) containing information about which images have been installed on ECUs in the vehicle. It also verifies the time and downloads and verifies the latest metadata and images for itself and for its secondaries. A secondary ECU verifies the time and downloads and verifies the latest metadata and images for itself from its associated primary ECU. It also sends signed information about its installed images to its associated primary.
 
-All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A primary ECU MUST perform full verification ({{full_verification}}). A secondary ECU SHOULD perform full verification if possible. See [Uptane Deployment Considerations](#DEPLOY) for a discussion of how to choose between partial and full verification.
+All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A primary ECU MUST perform full verification ({{full_verification}}). A secondary ECU SHOULD perform full verification if possible. If a secondary cannot perform full verification, it SHALL perform partial verification. See [Uptane Deployment Considerations](#DEPLOY) for a discussion of how to choose between partial and full verification.
 
 ### Build-time prerequisite requirements for ECUs
 
@@ -714,7 +723,7 @@ There may be several different filenames that all refer to the same image binary
 
 #### Send latest time to secondaries {#send_time_primary}
 
-The primary SHOULD send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time. The primary MAY omit this step if the secondary has its own way of loading and verifying the time.
+The primary SHALL send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time. The primary MAY omit this step if the secondary has its own way of loading and verifying the time.
 
 #### Send metadata to secondaries {#send_metadata_primary}
 
@@ -732,12 +741,13 @@ For secondaries without storage, the primary SHOULD wait for a request from the 
 
 ### Installing images on primary or secondary ECUs
 
-Before installing a new image, an ECU SHALL perform the following five steps:
+An ECU SHALL perform the following steps when attempting to install a new image:
 
 1. Verify latest attested time ({{verify_time}})
 1. Verify metadata ({{verify_metadata}})
 1. Download latest image ({{download_image}})
 1. Verify image ({{verify_image}})
+1. Install image ({{install_image}})
 1. Create and send version report ({{create_version_report}})
 
 #### Load and verify the latest attested time {#verify_time}
@@ -757,7 +767,7 @@ The filename used to identify the latest known image (i.e., the file to request 
 1. Load the Targets metadata file from the Director repository.
 2. Find the Targets metadata associated with this ECU identifier.
 3. Construct the Image filename using the rule in {{metadata_filename_rules}}, or use the download URL specified in the Director metadata.
-4. If there is no Targets metadata about this image, abort the update cycle and report that there is no such image. Otherwise, download the image (up to the number of bytes specified in the Targets metadata), and verify that its hashes match the Targets metadata.
+4. If there is no Targets metadata about this image, abort the update cycle and report that there is no such image. Additionally, in the case of failure, the ECU SHALL overwrite its Targets metadata file with its previous Targets metadata file. Otherwise, download the image (up to the number of bytes specified in the Targets metadata), and verify that its hashes match the Targets metadata.
 
 When the primary responds to the download request, the ECU SHALL overwrite its current image with the downloaded image from the primary.
 
@@ -780,7 +790,11 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
 
 If the ECU has secondary storage, the checks SHOULD be performed on the image in secondary storage, before it is installed.
 
-If any step fails, the ECU SHALL jump to the fifth step ({{create_version_report}}). If a step fails and the ECU does not have secondary storage, and the ECU has created a backup of its previous working image, the ECU SHOULD now install the backup image.
+If any step fails, the ECU SHALL jump to the fifth step ({{create_version_report}}). If a step fails and the ECU does not have secondary storage, then the ECU SHALL ensure a backup of a previous working image is stored before attempting the verification. Upon failure, the ECU SHALL install the backup image to ensure it is in a working condition.
+
+#### Install image {#install_image}
+
+The ECU SHALL attempt to install the update at a time when all pre-conditions are met. These pre-conditions MAY include ensuring the vehicle is in a safe environment for install (e.g., vehicle is in Park when updating a specific ECU). Another pre-condition MAY include ensuring the ECU has a backup of its current image and metadata in case the current installation fails.
 
 #### Create and send version report {#create_version_report}
 
@@ -788,7 +802,7 @@ The ECU SHALL create a version report as described in {{version_report}}, and se
 
 ### Metadata verification procedures {#metadata_verification}
 
-A primary ECU MUST perform full verification of metadata. A secondary ECU SHOULD perform full verification of metadata, but MAY perform partial verification instead.
+A primary ECU MUST perform full verification of metadata. A secondary ECU SHOULD perform full verification of metadata. If a secondary cannot perform full verification it SHALL perform partial verification instead.
 
 If a step in the following workflows does not succeed (e.g., the update is aborted because a new metadata file was not signed), an ECU SHOULD still be able to update again in the future. Errors raised during the update process SHOULD NOT leave ECUs in an unrecoverable state.
 
@@ -822,7 +836,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 11. Verify that Targets metadata from the Director and Image repositories match. A primary ECU MUST perform this check on metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. A secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the target metadata from the Director that contains the ECU identifier of the current ECU.) To check that the metadata for an image matches, complete the following procedure:
     1. Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same file name listed in the Director metadata, following the procedure in {{resolve_delegations}}.
     2. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
-        1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.
+        1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted or encrypted image are the same in both sets of metadata.
         2. Check that all "MUST match" custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
 
@@ -868,11 +882,14 @@ If the ECU performing the verification is the primary ECU, it SHOULD also ensure
 3. Check that it has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack):
     1. If checking top-level targets metadata, the threshold of keys is specified in the Root metadata.
     2. If checking delegated targets metadata, the threshold of keys is specified in the targets metadata file that delegated authority to this role.
-4. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
-5. If this Targets metadata file indicates that the Timeserver key should be rotated, then reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence). It will be updated in the next cycle.
-6. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
-7. If checking targets metadata from the Director repository, verify that there are no delegations.
-8. If checking targets metadata from the Director repository, check that no ECU identifier is represented more than once.
+4. Validate the signatures of the Targets metadata.
+	1. If checking top-level targets metadata signatures, the public keys are specified in the Root metadata.
+	2. If checking delegated targets metadata signatures, the public keys are specified in the targets metadata file that delegated authority to this role.
+5. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
+6. If this Targets metadata file indicates that the Timeserver key should be rotated, then reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence). It will be updated in the next cycle.
+7. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
+8. If checking targets metadata from the Director repository, verify that there are no delegations.
+9. If checking targets metadata from the Director repository, check that no ECU identifier is represented more than once.
 
 #### How to resolve delegations {#resolve_delegations}
 
