@@ -633,6 +633,8 @@ Each ECU in a vehicle receiving over-the-air updates is either a primary or a se
 
 All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A primary ECU MUST perform full verification ({{full_verification}}). A secondary ECU SHOULD perform full verification if possible. See [Uptane Deployment Considerations](#DEPLOY) for a discussion of how to choose between partial and full verification.
 
+ECUs MUST have a secure source of time. The Uptane deployment considerations ({{DEPLOY}}) describe one way to implement an external time server to cryptographically attest time, but any other source of time that the OEM or Uptane implementor considers to be secure MAY be used. When "loading time" is referenced in procedures in this standard, it should be understood to mean loading into memory the current time (if the ECU has its own secure clock), or the most recent attested time.
+
 ### Build-time prerequisite requirements for ECUs
 
 For an ECU to be capable of receiving Uptane-secured updates, it MUST have the following data provisioned at the time it is manufactured or installed in the vehicle:
