@@ -357,7 +357,7 @@ Full control of a vehicle, or one or more ECUs within a vehicle, is the most sev
 
 * *Arbitrary software attack:* Cause an ECU to install and run arbitrary code of the attacker's choice.
 
-# Detailed Design of Uptane
+# Detailed Design of Uptane {#design}
 
 Uptane is a secure software update framework for automobiles. We do not specify implementation details. Instead, we describe the components necessary for a compliant implementation, and leave it up to individual implementors to make their own technological choices within those requirements.
 
@@ -527,7 +527,11 @@ The Timestamp metadata SHALL contain the following information:
 
 ### Repository mapping metadata {#repo_mapping_meta}
 
-Repository mapping metadata informs a primary ECU about which repositories to trust for images or image paths. Repository mapping metadata MUST be present on all primary ECUs, and MUST contain the following information:
+As described in the introduction to {{design}}, Uptane requires a Director repository and an Image repository. However, it is possible to have an Uptane-compliant implementation that has more than two repositories.
+
+Repository mapping metadata informs a primary ECU about which repositories to trust for images or image paths. {{TAP-4}} describes how to make use of more complex repository mapping metadata have more than the two required repositories.
+
+Repository mapping metadata, or the equivalent informational content, MUST be present on all primary ECUs, and MUST contain the following information:
 
 * A list of repository names and one or more URLs at which the named repository can be accessed. At a minimum, this MUST include the Director and Image repositories.
 * A list of mappings of image paths to repositories, each of which contains:
@@ -540,14 +544,9 @@ For example, in the most basic Uptane case, the repository mapping metadata woul
 * The name and URL of the Image repository
 * A single mapping indicating that all images (`*`) MUST be signed by both the Director and Image repository
 
-However, more complex repository mapping metadata can permit more complicated use cases. For example:
+Note that the metadata need not be in the form of a metadata file. For example, in the basic case where there is only one director and one image repository, and all images need to have signed metadata from both repositories, it would be sufficient to have a configuration file with URLs for the two repositories, and a client that always checks for metadata matches between the two repositories. In this case, there would be no place with an explicit mapping defined, because the mapping would be defined as part of the Uptane client implementation.
 
-* A second Director repository might be useful for fleet management of after-market vehicles, such as a rental car company that might wish to only install approved updates.
-* For dynamic content with lower security sensitivity, an OEM might want to allow a certain subset of images to only require trust from the Director repository.
-
-The *Deployment Considerations* document gives more guidance on how to implement repository mapping metadata for these use cases. It also discusses strategies for updating repository mapping metadata, if required. {{TAP-4}} also contains detailed guidance on repository mapping metadata implementation.
-
-Note that repository mapping metadata might not be a file, and MAY be expressed in a different format than the repository roles metadata. For example, it could be part of the primary ECU's Uptane client configuration. As long as the client has access to the required information, the repository mapping metadata requirements are met.
+The *Deployment Considerations* document ({{DEPLOY}}) gives more guidance on how to implement repository mapping metadata for more complex use cases. It also discusses strategies for updating repository mapping metadata, if required.
 
 ### Rules for filenames in repositories and metadata {#metadata_filename_rules}
 
@@ -807,19 +806,20 @@ Full verification MAY be performed by either primary or secondary ECUs. The proc
 
 If {{TAP-5}} is supported, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, the download should follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
+Before starting full verification, the repository mapping metadata MUST be consulted, to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to {{DEPLOY}} for guidance on how to determine where to download metadata from.
+
 In order to perform full verification, an ECU SHALL perform the following steps:
 
-1. Load the repository mapping metadata ({{repo_mapping_meta}}), and use the information therein to determine from where metadata should be downloaded.
-2. Load and verify the current time, or the most recent securely attested time.
-3. Download and check the Root metadata file from the Director repository, following the procedure in {{check_root}}.
-4. Download and check the Timestamp metadata file from the Director repository, following the procedure in {{check_timestamp}}.
-5. Download and check the Snapshot metadata file from the Director repository, following the procedure in {{check_snapshot}}.
-6. Download and check the Targets metadata file from the Director repository, following the procedure in {{check_targets}}.
-7. Download and check the Root metadata file from the Image repository, following the procedure in {{check_root}}.
-8. Download and check the Timestamp metadata file from the Image repository, following the procedure in {{check_timestamp}}.
-9. Download and check the Snapshot metadata file from the Image repository, following the procedure in {{check_snapshot}}.
-10. Download and check the top-level Targets metadata file from the Image repository, following the procedure in {{check_targets}}.
-11. Verify that Targets metadata from the Director and Image repositories match. A primary ECU MUST perform this check on metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. A secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the target metadata from the Director that contains the ECU identifier of the current ECU.) To check that the metadata for an image matches, complete the following procedure:
+1. Load and verify the current time, or the most recent securely attested time.
+1. Download and check the Root metadata file from the Director repository, following the procedure in {{check_root}}.
+1. Download and check the Timestamp metadata file from the Director repository, following the procedure in {{check_timestamp}}.
+1. Download and check the Snapshot metadata file from the Director repository, following the procedure in {{check_snapshot}}.
+1. Download and check the Targets metadata file from the Director repository, following the procedure in {{check_targets}}.
+1. Download and check the Root metadata file from the Image repository, following the procedure in {{check_root}}.
+1. Download and check the Timestamp metadata file from the Image repository, following the procedure in {{check_timestamp}}.
+1. Download and check the Snapshot metadata file from the Image repository, following the procedure in {{check_snapshot}}.
+1. Download and check the top-level Targets metadata file from the Image repository, following the procedure in {{check_targets}}.
+1. Verify that Targets metadata from the Director and Image repositories match. A primary ECU MUST perform this check on metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. A secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the target metadata from the Director that contains the ECU identifier of the current ECU.) To check that the metadata for an image matches, complete the following procedure:
     1. Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same file name listed in the Director metadata, following the procedure in {{resolve_delegations}}.
     2. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted image are the same in both sets of metadata.
