@@ -529,7 +529,7 @@ The Timestamp metadata SHALL contain the following information:
 
 As described in the introduction to {{design}}, Uptane requires a Director repository and an Image repository. However, it is possible to have an Uptane-compliant implementation that has more than two repositories.
 
-Repository mapping metadata informs a primary ECU about which repositories to trust for images or image paths. {{TAP-4}} describes how to make use of more complex repository mapping metadata have more than the two required repositories.
+Repository mapping metadata informs a primary ECU about which repositories to trust for images or image paths. {{TAP-4}} describes how to make use of more complex repository mapping metadata, to have more than the two required repositories.
 
 Repository mapping metadata, or the equivalent informational content, MUST be present on all primary ECUs, and MUST contain the following information:
 
