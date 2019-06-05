@@ -49,7 +49,6 @@ Table of Contents
      5.3.  Server / repository implementation requirements
        5.3.1.  Image Repository
        5.3.2.  Director Repository
-       5.3.3.  Time Server
      5.4.  In-vehicle implementation requirements
        5.4.1.  Build-time prerequisite requirements for ECUs
        5.4.2.  What the primary does
@@ -75,11 +74,10 @@ Table of Contents
    technological choices within those requirements.  This flexibility
    makes Uptane adaptable to the many customized update solutions used
    by manufacturers.  If implementors wish to have compatible formats,
-   they may use profiles.  Profiles contain a description of
-   implementation choices as well as data binding formats.  An
-   implementor who follows a profile as well as the Uptane standard will
-   be able to interoperate with other implementations using that
-   profile.
+   they may use POUFs.  POUFs contain a description of implementation
+   choices as well as data binding formats.  An implementor who follows
+   a POUF as well as the Uptane standard will be able to interoperate
+   with other implementations using that POUF.
 
 2.  Terminology
 
@@ -117,11 +115,11 @@ Table of Contents
    primary, and only need to verify and install their own metadata and
    images.
 
-   _Profile_: A document that contains information about a specific
-   Uptane implementation.  The profile contains decisions about SHOULDs
-   and MAYs in an implementation, as well as descriptions of data
-   binding formats.  Profiles MAY be used to create compatible Uptane
-   implementations.
+   _POUF_: A document that contains the protocol, operations, usage, and
+   formats (POUF) of a specific Uptane implementation.  The POUF
+   contains decisions about SHOULDs and MAYs in an implementation, as
+   well as descriptions of data binding formats.  POUFs MAY be used to
+   create compatible Uptane implementations.
 
    _Repository_: A server containing metadata about images.  May also
    contain the images themselves.  Other data may be stored on the
@@ -266,12 +264,12 @@ Table of Contents
 
    An OEM plans to install Uptane on new vehicles.  This entails the
    following components: code to perform full and partial verification,
-   the latest copy of the relevant metadata, the public keys, and the
-   latest time, signed by the time server (if implemented).  The OEM
-   then either requires its tier-1 suppliers to provide these materials
-   to the suppliers' assembly lines, or can choose to add the materials
-   later at the OEM's assembly lines.  The OEM's implementation is
-   Uptane-compliant if:
+   the latest copy of the relevant metadata, the public keys, and an
+   accurate attestation of the latest time.  The OEM then either
+   requires its tier-1 suppliers to provide these materials to the
+   suppliers' assembly lines, or can choose to add the materials later
+   at the OEM's assembly lines.  The OEM's implementation is Uptane-
+   compliant if:
 
    1.  all primaries perform full verification;
 
@@ -531,8 +529,7 @@ Table of Contents
       *  Targets - Indicates metadata about images, such as hashes and
          file sizes
 
-   o  A secure way for ECUs to know the time.  Section 5.3.3 describes
-      one way to securely attest time to ECUs.
+   o  A secure way for ECUs to know the time.
 
    o  An in-vehicle client on a primary ECU capable of verifying the
       signatures on all update metadata, handling all server
@@ -680,10 +677,6 @@ Table of Contents
    o  A representation of the public keys for all four roles.  Each key
       should have a unique public key identifier.
 
-      *  If a Time Server is in use, a representation of the Time Server
-         public key is CONDITIONALLY REQUIRED in Director repository
-         root metadata.
-
    o  An attribute mapping each role to (1) its public key(s), and (2)
       the threshold of signatures required for that role
 
@@ -694,10 +687,19 @@ Table of Contents
 
 5.2.3.  Targets Metadata
 
-   Targets metadata, whether for the top-level Targets role or for any
-   delegated targets role, MAY contain metadata about images on a
-   repository.  It MAY also contain metadata about delegations of
-   signing authority.
+   The Targets metadata on a repository contains all of the information
+   about images to be installed on ECUs.  This includes filnames,
+   hashes, file sizes, and MAY also include other useful information
+   about images, such as the types of hardware a particular image is
+   compatible with.
+
+   Targets metadata can also contain metadata about delegations,
+   allowing one Targets role to delegate its authority to another.  This
+   means that an individual Targets metadata file might contain only
+   metadata about delegations, only metadata about images, or some
+   combination of the two.  The details of how ECUs traverse the
+   delegation tree to find valid metadata about images is specified in
+   Section 5.4.4.7.
 
 5.2.3.1.  Metadata about Images
 
@@ -715,18 +717,24 @@ Table of Contents
 
 5.2.3.1.1.  Custom metadata about images
 
-   In addition to the required metadata, the Targets metadata file
-   SHOULD contain extra metadata for each image on the repository.  This
-   metadata can be customized for a particular use case.  Examples of
-   use cases for different types of custom metadata can be found in the
-   Deployment Considerations document.  However, there are a few
-   important pieces of custom metadata that SHOULD be present in most
-   implementations.  In addition, there is one element in the custom
-   metadata that MUST be present in the targets metadata from the
-   director.
+   In addition to the required metadata, Targets metadata files MAY
+   contain extra metadata for images on the repository.  This metadata
+   can be customized for a particular use case.  Examples of use cases
+   for different types of custom metadata can be found in the Deployment
+   Considerations document.  However, there are a few important pieces
+   of custom metadata that SHOULD be present in most implementations.
+   In addition, there is one element in the custom metadata that MUST be
+   present in the targets metadata from the director.
+
+   Custom metadata also MAY contain a field or section that is
+   demarcated as custom metadata that MUST match whenever two pieces of
+   metadata are checked against each other-most commonly, when targets
+   metadata from the Director and Image repositories are checked against
+   each other.
 
    The following information SHOULD be provided for each image on both
-   the Image repository and the Director repository:
+   the Image repository and the Director repository, and SHOULD be
+   included in the "MUST match" section, if it is implemented:
 
    o  A release counter, to be incremented each time a new version of
       the image is released.  This can be used to prevent rollback
@@ -799,19 +807,6 @@ Table of Contents
    Note that *any* targets metadata file may contain delegations, and
    that delegations can be in chains of arbitrary length.
 
-5.2.3.3.  Metadata about Time Server
-
-   If a Time Server Section 5.3.3 is implemented AND partial-
-   verification secondaries will be used, the following metadata is
-   CONDITIONALLY REQUIRED in the Director repository's Targets metadata:
-
-   o  A representation of the public key(s) for the Time Server, similar
-      to the representation of public keys in Root metadata.
-
-   Listing the public key of the Time Server in Director targets
-   metadata is necessary to allow partial-verification secondaries to
-   perform time server key rotation.
-
 5.2.4.  Snapshot Metadata
 
    The Snapshot metadata lists version numbers and filenames of all
@@ -841,10 +836,19 @@ Table of Contents
 
 5.2.6.  Repository mapping metadata
 
+   As described in the introduction to Section 5, Uptane requires a
+   Director repository and an Image repository.  However, it is possible
+   to have an Uptane-compliant implementation that has more than two
+   repositories.
+
    Repository mapping metadata informs a primary ECU about which
-   repositories to trust for images or image paths.  Repository mapping
-   metadata MUST be present on all primary ECUs, and MUST contain the
-   following information:
+   repositories to trust for images or image paths.  [TAP-4] describes
+   how to make use of more complex repository mapping metadata, to have
+   more than the two required repositories.
+
+   Repository mapping metadata, or the equivalent informational content,
+   MUST be present on all primary ECUs, and MUST contain the following
+   information:
 
    o  A list of repository names and one or more URLs at which the named
       repository can be accessed.  At a minimum, this MUST include the
@@ -870,28 +874,20 @@ Table of Contents
    o  A single mapping indicating that all images ("*") MUST be signed
       by both the Director and Image repository
 
-   However, more complex repository mapping metadata can permit more
-   complicated use cases.  For example:
+   Note that the metadata need not be in the form of a metadata file.
+   For example, in the basic case where there is only one director and
+   one image repository, and all images need to have signed metadata
+   from both repositories, it would be sufficient to have a
+   configuration file with URLs for the two repositories, and a client
+   that always checks for metadata matches between the two repositories.
+   In this case, there would be no place with an explicit mapping
+   defined, because the mapping would be defined as part of the Uptane
+   client implementation.
 
-   o  A second Director repository might be useful for fleet management
-      of after-market vehicles, such as a rental car company that might
-      wish to only install approved updates.
-
-   o  For dynamic content with lower security sensitivity, an OEM might
-      want to allow a certain subset of images to only require trust
-      from the Director repository.
-
-   The _Deployment Considerations_ document gives more guidance on how
-   to implement repository mapping metadata for these use cases.  It
-   also discusses strategies for updating repository mapping metadata,
-   if required.  [TAP-4] also contains detailed guidance on repository
-   mapping metadata implementation.
-
-   Note that repository mapping metadata might not be a file, and MAY be
-   expressed in a different format than the repository roles metadata.
-   For example, it could be part of the primary ECU's Uptane client
-   configuration.  As long as the client has access to the required
-   information, the repository mapping metadata requirements are met.
+   The _Deployment Considerations_ document ([DEPLOY]) gives more
+   guidance on how to implement repository mapping metadata for more
+   complex use cases.  It also discusses strategies for updating
+   repository mapping metadata, if required.
 
 5.2.7.  Rules for filenames in repositories and metadata
 
@@ -941,8 +937,7 @@ Table of Contents
    o  Director repository
 
    Additionally, an Uptane implementation requires ECUs to have a secure
-   way to know the current time.  This SHOULD be accomplished using a
-   time server (Section 5.3.3), but MAY be implemented in other ways.
+   way to know the current time.
 
 5.3.1.  Image Repository
 
@@ -1067,47 +1062,23 @@ Table of Contents
    protect against the possibility of directing the ECU to install an
    incompatible firmware.
 
-5.3.3.  Time Server
-
-   The Time Server exists to inform vehicles about the current time in a
-   cryptographically secure way, since many ECUs in a vehicle will not
-   have a reliable source of time.  It receives lists of tokens from
-   vehicles, and returns back a signed sequence that includes the token
-   and the current time.
-
-   An Uptane implementation SHOULD include a time server, but MAY use
-   another secure source of time.  If the time server is used, it MUST
-   conform to the following requirements:
-
-   When the Time Server receives a sequence of tokens from a vehicle, it
-   SHALL provide one or more signed responses, containing the time along
-   with these tokens.  It MAY produce either one signed time attestation
-   containing the current time and all tokens, or multiple time
-   attestations each containing the current time and one or more tokens.
-
-   The Time Server SHALL expose a public interface allowing primaries to
-   communicate with it.  This communication MAY occur over FTP, FTPS,
-   SFTP, HTTP, or HTTPS.
-
-   Rotation of the The Time Server's key is performed by listing the new
-   key in the Director's Root metadata, in the same manner as other role
-   keys are listed, and also in the Director's Targets metadata (for
-   partial verification secondaries).
-
 5.4.  In-vehicle implementation requirements
 
-   An Uptane-compliant ECU SHALL be able to download and verify the
-   time, metadata, and image binaries before installing a new image.
+   An Uptane-compliant ECU SHALL be able to download and verify image
+   metadata and image binaries before installing a new image, and MUST
+   have a secure way of verifying the current time, or a sufficiently
+   recent attestation of the time.
 
    Each ECU in a vehicle receiving over-the-air updates is either a
    primary or a secondary ECU.  A primary ECU collects and delivers to
    the Director vehicle manifests (Section 5.4.2.1.1) containing
    information about which images have been installed on ECUs in the
-   vehicle.  It also downloads and verifies the latest time, metadata,
-   and images for itself and for its secondaries.  A secondary ECU
-   downloads and verifies the latest time, metadata, and images for
-   itself from its associated primary ECU.  It also sends signed
-   information about its installed images to its associated primary.
+   vehicle.  It also verifies the time and downloads and verifies the
+   latest metadata and images for itself and for its secondaries.  A
+   secondary ECU verifies the time and downloads and verifies the latest
+   metadata and images for itself from its associated primary ECU.  It
+   also sends signed information about its installed images to its
+   associated primary.
 
    All ECUs MUST verify image metadata as specified in Section 5.4.4
    before installing an image or making it available to other ECUs.  A
@@ -1115,6 +1086,15 @@ Table of Contents
    secondary ECU SHOULD perform full verification if possible.  See
    Uptane Deployment Considerations [DEPLOY] for a discussion of how to
    choose between partial and full verification.
+
+   ECUs MUST have a secure source of time.  An OEM/Uptane implementor
+   MAY use any external source of time that is demonstrably secure.  The
+   Uptane deployment considerations ([DEPLOY]) describe one way to
+   implement an external time server to cryptographically attest time,
+   as well as the security properties required.  When "loading time" is
+   referenced in procedures in this standard, it should be understood to
+   mean loading into memory the current time (if the ECU has its own
+   secure clock), or the most recent attested time.
 
 5.4.1.  Build-time prerequisite requirements for ECUs
 
@@ -1134,14 +1114,10 @@ Table of Contents
           repositories, as well as the repository mapping metadata
           (Section 5.2.6).
 
-   2.  The public key(s) of the time server (if the time server is
-       implemented).
+   2.  The current time, or a secure attestation of a sufficiently
+       recent time.
 
-   3.  The current time.  This SHOULD be in the form of an attestation
-       of time downloaded from the time server, but MAY come from
-       another source if the time server is not implemented.
-
-   4.  An *ECU key*. This is a private key, unique to the ECU, used to
+   3.  An *ECU key*. This is a private key, unique to the ECU, used to
        sign ECU version manifests and decrypt images.  An ECU key MAY be
        either a symmetric key or an asymmetric key.  If it is an
        asymmetric key, there MAY be separate keys for encryption and
@@ -1163,7 +1139,7 @@ Table of Contents
 
    4.  Download and verify images (Section 5.4.2.4)
 
-   5.  Send latest time to secondaries (Section 5.4.2.5)
+   5.  OPTIONAL: Send latest time to secondaries (Section 5.4.2.5)
 
    6.  Send metadata to secondaries (Section 5.4.2.6)
 
@@ -1176,7 +1152,10 @@ Table of Contents
 
    Once it has the complete manifest built, it MAY send the manifest to
    the Director repository.  However, it is not strictly required that
-   the primary send the manifest until step three.
+   the primary send the manifest until step three.  If permitted by the
+   implementation, a primary MAY send only a diff of the manifest, to
+   save bandwidth.  If an implementation permits diffs, the Director
+   SHOULD have a way to request a full manifest.
 
    Secondaries MAY send their version report at any time, so that it is
    already stored on the primary when it wishes to check for updates.
@@ -1237,44 +1216,20 @@ Table of Contents
 
       *  The ECU's unique identifier (e.g. the serial number)
 
-      *  The latest time downloaded from the time server, if the time
-         server is implemented
-
-      *  The previous time downloaded from the time server, if the time
-         server is implemented
-
       *  The filename, length, and hashes of its currently installed
          image (i.e. the non-custom targets metadata for this particular
          image)
 
       *  An indicator of any detected security attack
 
-   o  A token (nonce) for the time server to sign and send back, if the
-      time server is implemented
+      *  The latest time the ECU can verify at the time this version
+         report was generated
+
+      *  A cryptographic nonce
 
 5.4.2.2.  Download and check current time
 
-   The primary SHALL load the current time from a secure source.  This
-   secure source SHOULD be a time server as described in Section 5.3.3.
-
-   If the time server is implemented, the primary SHALL use the
-   following procedure to verify the time:
-
-   1.  Gather the tokens from each secondary ECU's version report
-       (Section 5.4.2.1.2).
-
-   2.  Send the list of tokens to the time server to fetch the current
-       time.  The time server responds as described in Section 5.3.3,
-       providing a cryptographic attestation of the last known time.
-
-   3.  If the time server's response meets the criteria below, update
-       the primary ECU's clock and retain the time server's response for
-       distribution to secondary ECUs, otherwise discard it and proceed
-       without an updated time.  The criteria for checking the time
-       server's response are: - The signature over the time server's
-       response is valid.  - The tokens provided to the time server have
-       been included in the response.  - The time in the time server's
-       response is later than the last time verified in this manner.
+   The primary SHALL load the current time from a secure source.
 
 5.4.2.3.  Download and verify metadata
 
@@ -1296,7 +1251,8 @@ Table of Contents
 
    The primary SHOULD send the time to each ECU.  The secondary will
    verify the time message, then overwrite its current time with the
-   received time.
+   received time.  The primary MAY omit this step if the secondary has
+   its own way of loading and verifying the time.
 
 5.4.2.6.  Send metadata to secondaries
 
@@ -1344,29 +1300,8 @@ Table of Contents
 
 5.4.3.1.  Load and verify the latest attested time
 
-   The ECU SHOULD load and verify the current time, or the most recent
-   time from the time server if it is implemented.
-
-   If an Uptane time server (Section 5.3.3) is implemented, the ECU
-   SHALL:
-
-   1.  Verify that the signatures on the downloaded time are valid.
-
-   2.  Verify that the list of nonces/tokens in the downloaded time
-       includes the token that the ECU sent in its previous version
-       report.
-
-   3.  Verify that the time downloaded is greater than the previous
-       time.
-
-   If all three steps complete without error, the ECU SHALL overwrite
-   its current attested time with the time it has just downloaded, and
-   generate a new nonce/token for the next request to the time server.
-
-   If any check fails, the ECU SHALL NOT overwrite its current attested
-   time, and SHALL jump to the fifth step (Section 5.4.3.5), and report
-   the error.  The ECU MUST reuse its previous token for the next
-   request to the time server.
+   The ECU SHALL load and verify the current time, or the most recent
+   securely attested time.
 
 5.4.3.2.  Verify metadata
 
@@ -1479,8 +1414,8 @@ Table of Contents
    In order to perform partial verification, an ECU SHALL perform the
    following steps:
 
-   1.  Load the latest attested time from the time server, if
-       implemented.
+   1.  Load and verify the current time, or the most recent securely
+       attested time.
 
    2.  Download and check the Targets metadata file from the Director
        repository, following the procedure in Section 5.4.4.6.
@@ -1503,41 +1438,45 @@ Table of Contents
    supported, the download should follow the [TUF-spec] and the metadata
    file renaming rules specified in Section 5.2.7.
 
+   Before starting full verification, the repository mapping metadata
+   MUST be consulted, to determine where to download metadata from.
+   This procedure assumes the basic Uptane case: there are only two
+   repositories (Director and Image), and all image paths are required
+   to be signed by both repositories.  If a more complex repository
+   layout is being used, refer to [DEPLOY] for guidance on how to
+   determine where to download metadata from.
+
    In order to perform full verification, an ECU SHALL perform the
    following steps:
 
-   1.   Load the repository mapping metadata (Section 5.2.6), and use
-        the information therein to determine from where metadata should
-        be downloaded.
+   1.   Load and verify the current time, or the most recent securely
+        attested time.
 
-   2.   Load the latest attested time from the time server, if
-        implemented.
-
-   3.   Download and check the Root metadata file from the Director
+   2.   Download and check the Root metadata file from the Director
         repository, following the procedure in Section 5.4.4.3.
 
-   4.   Download and check the Timestamp metadata file from the Director
+   3.   Download and check the Timestamp metadata file from the Director
         repository, following the procedure in Section 5.4.4.4.
 
-   5.   Download and check the Snapshot metadata file from the Director
+   4.   Download and check the Snapshot metadata file from the Director
         repository, following the procedure in Section 5.4.4.5.
 
-   6.   Download and check the Targets metadata file from the Director
+   5.   Download and check the Targets metadata file from the Director
         repository, following the procedure in Section 5.4.4.6.
 
-   7.   Download and check the Root metadata file from the Image
+   6.   Download and check the Root metadata file from the Image
         repository, following the procedure in Section 5.4.4.3.
 
-   8.   Download and check the Timestamp metadata file from the Image
+   7.   Download and check the Timestamp metadata file from the Image
         repository, following the procedure in Section 5.4.4.4.
 
-   9.   Download and check the Snapshot metadata file from the Image
+   8.   Download and check the Snapshot metadata file from the Image
         repository, following the procedure in Section 5.4.4.5.
 
-   10.  Download and check the top-level Targets metadata file from the
+   9.   Download and check the top-level Targets metadata file from the
         Image repository, following the procedure in Section 5.4.4.6.
 
-   11.  Verify that Targets metadata from the Director and Image
+   10.  Verify that Targets metadata from the Director and Image
         repositories match.  A primary ECU MUST perform this check on
         metadata for all images listed in the Targets metadata file from
         the Director repository downloaded in step 6.  A secondary ECU
@@ -1559,9 +1498,9 @@ Table of Contents
                 hashes) of the unencrypted image are the same in both
                 sets of metadata.
 
-            2.  Check that the custom metadata (e.g., hardware
-                identifier and release counter) are the same in both
-                sets of metadata.
+            2.  Check that all "MUST match" custom metadata (e.g.,
+                hardware identifier and release counter) are the same in
+                both sets of metadata.
 
             3.  Check that the release counter in the previous targets
                 metadata file is less than or equal to the release
@@ -1620,17 +1559,11 @@ Table of Contents
 
        6.  Repeat steps 2.1 to 2.6.
 
-   3.  If the Timeserver key is listed in the Root metadata and has been
-       rotated, reset the clock used to determine the expiration of
-       metadata to a minimal value (e.g. zero, or any time that is
-       guaranteed to not be in the future based on other evidence).  It
-       will be updated in the next cycle.
+   3.  Check that the current (or latest securely attested) time is
+       lower than the expiration timestamp in the latest Root metadata
+       file.  (Checks for a freeze attack.)
 
-   4.  Check that the latest attested time is lower than the expiration
-       timestamp in the latest Root metadata file.  (Checks for a freeze
-       attack.)
-
-   5.  If the Timestamp and / or Snapshot keys have been rotated, delete
+   4.  If the Timestamp and / or Snapshot keys have been rotated, delete
        the previous Timestamp and Snapshot metadata files.  (Checks for
        recovery from fast-forward attacks [MERCURY].)
 
@@ -1654,11 +1587,11 @@ Table of Contents
        the update cycle, and report the potential rollback attack.
        (Checks for a rollback attack.)
 
-   4.  Check that the latest attested time is lower than the expiration
-       timestamp in this Timestamp metadata file.  If the new Timestamp
-       metadata file has expired, discard it, abort the update cycle,
-       and report the potential freeze attack.  (Checks for a freeze
-       attack.)
+   4.  Check that the current (or latest securely attested) time is
+       lower than the expiration timestamp in this Timestamp metadata
+       file.  If the new Timestamp metadata file has expired, discard
+       it, abort the update cycle, and report the potential freeze
+       attack.  (Checks for a freeze attack.)
 
 5.4.4.5.  How to check Snapshot metadata
 
@@ -1698,11 +1631,11 @@ Table of Contents
        metadata file, abort the update cycle, and report the failure.
        (Checks for a rollback attack.)
 
-   7.  Check that the latest attested time is lower than the expiration
-       timestamp in this Snapshot metadata file.  If the new Snapshot
-       metadata file is expired, discard it, abort the update cycle, and
-       report the potential freeze attack.  (Checks for a freeze
-       attack.)
+   7.  Check that the current (or latest securely attested) time is
+       lower than the expiration timestamp in this Snapshot metadata
+       file.  If the new Snapshot metadata file is expired, discard it,
+       abort the update cycle, and report the potential freeze attack.
+       (Checks for a freeze attack.)
 
 5.4.4.6.  How to check Targets metadata
 
@@ -1739,9 +1672,9 @@ Table of Contents
        that is guaranteed to not be in the future based on other
        evidence).  It will be updated in the next cycle.
 
-   6.  Check that the latest attested time is lower than the expiration
-       timestamp in this Targets metadata file.  (Checks for a freeze
-       attack.)
+   6.  Check that the current (or latest securely attested) time is
+       lower than the expiration timestamp in this Targets metadata
+       file.  (Checks for a freeze attack.)
 
    7.  If checking targets metadata from the Director repository, verify
        that there are no delegations.
@@ -1818,9 +1751,10 @@ Table of Contents
    2.  Inspect the non-custom part of the metadata loaded in step 1:
 
        1.  Locate all sets of roles which have agreeing (i.e. identical)
-           non-custom metadata.  Discard any set of roles with a size
-           smaller than the threshold of roles that must be in agreement
-           for this delegation.
+           non-custom metadata and "MUST match" custom metadata.
+           Discard any set of roles with a size smaller than the
+           threshold of roles that must be in agreement for this
+           delegation.
 
        2.  Check for a conflict.  A conflict exists if there remains
            more than one agreeing set of roles, each set having
@@ -1849,49 +1783,15 @@ Table of Contents
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-   [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
-              Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
-              Transfer Protocol -- HTTP/1.1", RFC 2616,
-              DOI 10.17487/RFC2616, June 1999,
-              <https://www.rfc-editor.org/info/rfc2616>.
-
-   [RFC3280]  Housley, R., Polk, W., Ford, W., and D. Solo, "Internet
-              X.509 Public Key Infrastructure Certificate and
-              Certificate Revocation List (CRL) Profile", RFC 3280,
-              DOI 10.17487/RFC3280, April 2002,
-              <https://www.rfc-editor.org/info/rfc3280>.
-
-   [RFC3447]  Jonsson, J. and B. Kaliski, "Public-Key Cryptography
-              Standards (PKCS) #1: RSA Cryptography Specifications
-              Version 2.1", RFC 3447, DOI 10.17487/RFC3447, February
-              2003, <https://www.rfc-editor.org/info/rfc3447>.
-
    [RFC3647]  Chokhani, S., Ford, W., Sabett, R., Merrill, C., and S.
               Wu, "Internet X.509 Public Key Infrastructure Certificate
               Policy and Certification Practices Framework", RFC 3647,
               DOI 10.17487/RFC3647, November 2003,
               <https://www.rfc-editor.org/info/rfc3647>.
 
-   [RFC4634]  Eastlake 3rd, D. and T. Hansen, "US Secure Hash Algorithms
-              (SHA and HMAC-SHA)", RFC 4634, DOI 10.17487/RFC4634, July
-              2006, <https://www.rfc-editor.org/info/rfc4634>.
-
-   [RFC4648]  Josefsson, S., "The Base16, Base32, and Base64 Data
-              Encodings", RFC 4648, DOI 10.17487/RFC4648, October 2006,
-              <https://www.rfc-editor.org/info/rfc4648>.
-
    [RFC5198]  Klensin, J. and M. Padlipsky, "Unicode Format for Network
               Interchange", RFC 5198, DOI 10.17487/RFC5198, March 2008,
               <https://www.rfc-editor.org/info/rfc5198>.
-
-   [RFC5756]  Turner, S., Brown, D., Yiu, K., Housley, R., and T. Polk,
-              "Updates for RSAES-OAEP and RSASSA-PSS Algorithm
-              Parameters", RFC 5756, DOI 10.17487/RFC5756, January 2010,
-              <https://www.rfc-editor.org/info/rfc5756>.
-
-   [RFC7159]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
-              Interchange Format", RFC 7159, DOI 10.17487/RFC7159, March
-              2014, <https://www.rfc-editor.org/info/rfc7159>.
 
    [TAP-3]    Kuppusamy, T., Awwad, S., Cordell, E., Diaz, V., Moshenko,
               J., and J. Cappos, "The Update Framework TAP 3 - Multi-
@@ -1932,10 +1832,6 @@ Table of Contents
    [DEPLOY]   "Uptane Deployment Guidelines", n.d.,
               <https://uptane.github.io/TODO>.
 
-   [ED25519]  Bernstein, D., Duif, N., Lange, T., Schwabe, P., and B-Y.
-              Yang, ""High-Speed High-Security Signatures", Journal of
-              Cryptographic Engineering, Vol. 2", September 2011.
-
    [IN-TOTO]  "in-toto: A framework to secure the integrity of software
               supply chains", October 2018,
               <https://in-toto.github.io/>.
@@ -1950,10 +1846,6 @@ Table of Contents
    [PEP-458]  Kuppusamy, T., Diaz, V., Stufft, D., and J. Cappos, "PEP
               458 -- Surviving a Compromise of PyPI", September 2013,
               <https://www.python.org/dev/peps/pep-0458/>.
-
-   [RFC1321]  Rivest, R., "The MD5 Message-Digest Algorithm", RFC 1321,
-              DOI 10.17487/RFC1321, April 1992,
-              <https://www.rfc-editor.org/info/rfc1321>.
 
    [UPTANEESCAR]
               Kuppusamy, T., Brown, A., Awwad, S., McCoy, D., Bielawski,

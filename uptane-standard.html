@@ -413,7 +413,6 @@
 <link href="#rfc.section.5.3" rel="Chapter" title="5.3 Server / repository implementation requirements">
 <link href="#rfc.section.5.3.1" rel="Chapter" title="5.3.1 Image Repository">
 <link href="#rfc.section.5.3.2" rel="Chapter" title="5.3.2 Director Repository">
-<link href="#rfc.section.5.3.3" rel="Chapter" title="5.3.3 Time Server">
 <link href="#rfc.section.5.4" rel="Chapter" title="5.4 In-vehicle implementation requirements">
 <link href="#rfc.section.5.4.1" rel="Chapter" title="5.4.1 Build-time prerequisite requirements for ECUs">
 <link href="#rfc.section.5.4.2" rel="Chapter" title="5.4.2 What the primary does">
@@ -425,12 +424,12 @@
 <link href="#rfc.authors" rel="Chapter">
 
 
-  <meta name="generator" content="xml2rfc version 2.9.6 - https://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.15.3 - https://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-04-18" />
+  <meta name="dct.issued" scheme="ISO8601" content="2019-06-05" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -528,8 +527,6 @@
 </li>
 <li>5.3.2.   <a href="#rfc.section.5.3.2">Director Repository</a>
 </li>
-<li>5.3.3.   <a href="#rfc.section.5.3.3">Time Server</a>
-</li>
 </ul><li>5.4.   <a href="#rfc.section.5.4">In-vehicle implementation requirements</a>
 </li>
 <ul><li>5.4.1.   <a href="#rfc.section.5.4.1">Build-time prerequisite requirements for ECUs</a>
@@ -556,7 +553,7 @@
 <a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a>
 </h1>
 <p id="rfc.section.1.p.1">Uptane is a secure software update framework for ground vehicles. This document describes procedures to enable programmers for OEMs and suppliers to securely design and implement this framework in a manner that better protects connected units on ground vehicles. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to compromise critical systems. It also assures a faster and easier recovery process should a compromise occur.</p>
-<p id="rfc.section.1.p.2">These instructions specify the components necessary for a compliant implementation. Individual implementors can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementors wish to have compatible formats, they may use profiles. Profiles contain a description of implementation choices as well as data binding formats. An implementor who follows a profile as well as the Uptane standard will be able to interoperate with other implementations using that profile.</p>
+<p id="rfc.section.1.p.2">These instructions specify the components necessary for a compliant implementation. Individual implementors can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementors wish to have compatible formats, they may use POUFs. POUFs contain a description of implementation choices as well as data binding formats. An implementor who follows a POUF as well as the Uptane standard will be able to interoperate with other implementations using that POUF.</p>
 <h1 id="rfc.section.2">
 <a href="#rfc.section.2">2.</a> <a href="#terminology" id="terminology">Terminology</a>
 </h1>
@@ -572,7 +569,7 @@
 <p><em>Bus</em>: An internal communications network that interconnects components within a vehicle. A vehicle can have a number of buses that will vary in terms of power, speed and resources.</p>
 <p><em>Image</em>: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.</p>
 <p><em>Primary/Secondary ECUs</em>: Terms used to describe the control units within a ground vehicle. A primary ECU downloads from a repository and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a connection to the internet. Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.</p>
-<p><em>Profile</em>: A document that contains information about a specific Uptane implementation. The profile contains decisions about SHOULDs and MAYs in an implementation, as well as descriptions of data binding formats. Profiles MAY be used to create compatible Uptane implementations.</p>
+<p><em>POUF</em>: A document that contains the protocol, operations, usage, and formats (POUF) of a specific Uptane implementation. The POUF contains decisions about SHOULDs and MAYs in an implementation, as well as descriptions of data binding formats. POUFs MAY be used to create compatible Uptane implementations.</p>
 <p><em>Repository</em>: A server containing metadata about images. May also contain the images themselves. Other data may be stored on the repository to be accessed by ECUs during the update process.</p>
 <p><em>Suppliers</em>: Independent companies to which auto manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that perform outsourced work for Tier-1 suppliers.</p>
 <p><em>Vehicle Version Manifest</em>: A compilation of all ECU version manifests on a vehicle. It serves as a master list of all images currently running on all ECUs in the vehicle.</p>
@@ -648,7 +645,7 @@
 <h1 id="rfc.section.3.2.2.1">
 <a href="#rfc.section.3.2.2.1">3.2.2.1.</a> <a href="#oems-initializing-uptane-at-the-factory-using-sota" id="oems-initializing-uptane-at-the-factory-using-sota">OEMs initializing Uptane at the factory using SOTA</a>
 </h1>
-<p id="rfc.section.3.2.2.1.p.1">An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and the latest time, signed by the time server (if implemented). The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers&#8217; assembly lines, or can choose to add the materials later at the OEM&#8217;s assembly lines. The OEM&#8217;s implementation is Uptane-compliant if:</p>
+<p id="rfc.section.3.2.2.1.p.1">An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and an accurate attestation of the latest time. The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers&#8217; assembly lines, or can choose to add the materials later at the OEM&#8217;s assembly lines. The OEM&#8217;s implementation is Uptane-compliant if:</p>
 <p></p>
 
 <ol>
@@ -788,7 +785,7 @@
 <ul><li>
 <em>Arbitrary software attack:</em> Cause an ECU to install and run arbitrary code of the attacker&#8217;s choice.</li></ul>
 <h1 id="rfc.section.5">
-<a href="#rfc.section.5">5.</a> <a href="#detailed-design-of-uptane" id="detailed-design-of-uptane">Detailed Design of Uptane</a>
+<a href="#rfc.section.5">5.</a> <a href="#design" id="design">Detailed Design of Uptane</a>
 </h1>
 <p id="rfc.section.5.p.1">Uptane is a secure software update framework for automobiles. We do not specify implementation details. Instead, we describe the components necessary for a compliant implementation, and leave it up to individual implementors to make their own technological choices within those requirements.</p>
 <p id="rfc.section.5.p.2">At a high level, Uptane requires:</p>
@@ -808,7 +805,7 @@
 <li>Targets - Indicates metadata about images, such as hashes and file sizes</li>
 </ul>
 </li>
-<li>A secure way for ECUs to know the time. <a href="#time_server" class="xref">Section 5.3.3</a> describes one way to securely attest time to ECUs.</li>
+<li>A secure way for ECUs to know the time.</li>
 <li>An in-vehicle client on a primary ECU capable of verifying the signatures on all update metadata, handling all server communication, and downloading updates on behalf of secondary ECUs</li>
 <li>A client or library on each secondary ECU capable of performing either full or partial verification of metadata</li>
 </ul>
@@ -886,15 +883,15 @@
 <p></p>
 
 <ul>
-<li>A representation of the public keys for all four roles. Each key should have a unique public key identifier.  <ul><li>If a Time Server is in use, a representation of the Time Server public key is CONDITIONALLY REQUIRED in Director repository root metadata.</li></ul>
-</li>
+<li>A representation of the public keys for all four roles. Each key should have a unique public key identifier.</li>
 <li>An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role</li>
 </ul>
 <p id="rfc.section.5.2.2.p.3">Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded.  If this mapping of URLs is used, the implementer SHOULD implement this functionality following <a href="#TAP-5" class="xref">[TAP-5]</a> to avoid adding unforeseen security risks.</p>
 <h1 id="rfc.section.5.2.3">
 <a href="#rfc.section.5.2.3">5.2.3.</a> <a href="#targets_meta" id="targets_meta">Targets Metadata</a>
 </h1>
-<p id="rfc.section.5.2.3.p.1">Targets metadata, whether for the top-level Targets role or for any delegated targets role, MAY contain metadata about images on a repository. It MAY also contain metadata about delegations of signing authority.</p>
+<p id="rfc.section.5.2.3.p.1">The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filnames, hashes, file sizes, and MAY also include other useful information about images, such as the types of hardware a particular image is compatible with.</p>
+<p id="rfc.section.5.2.3.p.2">Targets metadata can also contain metadata about delegations, allowing one Targets role to delegate its authority to another. This means that an individual Targets metadata file might contain only metadata about delegations, only metadata about images, or some combination of the two. The details of how ECUs traverse the delegation tree to find valid metadata about images is specified in <a href="#resolve_delegations" class="xref">Section 5.4.4.7</a>.</p>
 <h1 id="rfc.section.5.2.3.1">
 <a href="#rfc.section.5.2.3.1">5.2.3.1.</a> <a href="#targets_images_meta" id="targets_images_meta">Metadata about Images</a>
 </h1>
@@ -909,7 +906,7 @@
 <h1 id="rfc.section.5.2.3.1.1">
 <a href="#rfc.section.5.2.3.1.1">5.2.3.1.1.</a> <a href="#custom-metadata-about-images" id="custom-metadata-about-images">Custom metadata about images</a>
 </h1>
-<p id="rfc.section.5.2.3.1.1.p.1">In addition to the required metadata, the Targets metadata file MAY contain extra metadata for each image on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the targets metadata from the director.</p>
+<p id="rfc.section.5.2.3.1.1.p.1">In addition to the required metadata, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the targets metadata from the director.</p>
 <p id="rfc.section.5.2.3.1.1.p.2">Custom metadata also MAY contain a field or section that is demarcated as custom metadata that MUST match whenever two pieces of metadata are checked against each other&#8211;most commonly, when targets metadata from the Director and Image repositories are checked against each other.</p>
 <p id="rfc.section.5.2.3.1.1.p.3">The following information SHOULD be provided for each image on both the Image repository and the Director repository, and SHOULD be included in the &#8220;MUST match&#8221; section, if it is implemented:</p>
 <p></p>
@@ -953,14 +950,6 @@
 </li>
 </ul>
 <p id="rfc.section.5.2.3.2.p.4">Note that <strong>any</strong> targets metadata file may contain delegations, and that delegations can be in chains of arbitrary length.</p>
-<h1 id="rfc.section.5.2.3.3">
-<a href="#rfc.section.5.2.3.3">5.2.3.3.</a> <a href="#metadata-about-time-server" id="metadata-about-time-server">Metadata about Time Server</a>
-</h1>
-<p id="rfc.section.5.2.3.3.p.1">If a Time Server <a href="#time_server" class="xref">Section 5.3.3</a> is implemented AND partial-verification secondaries will be used, the following metadata is CONDITIONALLY REQUIRED in the Director repository&#8217;s Targets metadata:</p>
-<p></p>
-
-<ul><li>A representation of the public key(s) for the Time Server, similar to the representation of public keys in Root metadata.</li></ul>
-<p id="rfc.section.5.2.3.3.p.3">Listing the public key of the Time Server in Director targets metadata is necessary to allow partial-verification secondaries to perform time server key rotation.</p>
 <h1 id="rfc.section.5.2.4">
 <a href="#rfc.section.5.2.4">5.2.4.</a> <a href="#snapshot_meta" id="snapshot_meta">Snapshot Metadata</a>
 </h1>
@@ -983,7 +972,9 @@
 <h1 id="rfc.section.5.2.6">
 <a href="#rfc.section.5.2.6">5.2.6.</a> <a href="#repo_mapping_meta" id="repo_mapping_meta">Repository mapping metadata</a>
 </h1>
-<p id="rfc.section.5.2.6.p.1">Repository mapping metadata informs a primary ECU about which repositories to trust for images or image paths. Repository mapping metadata MUST be present on all primary ECUs, and MUST contain the following information:</p>
+<p id="rfc.section.5.2.6.p.1">As described in the introduction to <a href="#design" class="xref">Section 5</a>, Uptane requires a Director repository and an Image repository. However, it is possible to have an Uptane-compliant implementation that has more than two repositories.</p>
+<p id="rfc.section.5.2.6.p.2">Repository mapping metadata informs a primary ECU about which repositories to trust for images or image paths. <a href="#TAP-4" class="xref">[TAP-4]</a> describes how to make use of more complex repository mapping metadata, to have more than the two required repositories.</p>
+<p id="rfc.section.5.2.6.p.3">Repository mapping metadata, or the equivalent informational content, MUST be present on all primary ECUs, and MUST contain the following information:</p>
 <p></p>
 
 <ul>
@@ -994,7 +985,7 @@
 </ul>
 </li>
 </ul>
-<p id="rfc.section.5.2.6.p.3">For example, in the most basic Uptane case, the repository mapping metadata would contain:</p>
+<p id="rfc.section.5.2.6.p.5">For example, in the most basic Uptane case, the repository mapping metadata would contain:</p>
 <p></p>
 
 <ul>
@@ -1002,15 +993,8 @@
 <li>The name and URL of the Image repository</li>
 <li>A single mapping indicating that all images (<samp>*</samp>) MUST be signed by both the Director and Image repository</li>
 </ul>
-<p id="rfc.section.5.2.6.p.5">However, more complex repository mapping metadata can permit more complicated use cases. For example:</p>
-<p></p>
-
-<ul>
-<li>A second Director repository might be useful for fleet management of after-market vehicles, such as a rental car company that might wish to only install approved updates.</li>
-<li>For dynamic content with lower security sensitivity, an OEM might want to allow a certain subset of images to only require trust from the Director repository.</li>
-</ul>
-<p id="rfc.section.5.2.6.p.7">The <em>Deployment Considerations</em> document gives more guidance on how to implement repository mapping metadata for these use cases. It also discusses strategies for updating repository mapping metadata, if required. <a href="#TAP-4" class="xref">[TAP-4]</a> also contains detailed guidance on repository mapping metadata implementation.</p>
-<p id="rfc.section.5.2.6.p.8">Note that repository mapping metadata might not be a file, and MAY be expressed in a different format than the repository roles metadata. For example, it could be part of the primary ECU&#8217;s Uptane client configuration. As long as the client has access to the required information, the repository mapping metadata requirements are met.</p>
+<p id="rfc.section.5.2.6.p.7">Note that the metadata need not be in the form of a metadata file. For example, in the basic case where there is only one director and one image repository, and all images need to have signed metadata from both repositories, it would be sufficient to have a configuration file with URLs for the two repositories, and a client that always checks for metadata matches between the two repositories. In this case, there would be no place with an explicit mapping defined, because the mapping would be defined as part of the Uptane client implementation.</p>
+<p id="rfc.section.5.2.6.p.8">The <em>Deployment Considerations</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) gives more guidance on how to implement repository mapping metadata for more complex use cases. It also discusses strategies for updating repository mapping metadata, if required.</p>
 <h1 id="rfc.section.5.2.7">
 <a href="#rfc.section.5.2.7">5.2.7.</a> <a href="#metadata_filename_rules" id="metadata_filename_rules">Rules for filenames in repositories and metadata</a>
 </h1>
@@ -1039,7 +1023,7 @@
 <li>Image repository</li>
 <li>Director repository</li>
 </ul>
-<p id="rfc.section.5.3.p.3">Additionally, an Uptane implementation requires ECUs to have a secure way to know the current time. This SHOULD be accomplished using a time server (<a href="#time_server" class="xref">Section 5.3.3</a>), but MAY be implemented in other ways.</p>
+<p id="rfc.section.5.3.p.3">Additionally, an Uptane implementation requires ECUs to have a secure way to know the current time.</p>
 <h1 id="rfc.section.5.3.1">
 <a href="#rfc.section.5.3.1">5.3.1.</a> <a href="#image-repository" id="image-repository">Image Repository</a>
 </h1>
@@ -1094,20 +1078,13 @@
 </li>
 </ul>
 <p id="rfc.section.5.3.2.2.p.4">The inventory database MAY record other information about ECUs and vehicles. It SHOULD record a hardware identifier for each ECU, to protect against the possibility of directing the ECU to install an incompatible firmware.</p>
-<h1 id="rfc.section.5.3.3">
-<a href="#rfc.section.5.3.3">5.3.3.</a> <a href="#time_server" id="time_server">Time Server</a>
-</h1>
-<p id="rfc.section.5.3.3.p.1">The Time Server exists to inform vehicles about the current time in a cryptographically secure way, since many ECUs in a vehicle will not have a reliable source of time. It receives lists of tokens from vehicles, and returns back a signed sequence that includes the token and the current time.</p>
-<p id="rfc.section.5.3.3.p.2">An Uptane implementation SHOULD include a time server, but MAY use another secure source of time. If the time server is used, it MUST conform to the following requirements:</p>
-<p id="rfc.section.5.3.3.p.3">When the Time Server receives a sequence of tokens from a vehicle, it SHALL provide one or more signed responses, containing the time along with these tokens. It MAY produce either one signed time attestation containing the current time and all tokens, or multiple time attestations each containing the current time and one or more tokens.</p>
-<p id="rfc.section.5.3.3.p.4">The Time Server SHALL expose a public interface allowing primaries to communicate with it. This communication MAY occur over FTP, FTPS, SFTP, HTTP, or HTTPS.</p>
-<p id="rfc.section.5.3.3.p.5">Rotation of the The Time Server&#8217;s key is performed by listing the new key in the Director&#8217;s Root metadata, in the same manner as other role keys are listed, and also in the Director&#8217;s Targets metadata (for partial verification secondaries).</p>
 <h1 id="rfc.section.5.4">
 <a href="#rfc.section.5.4">5.4.</a> <a href="#in-vehicle-implementation-requirements" id="in-vehicle-implementation-requirements">In-vehicle implementation requirements</a>
 </h1>
-<p id="rfc.section.5.4.p.1">An Uptane-compliant ECU SHALL be able to download and verify the time, metadata, and image binaries before installing a new image.</p>
-<p id="rfc.section.5.4.p.2">Each ECU in a vehicle receiving over-the-air updates is either a primary or a secondary ECU. A primary ECU collects and delivers to the Director vehicle manifests (<a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>) containing information about which images have been installed on ECUs in the vehicle. It also downloads and verifies the latest time, metadata, and images for itself and for its secondaries. A secondary ECU downloads and verifies the latest time, metadata, and images for itself from its associated primary ECU. It also sends signed information about its installed images to its associated primary.</p>
+<p id="rfc.section.5.4.p.1">An Uptane-compliant ECU SHALL be able to download and verify image metadata and image binaries before installing a new image, and MUST have a secure way of verifying the current time, or a sufficiently recent attestation of the time.</p>
+<p id="rfc.section.5.4.p.2">Each ECU in a vehicle receiving over-the-air updates is either a primary or a secondary ECU. A primary ECU collects and delivers to the Director vehicle manifests (<a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>) containing information about which images have been installed on ECUs in the vehicle. It also verifies the time and downloads and verifies the latest metadata and images for itself and for its secondaries. A secondary ECU verifies the time and downloads and verifies the latest metadata and images for itself from its associated primary ECU. It also sends signed information about its installed images to its associated primary.</p>
 <p id="rfc.section.5.4.p.3">All ECUs MUST verify image metadata as specified in <a href="#metadata_verification" class="xref">Section 5.4.4</a> before installing an image or making it available to other ECUs. A primary ECU MUST perform full verification (<a href="#full_verification" class="xref">Section 5.4.4.2</a>). A secondary ECU SHOULD perform full verification if possible. See <a href="#DEPLOY" class="xref">Uptane Deployment Considerations</a> for a discussion of how to choose between partial and full verification.</p>
+<p id="rfc.section.5.4.p.4">ECUs MUST have a secure source of time. An OEM/Uptane implementor MAY use any external source of time that is demonstrably secure. The Uptane deployment considerations (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) describe one way to implement an external time server to cryptographically attest time, as well as the security properties required. When &#8220;loading time&#8221; is referenced in procedures in this standard, it should be understood to mean loading into memory the current time (if the ECU has its own secure clock), or the most recent attested time.</p>
 <h1 id="rfc.section.5.4.1">
 <a href="#rfc.section.5.4.1">5.4.1.</a> <a href="#build-time-prerequisite-requirements-for-ecus" id="build-time-prerequisite-requirements-for-ecus">Build-time prerequisite requirements for ECUs</a>
 </h1>
@@ -1120,8 +1097,7 @@
 <li>Full verification ECUs MUST have a complete set of metadata (root, targets, snapshot, and timestamp) from both repositories, as well as the repository mapping metadata (<a href="#repo_mapping_meta" class="xref">Section 5.2.6</a>).</li>
 </ul>
 </li>
-<li>The public key(s) of the time server (if the time server is implemented).</li>
-<li>The current time. This SHOULD be in the form of an attestation of time downloaded from the time server, but MAY come from another source if the time server is not implemented.</li>
+<li>The current time, or a secure attestation of a sufficiently recent time.</li>
 <li>An <strong>ECU key</strong>. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.</li>
 </ol>
 <h1 id="rfc.section.5.4.2">
@@ -1135,7 +1111,7 @@
 <li>Download and check current time (<a href="#check_time_primary" class="xref">Section 5.4.2.2</a>)</li>
 <li>Download and verify metadata (<a href="#download_meta_primary" class="xref">Section 5.4.2.3</a>)</li>
 <li>Download and verify images (<a href="#download_images_primary" class="xref">Section 5.4.2.4</a>)</li>
-<li>Send latest time to secondaries (<a href="#send_time_primary" class="xref">Section 5.4.2.5</a>)</li>
+<li>OPTIONAL: Send latest time to secondaries (<a href="#send_time_primary" class="xref">Section 5.4.2.5</a>)</li>
 <li>Send metadata to secondaries (<a href="#send_metadata_primary" class="xref">Section 5.4.2.6</a>)</li>
 <li>Send images to secondaries (<a href="#send_images_primary" class="xref">Section 5.4.2.7</a>)</li>
 </ol>
@@ -1143,8 +1119,8 @@
 <a href="#rfc.section.5.4.2.1">5.4.2.1.</a> <a href="#construct_manifest_primary" id="construct_manifest_primary">Construct and send vehicle version manifest</a>
 </h1>
 <p id="rfc.section.5.4.2.1.p.1">The primary SHALL build a <em>vehicle version manifest</em> as described in <a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>.</p>
-<p id="rfc.section.5.4.2.1.p.2">Once it has the complete manifest built, it MAY send the manifest to the Director repository. However, it is not strictly required that the primary send the manifest until step three.</p>
-<p id="rfc.section.5.4.2.1.p.3">Secondaries MAY send their version report at any time, so that it is already stored on the primary  when it wishes to check for updates. Alternatively, the primary MAY request a version report from each secondary at the time of the update check.</p>
+<p id="rfc.section.5.4.2.1.p.2">Once it has the complete manifest built, it MAY send the manifest to the Director repository. However, it is not strictly required that the primary send the manifest until step three. If permitted by the implementation, a primary MAY send only a diff of the manifest, to save bandwidth. If an implementation permits diffs, the Director SHOULD have a way to request a full manifest.</p>
+<p id="rfc.section.5.4.2.1.p.3">Secondaries MAY send their version report at any time, so that it is already stored on the primary when it wishes to check for updates. Alternatively, the primary MAY request a version report from each secondary at the time of the update check.</p>
 <h1 id="rfc.section.5.4.2.1.1">
 <a href="#rfc.section.5.4.2.1.1">5.4.2.1.1.</a> <a href="#vehicle_version_manifest" id="vehicle_version_manifest">Vehicle version manifest</a>
 </h1>
@@ -1186,26 +1162,17 @@
 </li>
 <li>A payload containing: <ul>
 <li>The ECU&#8217;s unique identifier (e.g. the serial number)</li>
-<li>The latest time downloaded from the time server, if the time server is implemented</li>
-<li>The previous time downloaded from the time server, if the time server is implemented</li>
 <li>The filename, length, and hashes of its currently installed image (i.e. the non-custom targets metadata for this particular image)</li>
 <li>An indicator of any detected security attack</li>
+<li>The latest time the ECU can verify at the time this version report was generated</li>
+<li>A cryptographic nonce</li>
 </ul>
 </li>
-<li>A token (nonce) for the time server to sign and send back, if the time server is implemented</li>
 </ul>
 <h1 id="rfc.section.5.4.2.2">
 <a href="#rfc.section.5.4.2.2">5.4.2.2.</a> <a href="#check_time_primary" id="check_time_primary">Download and check current time</a>
 </h1>
-<p id="rfc.section.5.4.2.2.p.1">The primary SHALL load the current time from a secure source. This secure source SHOULD be a time server as described in <a href="#time_server" class="xref">Section 5.3.3</a>.</p>
-<p id="rfc.section.5.4.2.2.p.2">If the time server is implemented, the primary SHALL use the following procedure to verify the time:</p>
-<p></p>
-
-<ol>
-<li>Gather the tokens from each secondary ECU&#8217;s version report (<a href="#version_report" class="xref">Section 5.4.2.1.2</a>).</li>
-<li>Send the list of tokens to the time server to fetch the current time. The time server responds as described in <a href="#time_server" class="xref">Section 5.3.3</a>, providing a cryptographic attestation of the last known time.</li>
-<li>If the time server&#8217;s response meets the criteria below, update the primary ECU&#8217;s clock and retain the time server&#8217;s response for distribution to secondary ECUs, otherwise discard it and proceed without an updated time.  The criteria for checking the time server&#8217;s response are: - The signature over the time server&#8217;s response is valid.  - The tokens provided to the time server have been included in the response.  - The time in the time server&#8217;s response is later than the last time verified in this manner.</li>
-</ol>
+<p id="rfc.section.5.4.2.2.p.1">The primary SHALL load the current time from a secure source.</p>
 <h1 id="rfc.section.5.4.2.3">
 <a href="#rfc.section.5.4.2.3">5.4.2.3.</a> <a href="#download_meta_primary" id="download_meta_primary">Download and verify metadata</a>
 </h1>
@@ -1218,7 +1185,7 @@
 <h1 id="rfc.section.5.4.2.5">
 <a href="#rfc.section.5.4.2.5">5.4.2.5.</a> <a href="#send_time_primary" id="send_time_primary">Send latest time to secondaries</a>
 </h1>
-<p id="rfc.section.5.4.2.5.p.1">The primary SHOULD send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time.</p>
+<p id="rfc.section.5.4.2.5.p.1">The primary SHOULD send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time. The primary MAY omit this step if the secondary has its own way of loading and verifying the time.</p>
 <h1 id="rfc.section.5.4.2.6">
 <a href="#rfc.section.5.4.2.6">5.4.2.6.</a> <a href="#send_metadata_primary" id="send_metadata_primary">Send metadata to secondaries</a>
 </h1>
@@ -1246,17 +1213,7 @@
 <h1 id="rfc.section.5.4.3.1">
 <a href="#rfc.section.5.4.3.1">5.4.3.1.</a> <a href="#verify_time" id="verify_time">Load and verify the latest attested time</a>
 </h1>
-<p id="rfc.section.5.4.3.1.p.1">The ECU SHOULD load and verify the current time, or the most recent time from the time server if it is implemented.</p>
-<p id="rfc.section.5.4.3.1.p.2">If an Uptane time server (<a href="#time_server" class="xref">Section 5.3.3</a>) is implemented, the ECU SHALL:</p>
-<p></p>
-
-<ol>
-<li>Verify that the signatures on the downloaded time are valid.</li>
-<li>Verify that the list of nonces/tokens in the downloaded time includes the token that the ECU sent in its previous version report.</li>
-<li>Verify that the time downloaded is greater than the previous time.</li>
-</ol>
-<p id="rfc.section.5.4.3.1.p.4">If all three steps complete without error, the ECU SHALL overwrite its current attested time with the time it has just downloaded, and generate a new nonce/token for the next request to the time server.</p>
-<p id="rfc.section.5.4.3.1.p.5">If any check fails, the ECU SHALL NOT overwrite its current attested time, and SHALL jump to the fifth step (<a href="#create_version_report" class="xref">Section 5.4.3.5</a>), and report the error. The ECU MUST reuse its previous token for the next request to the time server.</p>
+<p id="rfc.section.5.4.3.1.p.1">The ECU SHALL load and verify the current time, or the most recent securely attested time.</p>
 <h1 id="rfc.section.5.4.3.2">
 <a href="#rfc.section.5.4.3.2">5.4.3.2.</a> <a href="#verify_metadata" id="verify_metadata">Verify metadata</a>
 </h1>
@@ -1314,7 +1271,7 @@
 <p></p>
 
 <ol>
-<li>Load the latest attested time from the time server, if implemented.</li>
+<li>Load and verify the current time, or the most recent securely attested time.</li>
 <li>Download and check the Targets metadata file from the Director repository, following the procedure in <a href="#check_targets" class="xref">Section 5.4.4.6</a>.</li>
 </ol>
 <h1 id="rfc.section.5.4.4.2">
@@ -1323,12 +1280,12 @@
 <p id="rfc.section.5.4.4.2.p.1">Full verification of metadata means that the ECU checks that the Targets metadata about images from the Director repository matches the Targets metadata about the same images from the Image repository. This provides resilience to a key compromise in the system.</p>
 <p id="rfc.section.5.4.4.2.p.2">Full verification MAY be performed by either primary or secondary ECUs. The procedure is the same, except that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, it applies only to primary ECUs.</p>
 <p id="rfc.section.5.4.4.2.p.3">If <a href="#TAP-5" class="xref">[TAP-5]</a> is supported, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If <a href="#TAP-5" class="xref">[TAP-5]</a> is not supported, the download should follow the <a href="#TUF-spec" class="xref">[TUF-spec]</a> and the metadata file renaming rules specified in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>.</p>
-<p id="rfc.section.5.4.4.2.p.4">In order to perform full verification, an ECU SHALL perform the following steps:</p>
+<p id="rfc.section.5.4.4.2.p.4">Before starting full verification, the repository mapping metadata MUST be consulted, to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to <a href="#DEPLOY" class="xref">[DEPLOY]</a> for guidance on how to determine where to download metadata from.</p>
+<p id="rfc.section.5.4.4.2.p.5">In order to perform full verification, an ECU SHALL perform the following steps:</p>
 <p></p>
 
 <ol>
-<li>Load the repository mapping metadata (<a href="#repo_mapping_meta" class="xref">Section 5.2.6</a>), and use the information therein to determine from where metadata should be downloaded.</li>
-<li>Load the latest attested time from the time server, if implemented.</li>
+<li>Load and verify the current time, or the most recent securely attested time.</li>
 <li>Download and check the Root metadata file from the Director repository, following the procedure in <a href="#check_root" class="xref">Section 5.4.4.3</a>.</li>
 <li>Download and check the Timestamp metadata file from the Director repository, following the procedure in <a href="#check_timestamp" class="xref">Section 5.4.4.4</a>.</li>
 <li>Download and check the Snapshot metadata file from the Director repository, following the procedure in <a href="#check_snapshot" class="xref">Section 5.4.4.5</a>.</li>
@@ -1348,8 +1305,8 @@
 </ol>
 </li>
 </ol>
-<p id="rfc.section.5.4.4.2.p.6">If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.</p>
-<p id="rfc.section.5.4.4.2.p.7">If the ECU performing the verification is the primary ECU, it SHOULD also ensure that the targets metadata from the director repository doesn&#8217;t contain any ECU identifiers for ECUs not actually present in the vehicle.</p>
+<p id="rfc.section.5.4.4.2.p.7">If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.</p>
+<p id="rfc.section.5.4.4.2.p.8">If the ECU performing the verification is the primary ECU, it SHOULD also ensure that the targets metadata from the director repository doesn&#8217;t contain any ECU identifiers for ECUs not actually present in the vehicle.</p>
 <h1 id="rfc.section.5.4.4.3">
 <a href="#rfc.section.5.4.4.3">5.4.4.3.</a> <a href="#check_root" id="check_root">How to check Root metadata</a>
 </h1>
@@ -1366,8 +1323,7 @@
 <li>Repeat steps 2.1 to 2.6.</li>
 </ol>
 </li>
-<li>If the Timeserver key is listed in the Root metadata and has been rotated, reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence).  It will be updated in the next cycle.</li>
-<li>Check that the latest attested time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)</li>
+<li>Check that the current (or latest securely attested) time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)</li>
 <li>If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks <a href="#MERCURY" class="xref">[MERCURY]</a>.)</li>
 </ol>
 <h1 id="rfc.section.5.4.4.4">
@@ -1379,7 +1335,7 @@
 <li>Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).</li>
 <li>Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</li>
 <li>Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)</li>
-<li>Check that the latest attested time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)</li>
+<li>Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)</li>
 </ol>
 <h1 id="rfc.section.5.4.4.5">
 <a href="#rfc.section.5.4.4.5">5.4.4.5.</a> <a href="#check_snapshot" id="check_snapshot">How to check Snapshot metadata</a>
@@ -1393,7 +1349,7 @@
 <li>Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)</li>
 <li>Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to the its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)</li>
 <li>Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)</li>
-<li>Check that the latest attested time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)</li>
+<li>Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)</li>
 </ol>
 <h1 id="rfc.section.5.4.4.6">
 <a href="#rfc.section.5.4.4.6">5.4.4.6.</a> <a href="#check_targets" id="check_targets">How to check Targets metadata</a>
@@ -1410,7 +1366,7 @@
 </li>
 <li>Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)</li>
 <li>If this Targets metadata file indicates that the Timeserver key should be rotated, then reset the clock used to determine the expiration of metadata to a minimal value (e.g. zero, or any time that is guaranteed to not be in the future based on other evidence). It will be updated in the next cycle.</li>
-<li>Check that the latest attested time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)</li>
+<li>Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)</li>
 <li>If checking targets metadata from the Director repository, verify that there are no delegations.</li>
 <li>If checking targets metadata from the Director repository, check that no ECU identifier is represented more than once.</li>
 </ol>
@@ -1464,49 +1420,14 @@
 <a>Bradner, S.</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
 </tr>
 <tr>
-<td class="reference"><b id="RFC2616">[RFC2616]</b></td>
-<td class="top">
-<a>Fielding, R.</a>, <a>Gettys, J.</a>, <a>Mogul, J.</a>, <a>Frystyk, H.</a>, <a>Masinter, L.</a>, <a>Leach, P.</a> and <a>T. Berners-Lee</a>, "<a href="https://tools.ietf.org/html/rfc2616">Hypertext Transfer Protocol -- HTTP/1.1</a>", RFC 2616, DOI 10.17487/RFC2616, June 1999.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC3280">[RFC3280]</b></td>
-<td class="top">
-<a>Housley, R.</a>, <a>Polk, W.</a>, <a>Ford, W.</a> and <a>D. Solo</a>, "<a href="https://tools.ietf.org/html/rfc3280">Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile</a>", RFC 3280, DOI 10.17487/RFC3280, April 2002.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC3447">[RFC3447]</b></td>
-<td class="top">
-<a>Jonsson, J.</a> and <a>B. Kaliski</a>, "<a href="https://tools.ietf.org/html/rfc3447">Public-Key Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.1</a>", RFC 3447, DOI 10.17487/RFC3447, February 2003.</td>
-</tr>
-<tr>
 <td class="reference"><b id="RFC3647">[RFC3647]</b></td>
 <td class="top">
 <a>Chokhani, S.</a>, <a>Ford, W.</a>, <a>Sabett, R.</a>, <a>Merrill, C.</a> and <a>S. Wu</a>, "<a href="https://tools.ietf.org/html/rfc3647">Internet X.509 Public Key Infrastructure Certificate Policy and Certification Practices Framework</a>", RFC 3647, DOI 10.17487/RFC3647, November 2003.</td>
 </tr>
 <tr>
-<td class="reference"><b id="RFC4634">[RFC4634]</b></td>
-<td class="top">
-<a>Eastlake 3rd, D.</a> and <a>T. Hansen</a>, "<a href="https://tools.ietf.org/html/rfc4634">US Secure Hash Algorithms (SHA and HMAC-SHA)</a>", RFC 4634, DOI 10.17487/RFC4634, July 2006.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC4648">[RFC4648]</b></td>
-<td class="top">
-<a>Josefsson, S.</a>, "<a href="https://tools.ietf.org/html/rfc4648">The Base16, Base32, and Base64 Data Encodings</a>", RFC 4648, DOI 10.17487/RFC4648, October 2006.</td>
-</tr>
-<tr>
 <td class="reference"><b id="RFC5198">[RFC5198]</b></td>
 <td class="top">
 <a>Klensin, J.</a> and <a>M. Padlipsky</a>, "<a href="https://tools.ietf.org/html/rfc5198">Unicode Format for Network Interchange</a>", RFC 5198, DOI 10.17487/RFC5198, March 2008.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC5756">[RFC5756]</b></td>
-<td class="top">
-<a>Turner, S.</a>, <a>Brown, D.</a>, <a>Yiu, K.</a>, <a>Housley, R.</a> and <a>T. Polk</a>, "<a href="https://tools.ietf.org/html/rfc5756">Updates for RSAES-OAEP and RSASSA-PSS Algorithm Parameters</a>", RFC 5756, DOI 10.17487/RFC5756, January 2010.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC7159">[RFC7159]</b></td>
-<td class="top">
-<a>Bray, T.</a>, "<a href="https://tools.ietf.org/html/rfc7159">The JavaScript Object Notation (JSON) Data Interchange Format</a>", RFC 7159, DOI 10.17487/RFC7159, March 2014.</td>
 </tr>
 <tr>
 <td class="reference"><b id="TAP-3">[TAP-3]</b></td>
@@ -1542,11 +1463,6 @@
 <td class="top">"<a href="https://uptane.github.io/TODO">Uptane Deployment Guidelines</a>", n.d..</td>
 </tr>
 <tr>
-<td class="reference"><b id="ED25519">[ED25519]</b></td>
-<td class="top">
-<a>Bernstein, D.</a>, <a>Duif, N.</a>, <a>Lange, T.</a>, <a>Schwabe, P.</a> and <a>B-Y. Yang</a>, "<a>"High-Speed High-Security Signatures", Journal of Cryptographic Engineering, Vol. 2</a>", September 2011.</td>
-</tr>
-<tr>
 <td class="reference"><b id="IN-TOTO">[IN-TOTO]</b></td>
 <td class="top">"<a href="https://in-toto.github.io/">in-toto: A framework to secure the integrity of software supply chains</a>", October 2018.</td>
 </tr>
@@ -1559,11 +1475,6 @@
 <td class="reference"><b id="PEP-458">[PEP-458]</b></td>
 <td class="top">
 <a>Kuppusamy, T.</a>, <a>Diaz, V.</a>, <a>Stufft, D.</a> and <a>J. Cappos</a>, "<a href="https://www.python.org/dev/peps/pep-0458/">PEP 458 -- Surviving a Compromise of PyPI</a>", September 2013.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC1321">[RFC1321]</b></td>
-<td class="top">
-<a>Rivest, R.</a>, "<a href="https://tools.ietf.org/html/rfc1321">The MD5 Message-Digest Algorithm</a>", RFC 1321, DOI 10.17487/RFC1321, April 1992.</td>
 </tr>
 <tr>
 <td class="reference"><b id="UPTANEESCAR">[UPTANEESCAR]</b></td>
