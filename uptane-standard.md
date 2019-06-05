@@ -180,7 +180,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 *Image*: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.  
 
-*Primary/Secondary ECUs*: Terms used to describe the control units within a ground vehicle. A primary ECU downloads and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a connection to download images and metadata. Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.  
+*Primary/Secondary ECUs*: Terms used to describe the control units within a ground vehicle. A primary ECU downloads and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a means to download images and metadata. Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.
 
 *POUF*: A document that contains the protocol, operations, usage, and formats (POUF) of a specific Uptane implementation. The POUF contains decisions about SHOULDs and MAYs in an implementation, as well as descriptions of data binding formats. POUFs MAY be used to create compatible Uptane implementations.
 
@@ -658,6 +658,7 @@ A primary downloads, verifies, and distributes the latest time, metadata and ima
 
 
 Please note, the subsequent sections concerning requirements for a primary, does not prohibit implementing primary-capability on an ECU which does not communicate directly with the Uptane repositories. This allows for implementations to have multiple ECUs within the vehicle performing functions equivalent to a primary.
+Regardless if multiple primary's are included within a vehicle, each secondary ECU SHALL have a single primary responsible for providing its updates.
 
 #### Construct and send vehicle version manifest {#construct_manifest_primary}
 
