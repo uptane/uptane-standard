@@ -834,7 +834,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
     1. Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same file name listed in the Director metadata, following the procedure in {{resolve_delegations}}.
     2. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted or encrypted image are the same in both sets of metadata.
-	    - Please note, the primary is responsible for validating encrypted images and associated metadata. The target ECU (primary or secondary) is responsible for validating the unencrypted image and associated metadata.
+            - Please note, the primary is responsible for validating encrypted images and associated metadata. The target ECU (primary or secondary) is responsible for validating the unencrypted image and associated metadata.
         2. Check that all "MUST match" custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
 
