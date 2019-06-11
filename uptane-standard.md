@@ -834,6 +834,8 @@ If the ECU performing the verification is the primary ECU, it SHOULD also ensure
 
 #### How to check Root metadata {#check_root}
 
+To properly check root metadata, an ECU SHOULD:
+
 1. Load the previous Root metadata file.
 2. Update to the latest Root metadata file.
     1. Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous root metadata file).
@@ -847,6 +849,8 @@ If the ECU performing the verification is the primary ECU, it SHOULD also ensure
 
 #### How to check Timestamp metadata {#check_timestamp}
 
+To properly check timestamp metadata, an ECU SHOULD:
+
 1. Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).
 2. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
 3. Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
@@ -854,6 +858,8 @@ If the ECU performing the verification is the primary ECU, it SHOULD also ensure
 
 
 #### How to check Snapshot metadata {#check_snapshot}
+
+To properly check snapshot metadata, an ECU SHOULD:
 
 1. Download up to the number of bytes specified in the Timestamp metadata file, constructing the metadata filename as defined in {{metadata_filename_rules}}.
 2. The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
@@ -864,6 +870,8 @@ If the ECU performing the verification is the primary ECU, it SHOULD also ensure
 7. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
 
 #### How to check Targets metadata {#check_targets}
+
+To properly check targets metadata, an ECU SHOULD:
 
 1. Download up to Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.
 2. The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) Skip this step if checking Targets metadata on a partial-verification ECU; partial-verification ECUs will not have Snapshot metadata.
