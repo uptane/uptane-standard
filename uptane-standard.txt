@@ -1518,6 +1518,8 @@ Table of Contents
 
 5.4.4.3.  How to check Root metadata
 
+   To properly check root metadata, an ECU SHOULD:
+
    1.  Load the previous Root metadata file.
 
    2.  Update to the latest Root metadata file.
@@ -1569,6 +1571,8 @@ Table of Contents
 
 5.4.4.4.  How to check Timestamp metadata
 
+   To properly check timestamp metadata, an ECU SHOULD:
+
    1.  Download up to Y number of bytes.  The value for Y is set by the
        implementor.  For example, Y may be tens of kilobytes.  The
        filename used to download the Timestamp metadata file is of the
@@ -1594,6 +1598,8 @@ Table of Contents
        attack.  (Checks for a freeze attack.)
 
 5.4.4.5.  How to check Snapshot metadata
+
+   To properly check snapshot metadata, an ECU SHOULD:
 
    1.  Download up to the number of bytes specified in the Timestamp
        metadata file, constructing the metadata filename as defined in
@@ -1638,6 +1644,8 @@ Table of Contents
        (Checks for a freeze attack.)
 
 5.4.4.6.  How to check Targets metadata
+
+   To properly check targets metadata, an ECU SHOULD:
 
    1.  Download up to Z number of bytes, constructing the metadata
        filename as defined in Section 5.2.7.  The value for Z is set by
