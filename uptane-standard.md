@@ -787,7 +787,7 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
 
 If the ECU has secondary storage, the checks SHOULD be performed on the image in secondary storage, before it is installed.
 
-If any step fails, the ECU SHALL jump to the ({{create_version_report}}) step. If an ECU does not have secondary storage, then before attempting verification, the ECU SHALL ensure a backup of a previous working image and associated metadata is created. This MAY be stored on the updating ECU or elsewhere (e.g., associated primary). Thus, if a step fails and the ECU does not have secondary storage, the ECU SHALL install the backup image to ensure it is in a working condition.
+If any step fails, the ECU SHALL jump to the ({{create_version_report}}) step. If an ECU does not have secondary storage, then before attempting verification, the ECU SHALL ensure a backup of a previous working image and associated metadata is created. This MAY be stored on the elsewhere within the vehicle (e.g., associated primary). Thus, if a step fails and the ECU does not have secondary storage, the ECU SHALL install the backup image to ensure it is in a working condition.
 
 #### Install image {#install_image}
 
