@@ -605,7 +605,7 @@ The Director repository SHALL implement storage which permits an automated servi
 
 A Director repository MUST conform to the following six-step process for directing the installation of software images on a vehicle.
 
-1. The Director must first identify the vehicle. This MAY be done when the Director receives a vehicle version manifest sent by a primary (as described in {{construct_manifest_primary}}), decodes the manifest, and determines the unique vehicle identifier. Additionally, the Director MAY utilize other mechanisms to uniquely identify a vehicle (e.g., 2-way TLS with unique client certificates).
+1. The Director SHOULD first identify the vehicle. This MAY be done when the Director receives a vehicle version manifest sent by a primary (as described in {{construct_manifest_primary}}), decodes the manifest, and determines the unique vehicle identifier. Additionally, the Director MAY utilize other mechanisms to uniquely identify a vehicle (e.g., 2-way TLS with unique client certificates).
 1. Using the vehicle identifier, the Director queries its inventory database (as described in {{inventory_db}}) for relevant information about each ECU in the vehicle.
 2. The Director SHALL check the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director MAY drop the request. An implementor MAY make whatever additional checks they wish. At a minimum, the Director SHALL check the following:
     * Each ECU recorded in the inventory database is also represented in the manifest.
@@ -834,7 +834,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
     1. Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same file name listed in the Director metadata, following the procedure in {{resolve_delegations}}.
     2. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted or encrypted image are the same in both sets of metadata.
-            - Please note, the primary is responsible for validating encrypted images and associated metadata. The target ECU (primary or secondary) is responsible for validating the unencrypted image and associated metadata.
+            - Note, the primary is responsible for validating encrypted images and associated metadata. The target ECU (primary or secondary) is responsible for validating the unencrypted image and associated metadata.
         2. Check that all "MUST match" custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous targets metadata file is less than or equal to the release counter in this targets metadata file.
 
