@@ -607,7 +607,7 @@ A Director repository MUST conform to the following six-step process for directi
 
 1. The Director SHOULD first identify the vehicle. This MAY be done when the Director receives a vehicle version manifest sent by a primary (as described in {{construct_manifest_primary}}), decodes the manifest, and determines the unique vehicle identifier. Additionally, the Director MAY utilize other mechanisms to uniquely identify a vehicle (e.g., 2-way TLS with unique client certificates).
 1. Using the vehicle identifier, the Director queries its inventory database (as described in {{inventory_db}}) for relevant information about each ECU in the vehicle.
-2. The Director SHALL check the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director MAY drop the request. An implementor MAY make whatever additional checks they wish. At a minimum, the Director SHALL check the following:
+1. The Director SHALL check the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director MAY drop the request. An implementer MAY make whatever additional checks they wish. At a minimum, the Director SHALL check the following:
     * Each ECU recorded in the inventory database is also represented in the manifest.
     * The signature of the manifest matches the ECU key of the primary that sent it.
     * The signature of each secondary's contribution to the manifest matches the ECU key of that secondary.
@@ -720,7 +720,7 @@ There may be several different filenames that all refer to the same image binary
 
 #### Send latest time to secondaries {#send_time_primary}
 
-The primary SHALL send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time. The primary MAY omit this step if the secondary has its own way of loading and verifying the time, or cannot verify the time has detailed here.
+The primary SHALL send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time. The primary MAY omit this step if the secondary has its own way of loading and verifying the time, or cannot verify the time as detailed here.
 
 #### Send metadata to secondaries {#send_metadata_primary}
 
@@ -786,8 +786,11 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
 7. Check that the hash of the image matches the hash in the metadata.
 
 If the ECU has secondary storage, the checks SHOULD be performed on the image in secondary storage, before it is installed.
+If an ECU does not have secondary storage, then before attempting verification, the ECU SHALL ensure a backup of a previous working image and associated metadata is created. This MAY be stored on the elsewhere within the vehicle (e.g., associated primary).
 
-If any step fails, the ECU SHALL jump to the ({{create_version_report}}) step. If an ECU does not have secondary storage, then before attempting verification, the ECU SHALL ensure a backup of a previous working image and associated metadata is created. This MAY be stored on the elsewhere within the vehicle (e.g., associated primary). Thus, if a step fails and the ECU does not have secondary storage, the ECU SHALL install the backup image to ensure it is in a working condition.
+If any step fails and the ECU does not have secondary storage, then the ECU SHALL install the backup image to ensure it is in a working condition. 
+Otherwise, if any step fails, the ECU SHALL jump to the ({{create_version_report}}) step.  
+ 
 
 #### Install image {#install_image}
 
