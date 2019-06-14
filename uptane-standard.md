@@ -720,7 +720,7 @@ There may be several different filenames that all refer to the same image binary
 
 #### Send latest time to secondaries {#send_time_primary}
 
-The primary SHALL send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time. The primary MAY omit this step if the secondary has its own way of loading and verifying the time, or cannot verify the time as detailed here.
+Unless the secondary ECU has its own way of verifying the time, or does not have the capacity to verify a time message, the primary is CONDITIONALLY REQUIRED to send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time.
 
 #### Send metadata to secondaries {#send_metadata_primary}
 
