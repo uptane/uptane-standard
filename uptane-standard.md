@@ -186,7 +186,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 *Image*: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.  
 
-*Primary/Secondary ECUs*: Terms used to describe the control units within a ground vehicle. A primary ECU downloads from a repository and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a connection to the internet. Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.  
+*Primary/Secondary ECUs*: Terms used to describe the control units within a ground vehicle. A primary ECU downloads and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a means to download images and metadata.  Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.
 
 *POUF*: A document that contains the protocol, operations, usage, and formats (POUF) of a specific Uptane implementation. The POUF contains decisions about SHOULDs and MAYs in an implementation, as well as descriptions of data binding formats. POUFs MAY be used to create compatible Uptane implementations.
 
@@ -379,7 +379,8 @@ At a high level, Uptane requires:
     * Snapshot - Indicates images released by the repository at a point in time, via signing metadata about targets metadata
     * Targets - Indicates metadata about images, such as hashes and file sizes
 * A secure way for ECUs to know the time.
-* An in-vehicle client on a primary ECU capable of verifying the signatures on all update metadata, handling all server communication, and downloading updates on behalf of secondary ECUs
+* An ECU capable of downloading images and associated metadata from the Uptane servers.
+* An in-vehicle client on a primary ECU capable of verifying the signatures on all update metadata and downloading updates on behalf of its associated secondary ECUs. The primary ECU MAY be the same ECU that communicates with the server.
 * A client or library on each secondary ECU capable of performing either full or partial verification of metadata
 
 ## Roles on repositories {#roles}
@@ -663,6 +664,10 @@ A primary downloads, verifies, and distributes the latest time, metadata and ima
 1. Send metadata to secondaries ({{send_metadata_primary}})
 1. Send images to secondaries ({{send_images_primary}})
 
+
+Note that the subsequent sections concerning requirements for a primary do not prohibit implementing primary capabilities on an ECU which does not communicate directly with the Uptane repositories. This allows for implementations to have multiple ECUs within the vehicle performing functions equivalent to a primary.
+If multiple such primaries are included within a vehicle, each secondary ECU SHALL have a single primary responsible for providing its updates.
+
 #### Construct and send vehicle version manifest {#construct_manifest_primary}
 
 The primary SHALL build a *vehicle version manifest* as described in {{vehicle_version_manifest}}.
@@ -818,9 +823,9 @@ In order to perform partial verification, an ECU SHALL perform the following ste
 
 Full verification of metadata means that the ECU checks that the Targets metadata about images from the Director repository matches the Targets metadata about the same images from the Image repository. This provides resilience to a key compromise in the system.
 
-Full verification MAY be performed by either primary or secondary ECUs. The procedure is the same, except that secondary ECUs receive their metadata from the primary instead of downloading it directly. In the following instructions, whenever an ECU is directed to download metadata, it applies only to primary ECUs.
+Full verification MAY be performed by either primary or secondary ECUs. In the following instructions, whenever an ECU is directed to download metadata, it applies only to primary ECUs.
 
-If {{TAP-5}} is supported, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, the download should follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
+If {{TAP-5}} is supported and a primary has an external connection to the Uptane repositories, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported or if the primary does not have an external connection to the Uptane repositories, the download SHOULD follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
 Before starting full verification, the repository mapping metadata MUST be consulted, to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to {{DEPLOY}} for guidance on how to determine where to download metadata from.
 
