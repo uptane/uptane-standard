@@ -128,11 +128,10 @@ informative:
       - ins: J. Cappos
     date: 2013-09-27
   DEPLOY:
-    target: https://uptane.github.io/TODO
+    target: https://uptane.github.io/deployment/introduction.html
     title: "Uptane Deployment Guidelines"
-  # TODO add TUF-CCS-2010
-  # TODO add DIPLOMAT-NSDI-2016
-  # TODO add DER
+    author:
+      - ins: Members of the Uptane Alliance Community
   USATODAY:
     target: https://www.usatoday.com/story/tech/columnist/2016/06/28/your-average-car-lot-more-code-driven-than-you-think/86437052/
     title: Your average car is a lot more code-driven than you think
