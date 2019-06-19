@@ -887,6 +887,7 @@ To properly check snapshot metadata, an ECU SHOULD:
 6. Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
 7. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
 
+
 #### How to check Targets metadata {#check_targets}
 
 To properly check targets metadata, an ECU SHOULD:
@@ -898,7 +899,17 @@ To properly check targets metadata, an ECU SHOULD:
     1. If checking delegated targets metadata, the threshold of keys is specified in the targets metadata file that delegated authority to this role.
 1. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
 1. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
-1. If checking targets metadata from the Director repository, verify that there are no delegations in listed order. For each delegation:
+1. If checking targets metadata from the Director repository, verify that there are no delegations.
+1. If checking targets metadata from the Director repository, check that no ECU identifier is represented more than once.
+
+#### How to resolve delegations {#resolve_delegations}
+
+To properly check targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level targets metadata, but it also may be delegated to another role--or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level targets metadata file.
+
+1. Download the current metadata file, and check it following the procedure in {{check_targets}}. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.
+2. If the current metadata file contains signed metadata about the image, end the delegation resolution and return the metadata to be checked.
+3. If the current metadata file was reached via a terminating delegation and does not contain signed metadata about the image, abort the delegation resolution for this image and return an error indicating that image metadata could not be found.
+4. Search the list of delegations, in listed order. For each delegation:
     1. Check if the delegation applies to the image being processed. For the delegation to apply, it MUST include the hardware identifier of the target, and the target name must match one of the delegation's image paths. If either of these tests fail, move on to the next delegation in the list.
     2. If the delegation is a multi-role delegation, follow the procedure described in {{multirole_delegations}}. If the multi-role delegation is terminating and no valid image metadata is found, abort the delegation resolution and return an error indicating that image metadata could not be found.
     3. If the delegation is a normal delegation, perform delegation resolution, starting at step 1. Note that this may recurse an arbitrary number of levels deep. If a delegation that applies to the image is found but no image metadata is found in the delegated roles or any of its sub-delegations, simply continue on with the next delegation in the list. The search is only completed/aborted if image metadata or a terminating delegation that applies to the image is found.
