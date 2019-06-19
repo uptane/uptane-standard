@@ -887,7 +887,6 @@ To properly check snapshot metadata, an ECU SHOULD:
 6. Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
 7. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
 
-
 #### How to check Targets metadata {#check_targets}
 
 To properly check targets metadata, an ECU SHOULD:
