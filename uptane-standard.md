@@ -161,13 +161,13 @@ This document describes a framework for securing ground vehicle software update 
 
 Uptane is a secure software update framework for ground vehicles. This document describes procedures to enable programmers for OEMs and suppliers to securely design and implement this framework in a manner that better protects connected units on ground vehicles. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to compromise critical systems. It also assures a faster and easier recovery process should a compromise occur.
 
-These instructions specify the components necessary for a compliant implementation. Individual implementors can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementors wish to have compatible formats, they may use POUFs. POUFs contain a description of implementation choices as well as data binding formats. An implementor who follows a POUF as well as the Uptane standard will be able to interoperate with other implementations using that POUF.
+These instructions specify the components necessary for a compliant implementation. Individual implementors can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementors wish to have compatible formats, they may use POUFs. POUFs contain a description of implementation choices as well as data binding formats. An implementor who follows a POUF, as well as the Uptane standard, will be able to interoperate with other implementations using that POUF.
 
 # Terminology
 
 ## Conformance Terminology
 
-The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be  interpreted as described in {{RFC2119}}.
+The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in {{RFC2119}}.
 
 In order to be considered “Uptane-compliant,” an implementation MUST follow all of these rules as specified in the document.
 
@@ -214,7 +214,7 @@ These terms are defined in greater detail in {{roles}}.
 
 *ECUs*: Electronic Control Units, the computing units on a vehicle
 
-*LIN Bus*: Local Interconnect Bus 
+*LIN Bus*: Local Interconnect Bus
 
 *SOTA*: Software Updates Over-the-Air  
 
@@ -252,7 +252,7 @@ We assume the following system preconditions for Uptane:
 * ECUs must be able to perform a public key cryptography operation as well as some supporting operations.
 * There are state-of-the-art secure servers in place, such as the director and image repository servers.
 
-It is important that any bugs detected in Uptane implementations be patched promptly. Failure to do so could interfere wth the effectiveness of Uptane's operations.
+It is important that any bugs detected in Uptane implementations be patched promptly. Failure to do so could interfere with the effectiveness of Uptane's operations.
 
 ### Use Cases
 
@@ -260,7 +260,7 @@ The following use cases provide a number of scenarios illustrating the manner in
 
 #### OEMs initializing Uptane at the factory using SOTA
 
-An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and an accurate attestation of the latest time. The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers' assembly lines, or can choose to add the materials later at the OEM's assembly lines. The OEM's implementation is Uptane-compliant if:
+An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and an accurate attestation of the latest time. The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers' assembly lines or can choose to add the materials later at the OEM's assembly lines. The OEM's implementation is Uptane-compliant if:
 
 1. all primaries perform full verification;
 1. all secondaries that are updated via OTA perform full or partial verification; and
@@ -282,7 +282,7 @@ The OEM wants to use delta updates to save over-the-air bytes. The delta images 
 
 There are a number of factors that could impede the completion of the above scenarios:
 
-* ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that prevent performance of public key cryptography; a lack of sufficient storage to undo installation of bad software; or an ECU simply may reside on a low-speed network (e.g., LIN).
+* ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that make performance of public key cryptography infeasible; a lack of sufficient storage to undo installation of bad software; or an ECU simply may reside on a low-speed network (e.g., LIN).
 * ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.
 * A user may replace OEM-installed ECUs with aftermarket ECUs.
 * A vehicle may be able to download only a limited amount of data via a cellular channel, due to limits on a data plan.
@@ -340,7 +340,7 @@ Uptane's threat model includes the following types of attacks, organized accordi
 
 ### Deny installation of updates {#deny_updates}
 
-An attacker seeking to deny installation of updates may attempt one or more of the following strategies, among others:
+An attacker seeking to deny the installation of updates may attempt one or more of the following strategies, among others:
 
 * *Drop-request attack:* Block network traffic outside or inside the vehicle.
 * *Slow retrieval attack:* Slow down network traffic, in the extreme case sending barely enough packets to avoid a timeout. Similar to a drop-request attack, except that both the sender and receiver of the traffic still think network traffic is unimpeded.
@@ -352,7 +352,7 @@ An attacker seeking to deny installation of updates may attempt one or more of t
 
 Attackers seeking to interfere with the functionality of vehicle ECUs in order to cause an operational failure or unexpected behavior may do so in one of the following ways:
 
-* *Rollback attack:* Cause an ECU to install a previously-valid software revision that is older than the currently-installed version.
+* *Rollback attack:* Cause an ECU to install a previously valid software revision that is older than the currently installed version.
 * *Endless data attack:* Send a large amount of data to an ECU, until it runs out of storage, possibly causing the ECU to fail to operate.
 * *Mix-and-match attack:* Install a malicious software bundle in which some of the updates do not interoperate properly. This may be accomplished even if all of the individual images being installed are valid, as long as valid versions exist that are mutually incompatible.
 
@@ -364,7 +364,7 @@ Full control of a vehicle, or one or more ECUs within a vehicle, is the most sev
 
 # Detailed Design of Uptane {#design}
 
-Uptane is a secure software update framework for automobiles. We do not specify implementation details. Instead, we describe the components necessary for a compliant implementation, and leave it up to individual implementors to make their own technological choices within those requirements.
+Uptane is a secure software update framework for automobiles. We do not specify implementation details. Instead, we describe the components necessary for a compliant implementation and leave it up to individual implementors to make their own technological choices within those requirements.
 
 At a high level, Uptane requires:
 
@@ -419,7 +419,7 @@ A repository's Timestamp role SHALL produce and sign metadata indicating whether
 
 ## Metadata structures {#meta_structures}
 
-Uptane's security guarantees all rely on properly created metadata that follow a designated structure. The Uptane standard **does not** mandate any particular format or encoding for the metadata as a whole. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.
+Uptane's security guarantees all rely on properly created metadata that follows a designated structure. The Uptane standard **does not** mandate any particular format or encoding for the metadata as a whole. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.
 
 However, string comparison is required as part of metadata verification. To ensure an accurate basis for comparing strings, all strings MUST be encoded in the Unicode Format for Network Interchange as defined in {{RFC5198}}, including normalization into Unicode Normalization Form C ({{NFC}}).
 
@@ -483,7 +483,7 @@ Custom metadata also MAY contain a field or section that is demarcated as custom
 The following information SHOULD be provided for each image on both the Image repository and the Director repository, and SHOULD be included in the "MUST match" section, if it is implemented:
 
 * A release counter, to be incremented each time a new version of the image is released. This can be used to prevent rollback attacks even in cases where the director repository is compromised.
-* A hardware identifier, or list of hardware identifiers, representing models of ECUs with which the image is compatible. This can be used to ensure that an ECU can not be ordered to install an incompatible image, even in cases where the Director repository is compromised.
+* A hardware identifier, or list of hardware identifiers, representing models of ECUs with which the image is compatible. This can be used to ensure that an ECU cannot be ordered to install an incompatible image, even in cases where the Director repository is compromised.
 
 The following information is CONDITIONALLY REQUIRED for each image on the Director repository IF that image is encrypted:
 
@@ -498,11 +498,11 @@ The Director repository MAY provide a download URL for the image file. This may 
 
 #### Metadata about Delegations {#delegations_meta}
 
-A Targets metadata file on the Image repository (but not the Director repository) MAY delegate signing authority to other entities--for example, it could delegate signing authority for a particular ECU's firmware to that ECU's supplier. A metadata file MAY contain more than one delegation, and MUST keep the delegations in prioritized order.
+A Targets metadata file on the Image repository (but not the Director repository) MAY delegate signing authority to other entities--for example, it could delegate signing authority for a particular ECU's firmware to that ECU's supplier. A metadata file MAY contain more than one delegation and MUST keep the delegations in prioritized order.
 
 A list of delegations MUST provide the following information:
 
-* A list of public keys of all delegatees. Each key should have a unique public key identifier, and a key type.
+* A list of public keys of all delegates. Each key should have a unique public key identifier and a key type.
 * A list of delegations, each of which contains:
   * A list of the filenames to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
   * An optional list of the hardware identifiers to which this role applies.  If this is omitted, any hardware identifier will match.
@@ -522,7 +522,7 @@ For each Targets metadata file on the repository, the Snapshot metadata SHALL co
 
 * The filename and version number of the each Targets metadata file on the repository
 
-The Snapshot metadata MAY also list the root metadata filename and version number. This is not required, particularly for implementations of {{TAP-5}}, but MAY be included in all cases for backwards compatibility.
+The Snapshot metadata MAY also list the root metadata filename and version number. This is not required, particularly for implementations of {{TAP-5}}, but MAY be included in all cases for backward compatibility.
 
 ### Timestamp Metadata {#timestamp_meta}
 
@@ -558,7 +558,7 @@ The *Deployment Considerations* document ({{DEPLOY}}) gives more guidance on how
 
 There is a difference between the file name in a metadata file or an ECU, and the file name on a repository. This difference exists in order to avoid race conditions, where metadata and images are read from, and written to, at the same time. For more details, the reader should read the TUF specification {{TUF-spec}} and PEP 458 {{PEP-458}}.
 
-Unless stated otherwise, all files SHALL be written to repositories in accordance with following two rules:
+Unless stated otherwise, all files SHALL be written to repositories in accordance with the following two rules:
 
 1. Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT, where VERSION is A's version number, as defined in {{common_metadata}}, with one exception: If the version number of the Timestamp metadata file might not be known in advance by a client, it MAY be read from, and written to, a repository using a filename without a version number qualification, i.e. FILENAME.EXT.
 2. If an image is specified in a targets metadata file as FILENAME.EXT, it SHALL be written to the repository as HASH.FILENAME.EXT, where HASH is one of the hash digests of the file, as specified in {{targets_images_meta}}. The file MUST be written to the repository using *n* different filenames, one for each hash digest listed in its corresponding targets metadata.
@@ -610,7 +610,7 @@ A Director repository MUST conform to the following six-step process for directi
     * Each ECU recorded in the inventory database is also represented in the manifest.
     * The signature of the manifest matches the ECU key of the primary that sent it.
     * The signature of each secondary's contribution to the manifest matches the ECU key of that secondary.
-1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this standard. However, the Director MUST take into account *dependencies* and *conflicts* between images, and SHOULD consult well-established techniques for dependency resolution.
+1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this standard. However, the Director MUST take into account *dependencies* and *conflicts* between images and SHOULD consult well-established techniques for dependency resolution.
 1. The Director MAY encrypt images for ECUs that require it.
 1. The Director generates new metadata representing the desired set of images to be installed on the vehicle, based on the dependency resolution in step 4. This includes targets ({{targets_meta}}), snapshot ({{snapshot_meta}}), and timestamp ({{timestamp_meta}}) metadata. It then sends this metadata to the primary as described in {{download_meta_primary}}.
 
@@ -625,7 +625,7 @@ The inventory database MUST record the following pieces of information:
 * Per ECU:
     * A unique identifier (such as a serial number)
     * The vehicle identifier the ECU is associated with
-    * An ECU key (symmetric or asymmetric; for asymmetric keys only the public part SHOULD be stored)
+    * An ECU key (symmetric or asymmetric; for asymmetric keys, only the public part SHOULD be stored)
     * The ECU key identifier (as defined in {{common_metadata}})
     * Whether the ECU is a primary or a secondary
 
@@ -633,7 +633,7 @@ The inventory database MAY record other information about ECUs and vehicles. It 
 
 ## In-vehicle implementation requirements
 
-An Uptane-compliant ECU SHALL be able to download and verify image metadata and image binaries before installing a new image, and MUST have a secure way of verifying the current time, or a sufficiently recent attestation of the time.
+An Uptane-compliant ECU SHALL be able to download and verify image metadata and image binaries before installing a new image and MUST have a secure way of verifying the current time, or a sufficiently recent attestation of the time.
 
 Each ECU in a vehicle receiving over-the-air updates is either a primary or a secondary ECU. A primary ECU collects and delivers to the Director vehicle manifests ({{vehicle_version_manifest}}) containing information about which images have been installed on ECUs in the vehicle. It also verifies the time and downloads and verifies the latest metadata and images for itself and for its secondaries. A secondary ECU verifies the time and downloads and verifies the latest metadata and images for itself from its associated primary ECU. It also sends signed information about its installed images to its associated primary.
 
@@ -673,7 +673,7 @@ The primary SHALL build a *vehicle version manifest* as described in {{vehicle_v
 
 Once it has the complete manifest built, it MAY send the manifest to the Director repository. However, it is not strictly required that the primary send the manifest until step three. If permitted by the implementation, a primary MAY send only a diff of the manifest, to save bandwidth. If an implementation permits diffs, the Director SHOULD have a way to request a full manifest.
 
-Secondaries MAY send their version report at any time, so that it is already stored on the primary when it wishes to check for updates. Alternatively, the primary MAY request a version report from each secondary at the time of the update check.
+Secondaries MAY send their version report at any time so that it is already stored on the primary when it wishes to check for updates. Alternatively, the primary MAY request a version report from each secondary at the time of the update check.
 
 ##### Vehicle version manifest {#vehicle_version_manifest}
 
@@ -725,7 +725,7 @@ There may be several different filenames that all refer to the same image binary
 
 #### Send latest time to secondaries {#send_time_primary}
 
-Unless the secondary ECU has its own way of verifying the time, or does not have the capacity to verify a time message, the primary is CONDITIONALLY REQUIRED to send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time.
+Unless the secondary ECU has its own way of verifying the time or does not have the capacity to verify a time message, the primary is CONDITIONALLY REQUIRED to send the time to each ECU. The secondary will verify the time message, then overwrite its current time with the received time.
 
 #### Send metadata to secondaries {#send_metadata_primary}
 
@@ -782,7 +782,7 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
 1. Load the latest Targets metadata file from the director.
 2. Find the Targets metadata associated with this ECU identifier.
 3. Check that the hardware identifier in the metadata matches the ECUs hardware identifier.
-4. Check that the image filename is valid for this ECU. This MAY be a comparison against a wildcard path, and restricts the ECUs a delegation applies to.
+4. Check that the image filename is valid for this ECU. This MAY be a comparison against a wildcard path and restricts the ECUs a delegation applies to.
 5. Check that the release counter of the image in the previous metadata, if it exists, is less than or equal to the release counter in the latest metadata.
 6. If the image is encrypted, decrypt the image with a decryption key to be chosen as follows:
     * If the ECU key is a symmetric key, the ECU SHALL use the ECU key for image decryption.
@@ -795,11 +795,11 @@ If the ECU has secondary storage, the checks SHOULD be performed on the image in
 NOTE: See {{DEPLOY}} for guidance on how to deal with secondary ECU failures for ECUs that do not have secondary storage.
 
 If any step fails, the ECU SHALL jump to the ({{create_version_report}}) step.  
- 
+
 
 #### Install image {#install_image}
 
-The ECU SHALL attempt to install the update. This installation SHOULD occur at a time when all pre-conditions are met. These pre-conditions MAY include ensuring the vehicle is in a safe environment for install (e.g., vehicle is in a parked state when updating a specific ECU). Another pre-condition MAY include ensuring the ECU has a backup of its current image and metadata in case the current installation fails.
+The ECU SHALL attempt to install the update. This installation SHOULD occur at a time when all pre-conditions are met. These pre-conditions MAY include ensuring the vehicle is in a safe environment for install (e.g., the vehicle is in a parked state when updating a specific ECU). Another pre-condition MAY include ensuring the ECU has a backup of its current image and metadata in case the current installation fails.
 
 #### Create and send version report {#create_version_report}
 
@@ -815,7 +815,7 @@ If a step in the following workflows does not succeed (e.g., the update is abort
 
 In order to perform partial verification, an ECU SHALL perform the following steps:
 
-1. Load and verify the current time, or the most recent securely attested time.
+1. Load and verify the current time or the most recent securely attested time.
 2. Download and check the Targets metadata file from the Director repository, following the procedure in {{check_targets}}.
 
 #### Full verification {#full_verification}
@@ -826,11 +826,11 @@ Full verification MAY be performed by either primary or secondary ECUs. In the f
 
 If {{TAP-5}} is supported and a primary has an external connection to the Uptane repositories, a primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported or if the primary does not have an external connection to the Uptane repositories, the download SHOULD follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
-Before starting full verification, the repository mapping metadata MUST be consulted, to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to {{DEPLOY}} for guidance on how to determine where to download metadata from.
+Before starting full verification, the repository mapping metadata MUST be consulted to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to {{DEPLOY}} for guidance on how to determine where to download metadata from.
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
-1. Load and verify the current time, or the most recent securely attested time.
+1. Load and verify the current time or the most recent securely attested time.
 1. Download and check the Root metadata file from the Director repository, following the procedure in {{check_root}}.
 1. Download and check the Timestamp metadata file from the Director repository, following the procedure in {{check_timestamp}}.
 1. Download and check the Snapshot metadata file from the Director repository, following the procedure in {{check_snapshot}}.
@@ -858,12 +858,12 @@ To properly check root metadata, an ECU SHOULD:
 2. Update to the latest Root metadata file.
     1. Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous root metadata file).
     2. Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, the current Root metadata file is the latest; continue with step 3.
-    3. Version N+1 of the Root metadata file MUST have been signed by: (1) a threshold of keys specified in the latest Root metadata file (version N), and (2) a threshold of keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at version N of the root metadata file. (Checks for an arbitrary software attack.)
+    3. Version N+1 of the Root metadata file MUST have been signed by the following: (1) a threshold of keys specified in the latest Root metadata file (version N), and (2) a threshold of keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at version N of the root metadata file. (Checks for an arbitrary software attack.)
     4. The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 0 and version N of the Root metadata file. (Checks for a rollback attack.)
     5. Set the latest Root metadata file to the new Root metadata file.
     6. Repeat steps 2.1 to 2.6.
 3. Check that the current (or latest securely attested) time is lower than the expiration timestamp in the latest Root metadata file. (Checks for a freeze attack.)
-4. If the Timestamp and / or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
+4. If the Timestamp and/or Snapshot keys have been rotated, delete the previous Timestamp and Snapshot metadata files. (Checks for recovery from fast-forward attacks {{MERCURY}}.)
 
 #### How to check Timestamp metadata {#check_timestamp}
 
@@ -883,7 +883,7 @@ To properly check snapshot metadata, an ECU SHOULD:
 2. The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
 3. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
 4. Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
-5. Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to the its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
+5. Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
 6. Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
 7. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Snapshot metadata file. If the new Snapshot metadata file is expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
 
@@ -898,17 +898,7 @@ To properly check targets metadata, an ECU SHOULD:
     1. If checking delegated targets metadata, the threshold of keys is specified in the targets metadata file that delegated authority to this role.
 1. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
 1. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
-1. If checking targets metadata from the Director repository, verify that there are no delegations.
-1. If checking targets metadata from the Director repository, check that no ECU identifier is represented more than once.
-
-#### How to resolve delegations {#resolve_delegations}
-
-To properly check targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level targets metadata, but it also may be delegated to another role--or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level targets metadata file.
-
-1. Download the current metadata file, and check it following the procedure in {{check_targets}}. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.
-2. If the current metadata file contains signed metadata about the image, end the delegation resolution and return the metadata to be checked.
-3. If the current metadata file was reached via a terminating delegation and does not contain signed metadata about the image, abort the delegation resolution for this image and return an error indicating that image metadata could not be found.
-4. Search the list of delegations, in listed order. For each delegation:
+1. If checking targets metadata from the Director repository, verify that there are no delegations in listed order. For each delegation:
     1. Check if the delegation applies to the image being processed. For the delegation to apply, it MUST include the hardware identifier of the target, and the target name must match one of the delegation's image paths. If either of these tests fail, move on to the next delegation in the list.
     2. If the delegation is a multi-role delegation, follow the procedure described in {{multirole_delegations}}. If the multi-role delegation is terminating and no valid image metadata is found, abort the delegation resolution and return an error indicating that image metadata could not be found.
     3. If the delegation is a normal delegation, perform delegation resolution, starting at step 1. Note that this may recurse an arbitrary number of levels deep. If a delegation that applies to the image is found but no image metadata is found in the delegated roles or any of its sub-delegations, simply continue on with the next delegation in the list. The search is only completed/aborted if image metadata or a terminating delegation that applies to the image is found.
