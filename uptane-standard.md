@@ -492,7 +492,9 @@ The following information is CONDITIONALLY REQUIRED for each image on the Direct
 
 The following information MUST be provided for each image in the targets metadata from the Director repository:
 
-* An ECU identifier (such as a serial number), specifying the ECU that should install the image.
+* An ECU identifier (such as a serial number), specifying the ECU that is the intended target for the image EXCEPT in the following situations:
+1. Where there is a location-based update (such as a map that is local to an area or an update that should only be installed in certain regions)
+1. In a scenario where director keys are kept offline, such as the process of writing the initial Uotane metadata before a vehicle leaves the factory.  In this case the version numbers of such metadata SHOULD be set to a value lower than any value used in production so that this metadata cannot be replayed to vehicles in the field.
 
 The Director repository MAY provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the director wishes to provide a signed URL.
 
