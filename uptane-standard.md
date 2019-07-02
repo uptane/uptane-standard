@@ -721,7 +721,7 @@ The primary SHALL download metadata for all targets and perform a full verificat
 
 The primary SHALL download and verify images for itself and for all of its associated secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the director's targets metadata for that image.
 
-There may be several different filenames that all refer to the same image binary, as described in {{targets_meta}}. The primary SHALL associate each image binary with each of its possible filenames.
+There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the primary has received multiple hashes for a given image binary via targets role (see {{targets_images_meta}}) than it SHALL verify every hash for this image despite the fact that just one hash is enough to obtain the image itself.
 
 #### Send latest time to secondaries {#send_time_primary}
 
