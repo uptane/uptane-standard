@@ -488,9 +488,9 @@ To be available to install on clients, all images on the repository MUST have th
 
 In addition to the required metadata, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the Targets metadata from the Director.
 
-Custom metadata also MAY contain a field or section that is demarcated as custom metadata, and this field MUST match whenever two pieces of metadata are checked against each other. Most commonly, this occurs when targets metadata from the Director and Image repositories are checked against each other.
+Custom metadata MAY also contain a demarcated field or section that MUST match whenever two pieces of metadata are checked against each other, such as when Targets metadata from the Director repository is checked against Targets metadata from the Image repository. 
 
-The following information SHOULD be provided for each image on both the Image repository and the Director repository and, if implemented, SHOULD be included in the "MUST match" section:
+The information listed below SHOULD be provided for each image on both the Image repository and the Director repository. If a "MUST match section" is to be implemented, that is where this information SHOULD be placed.
 
 * A release counter, to be incremented each time a new version of the image is released. This can be used to prevent rollback attacks even in cases where the Director repository is compromised.
 * A hardware identifier, or list of hardware identifiers, representing models of ECUs with which the image is compatible. This can be used to ensure that an ECU cannot be ordered to install an incompatible image, even in cases where the Director repository is compromised.
@@ -575,8 +575,8 @@ Unless stated otherwise, all files SHALL be written to repositories in accordanc
 
 For example:
 
-* The version number of the Snapshot metadata file is 61, and its filename in the Timestamp metadata is "snapshot.json." The filename on the repository will be "61.snapshot.json."
-* There is an image with the filename "acme_firmware.bin" specified in the Targets metadata, with a SHA256 of "aaaa" and a SHA512-256 of "bbbb." It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin."
+* The version number of the Snapshot metadata file is 61, and its filename in the Timestamp metadata is "snapshot.json". The filename on the repository will be "61.snapshot.json".
+* There is an image with the filename "acme_firmware.bin" specified in the Targets metadata, with a SHA256 of "aaaa" and a SHA512-256 of "bbbb". It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin".
 
 ## Server / repository implementation requirements
 
@@ -637,7 +637,7 @@ The inventory database MUST record the following pieces of information:
     * The vehicle identifier the ECU is associated with
     * An ECU key (symmetric or asymmetric; for asymmetric keys, only the public part SHOULD be stored)
     * The ECU key identifier (as defined in {{common_metadata}})
-    * A notation of whether the ECU is a Primary or a Secondary
+    * Whether the ECU is a Primary or a Secondary
 
 The inventory database MAY record other information about ECUs and vehicles. It SHOULD record a hardware identifier for each ECU to protect against the possibility of directing the ECU to install incompatible firmware.
 
@@ -836,7 +836,7 @@ Full verification MAY be performed by either Primary or Secondary ECUs. In the f
 
 If {{TAP-5}} is supported and a Primary has an external connection to the Uptane repositories, a Primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, or if the Primary does not have an external connection to the Uptane repositories, the download SHOULD follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
-Before starting full verification, it must be determined from where metadata should be downloaded. For this task, the repository mapping metadata MUST be consulted. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to {{DEPLOY}} for guidance on how to determine where metadata should be downloaded from.
+Before starting full verification, the repository mapping metadata MUST be consulted to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to {{DEPLOY}} for guidance on how to determine where metadata should be downloaded from.
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
@@ -849,7 +849,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 1. Download and check the Timestamp metadata file from the Image repository, following the procedure in {{check_timestamp}}.
 1. Download and check the Snapshot metadata file from the Image repository, following the procedure in {{check_snapshot}}.
 1. Download and check the top-level Targets metadata file from the Image repository, following the procedure in {{check_targets}}.
-1. Verify that Targets metadata from the Director and Image repositories match. A Primary ECU MUST perform this check on metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. A Secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the Targets metadata from the Director that contains the ECU identifier of the current ECU.) To check that the metadata for an image matches, complete the following procedure:
+1. Verify that Targets metadata from the Director and Image repositories match. A Primary ECU MUST perform this check on metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. A Secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the target metadata from the Director that contains the ECU identifier of the current ECU.) To check that the metadata for an image matches, complete the following procedure:
     1. Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same file name listed in the Director metadata, following the procedure in {{resolve_delegations}}.
     2. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted or encrypted image are the same in both sets of metadata. Note: the Primary is responsible for validating encrypted images and associated metadata. The target ECU (Primary or Secondary) is responsible for validating the unencrypted image and associated metadata.
