@@ -208,7 +208,7 @@ These terms are defined in greater detail in {{roles}}.
 
 * *Root Role*: Signs metadata that distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
 * *Snapshot Role*: Signs metadata that indicates which images the repository has released at the same time.
-* *Targets Role*: Sings metadata used to verify the image, such as cryptographic hashes and file size.
+* *Targets Role*: Signs metadata used to verify the image, such as cryptographic hashes and file size.
 * *Timestamp Role*: Signs metadata that indicates if there are any new metadata or images on the repository.
 
 
