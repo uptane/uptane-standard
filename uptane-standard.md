@@ -346,7 +346,7 @@ Uptane's threat model includes the following types of attacks, organized accordi
 
 ### Read updates {#read_updates}
 
-* *Eavesdrop attack:* Read the unencrypted contents of an update sent from a repository to a vehicle.
+* *Eavesdrop attack:* Read sensitive or confidential information from an update intended to be encrypted for a specific ECU. (Note: Not all implementations will have a need for protecting information in this way.)
 
 ### Deny installation of updates {#deny_updates}
 
