@@ -292,7 +292,7 @@ The OEM wants to use delta updates to save over-the-air bytes. The delta images 
 
 There are a number of factors that could impede the completion of the above scenarios:
 
-* ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that make performance of public key cryptography infeasible; a lack of sufficient storage to undo installation of bad software; or an ECU simply may reside on a low-speed network (e.g., LIN).
+* ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that render performance of public key cryptography infeasible; a lack of sufficient storage to undo installation of bad software; or an ECU simply may reside on a low-speed network (e.g., LIN).
 * ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.
 * A user may replace OEM-installed ECUs with aftermarket ECUs.
 * A vehicle may be able to download only a limited amount of data via a cellular channel, due to limits on a data plan.
@@ -512,7 +512,7 @@ A Targets metadata file on the Image repository (but not the Director repository
 
 A list of delegations MUST provide the following information:
 
-* A list of public keys of all delegates. Each key should have a unique public key identifier and a key type.
+* A list of public keys of all delegatees. Each key should have a unique public key identifier and a key type.
 * A list of delegations, each of which contains:
   * A list of the filenames to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
   * An optional list of the hardware identifiers to which this role applies.  If this is omitted, any hardware identifier will match.
@@ -732,7 +732,7 @@ The Primary SHALL download metadata for all targets and perform a full verificat
 The Primary SHALL download and verify images for itself and for all of its associated Secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the Director's Targets metadata for that image.
 
 
-There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the primary has received multiple hashes for a given image binary via targets role (see {{targets_images_meta}}) than it SHALL verify every hash for this image despite the fact that just one hash is enough to obtain the image itself.
+There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the primary has received multiple hashes for a given image binary via targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image despite the fact that just one hash is enough to obtain the image itself.
 
 #### Send latest time to Secondaries {#send_time_primary}
 
