@@ -216,13 +216,13 @@ These terms are defined in greater detail in {{roles}}.
 
 *CAN Bus*: Controller Area Network bus standard  
 
-*CDN*: Content Delivery Network 
+*CDN*: Content Delivery Network
 
 *ECUs*: Electronic Control Units, the computing units on a vehicle
 
 *LIN Bus*: Local Interconnect Bus
 
-*OBD*: On-board diagnostics 
+*OBD*: On-board diagnostics
 
 *SOTA*: Software Updates Over-the-Air  
 
@@ -488,7 +488,7 @@ To be available to install on clients, all images on the repository MUST have th
 
 In addition to the required metadata, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document. However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the Targets metadata from the Director.
 
-Custom metadata MAY also contain a demarcated field or section that MUST match whenever two pieces of metadata are checked against each other, such as when Targets metadata from the Director repository is checked against Targets metadata from the Image repository. 
+Custom metadata MAY also contain a demarcated field or section that MUST match whenever two pieces of metadata are checked against each other, such as when Targets metadata from the Director repository is checked against Targets metadata from the Image repository.
 
 The information listed below SHOULD be provided for each image on both the Image repository and the Director repository. If a "MUST match section" is to be implemented, that is where this information SHOULD be placed.
 
@@ -508,7 +508,7 @@ The Director repository MAY provide a download URL for the image file. This may 
 
 #### Metadata about delegations {#delegations_meta}
 
-A Targets metadata file on the Image repository (but not the Director repository) MAY delegate signing authority to other entities. For example, it could delegate signing authority for a particular ECU's firmware to that ECU's supplier. A metadata file MAY contain more than one delegation and MUST keep the delegations in prioritized order.
+A Targets metadata file on the Image repository (but not the Director repository) MUST be able to delegate signing authority to other entities. For example, it could delegate signing authority for a particular ECU's firmware to that ECU's supplier. A metadata file MAY contain any number of delegations and MUST keep the delegations in prioritized order.
 
 A list of delegations MUST provide the following information:
 
