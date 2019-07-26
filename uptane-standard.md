@@ -1,5 +1,5 @@
 ---
-title: Uptane IEEE-ISTO Standard for Design and Implementation
+title: Uptane Standard for Design and Implementation
 abbrev: UPTANE
 docname: uptane-standard-design
 category: info
