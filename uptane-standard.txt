@@ -1,5 +1,5 @@
 
-        Uptane IEEE-ISTO Standard for Design and Implementation
+             Uptane Standard for Design and Implementation
                          uptane-standard-design
 
 Abstract
@@ -803,11 +803,11 @@ Table of Contents
 5.2.3.2.  Metadata about delegations
 
    A Targets metadata file on the Image repository (but not the Director
-   repository) MAY delegate signing authority to other entities.  For
-   example, it could delegate signing authority for a particular ECU's
-   firmware to that ECU's supplier.  A metadata file MAY contain more
-   than one delegation and MUST keep the delegations in prioritized
-   order.
+   repository) MUST be able to delegate signing authority to other
+   entities.  For example, it could delegate signing authority for a
+   particular ECU's firmware to that ECU's supplier.  A metadata file
+   MAY contain any number of delegations and MUST keep the delegations
+   in prioritized order.
 
    A list of delegations MUST provide the following information:
 

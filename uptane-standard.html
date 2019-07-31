@@ -5,7 +5,7 @@
 <head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
 
-  <title>Uptane IEEE-ISTO Standard for Design and Implementation</title>
+  <title>Uptane Standard for Design and Implementation</title>
 
   <style type="text/css" title="Xml2Rfc (sans serif)">
   /*<![CDATA[*/
@@ -424,12 +424,12 @@
 <link href="#rfc.authors" rel="Chapter">
 
 
-  <meta name="generator" content="xml2rfc version 2.15.3 - https://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.8.2 - https://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-07-10" />
+  <meta name="dct.issued" scheme="ISO8601" content="2019-7-31" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -438,7 +438,7 @@
 <body>
 
 
-  <p class="title">Uptane IEEE-ISTO Standard for Design and Implementation<br />
+  <p class="title">Uptane Standard for Design and Implementation<br />
   <span class="filename">uptane-standard-design</span></p>
   
   <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
@@ -938,7 +938,7 @@
 <h1 id="rfc.section.5.2.3.2">
 <a href="#rfc.section.5.2.3.2">5.2.3.2.</a> <a href="#delegations_meta" id="delegations_meta">Metadata about delegations</a>
 </h1>
-<p id="rfc.section.5.2.3.2.p.1">A Targets metadata file on the Image repository (but not the Director repository) MAY delegate signing authority to other entities. For example, it could delegate signing authority for a particular ECU&#8217;s firmware to that ECU&#8217;s supplier. A metadata file MAY contain more than one delegation and MUST keep the delegations in prioritized order.</p>
+<p id="rfc.section.5.2.3.2.p.1">A Targets metadata file on the Image repository (but not the Director repository) MUST be able to delegate signing authority to other entities. For example, it could delegate signing authority for a particular ECU&#8217;s firmware to that ECU&#8217;s supplier. A metadata file MAY contain any number of delegations and MUST keep the delegations in prioritized order.</p>
 <p id="rfc.section.5.2.3.2.p.2">A list of delegations MUST provide the following information:</p>
 <p></p>
 
