@@ -1,6 +1,6 @@
 # Uptane Standard
 
-[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group began the process of describing the system's design, implementation, and deployment considerations as a formal standard. Working as an [IEEE-ISTO](https://ieee-isto.org/) industry group, Volume 1.0.0 of *Uptane Standard for Design and Implementation* was released in July 2019. The Uptane standards initiative is now under the umbrella of the [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/). This repository is the public home of that standardization work.
+[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group began the process of describing the system's design, implementation, and deployment considerations as a formal standard. Working as an [IEEE-ISTO](https://ieee-isto.org/) industry group, Volume 1.0.0 of *IEEE/ISTO#6100.1.0.0: Uptane Standard for Design and Implementation* was released in July 2019. The Uptane standards initiative is now under the umbrella of the [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/). This repository is the public home of that standardization work.
 
 ## Existing documentation
 
