@@ -1,13 +1,19 @@
 # Uptane Standard
 
-[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. Beginning in 2018, a working group has begun the process of describing the system's design, implementation, and deployment considerations as a formal standard, working as an [IEEE-ISTO](https://ieee-isto.org/) industry group and is currently a [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/) project. This repository is the public home of that standardization work.
+[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group under [IEEE-ISTO](https://ieee-isto.org/) began the process of describing the system's design, implementation, and deployment considerations as a formal standard. On July 31, IEEE/ISTO released *IEEE-ISTO 6100.1.0.0: Uptane Standard for Design and Implementation* (see link below under documentation). Uptane is now a [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/) project. 
+
+This repository is the public home of all standardization work for Uptane.
 
 ## Existing documentation
 
-Several documents are already available which describe Uptane's design and implementation. Note that an intial version of the Uptane Standards document has been developed and should be considered the authoritative resource for the framework:
+The Uptane Standards document should be considered the authoritative resource for the framework. Several other documents and materials are available or currently in development. The information in all of these other guidelines should be viewed as complementary to the official Uptane standard, and as recommendations rather than mandatory instructions. 
 
-* [Uptane Standards Document](https://uptane.github.io/uptane-standard/uptane-standard.html)
+* [Uptane Standards Document](https://uptane.github.io/papers/ieee-isto-6100.1.0.0.uptane-standard.html)
 * [Reference Implementation and Demonstration Code](https://github.com/uptane/uptane)
+* [Deployment Considerations (stable version](https://docs.google.com/document/d/17wOs-T7mugwte5_Dt-KLGMsp-3_yAARejpFmrAMefSE/edit#heading=h.6t6kk53v3scx)
+* [Deployment Considerations (WIP)](https://github.com/uptane/deployment-considerations)
+* [Uptane POUF (Protocols, Operations, Usage, and Formats)Guidelines](https://uptane.github.io/pouf.html)
+* [Example POUF](https://uptane.github.io/reference_pouf.html)
 
 ## Contributing
 
