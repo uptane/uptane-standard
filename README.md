@@ -8,7 +8,7 @@ This repository is the public home of all standardization work for Uptane.
 
 The Uptane Standards document should be considered the authoritative resource for the framework. Several other documents and materials are available or currently in development. The information in all of these other guidelines should be viewed as complementary to the official Uptane standard, and as recommendations rather than mandatory instructions. 
 
-* [Uptane Standards Document](https://uptane.github.io/uptane-standard/uptane-standard.html)
+* [Uptane Standards Document](https://uptane.github.io/papers/ieee-isto-6100.1.0.0.uptane-standard.html)
 * [Reference Implementation and Demonstration Code](https://github.com/uptane/uptane)
 * [Deployment Considerations (stable version](https://docs.google.com/document/d/17wOs-T7mugwte5_Dt-KLGMsp-3_yAARejpFmrAMefSE/edit#heading=h.6t6kk53v3scx)
 * [Deployment Considerations (WIP)](https://github.com/uptane/deployment-considerations)
