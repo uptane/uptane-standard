@@ -128,8 +128,8 @@ informative:
       - ins: J. Cappos
     date: 2013-09-27
   DEPLOY:
-    target: https://uptane.github.io/deployment/introduction.html
-    title: "Uptane Deployment Guidelines"
+    target: https://docs.google.com/document/d/17wOs-T7mugwte5_Dt-KLGMsp-3_yAARejpFmrAMefSE/
+    title: "Uptane Deployment Considerations"
     author:
       - ins: Members of the Uptane Alliance Community
   USATODAY:
