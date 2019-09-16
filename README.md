@@ -29,6 +29,16 @@ Use clear, informative commit messages, and squash any minor commits that do not
 
 Don't use fixed-width columns. The `plaintext` rendering target will produce a text file with fixed-width columns; using fixed-width columns in the markdown source just makes the diffs harder to read.
 
+### Style guide
+
+Capitalize proper nouns and titles of things, such as the names of roles, repositories, and specific types of metadata. Do not capitalize the words "roles", "repository", and "metadata", however. For example, write "Targets role", "Director repository", "Primary ECU", and so on.
+
+For headings and sub-headings, capitalize only the first word in a heading UNLESS the heading contains a proper noun.
+
+Do not hyphenate the adjectival phrase "partial verification Secondary".
+
+Use American English spellings (i.e. write "color" instead of "colour" and "artifacts" instead of "artefacts").
+
 ## Building/rendering the document
 
 We use [kramdown-rfc2629](https://github.com/cabo/kramdown-rfc2629) to render the markdown source into xml, and [xml2rfc](https://xml2rfc.tools.ietf.org/) to render the XML into HTML or plaintext. A Makefile is included for convenience. You can also render using [Docker](https://www.docker.com/) if you don't wish to install the tools. See `make help` for options.
