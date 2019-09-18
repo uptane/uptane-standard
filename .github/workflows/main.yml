@@ -1,0 +1,13 @@
+name: 'Uptane Standard CI Job'
+
+on:
+  push:
+    branches:
+      - feat/ci-test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: My first step
+        uses: docker://advancedtelematic/uptane-ci
