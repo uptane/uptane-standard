@@ -9,5 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: My first step
+      - name: Build and publish artefacts
+        env: 
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: docker://advancedtelematic/uptane-ci
