@@ -649,9 +649,9 @@ Table of Contents
    as defined in [RFC5198], including normalization into Unicode
    Normalization Form C ([NFC]).
 
-   In the Deployment Considerations document, the Uptane Alliance
-   provides some examples of compliant metadata structures in ASN.1 and
-   JSON.
+   In the Deployment Considerations document ([DEPLOY]), the Uptane
+   Alliance provides some examples of compliant metadata structures in
+   ASN.1 and JSON.
 
 5.2.1.  Common metadata structures
 
@@ -753,10 +753,11 @@ Table of Contents
    contain extra metadata for images on the repository.  This metadata
    can be customized for a particular use case.  Examples of use cases
    for different types of custom metadata can be found in the Deployment
-   Considerations document.  However, there are a few important pieces
-   of custom metadata that SHOULD be present in most implementations.
-   In addition, there is one element in the custom metadata that MUST be
-   present in the Targets metadata from the Director.
+   Considerations document ([DEPLOY]).  However, there are a few
+   important pieces of custom metadata that SHOULD be present in most
+   implementations.  In addition, there is one element in the custom
+   metadata that MUST be present in the Targets metadata from the
+   Director.
 
    Custom metadata MAY also contain a demarcated field or section that
    MUST match whenever two pieces of metadata are checked against each
@@ -916,7 +917,7 @@ Table of Contents
    no explicit mapping would be defined, because the mapping is defined
    as part of the Uptane client implementation.
 
-   The _Deployment Considerations_ document ([DEPLOY]) gives more
+   The _Uptane Deployment Considerations_ document ([DEPLOY]) gives more
    guidance on how to implement repository mapping metadata for more
    complex use cases.  It also discusses strategies for updating
    repository mapping metadata, if required.
@@ -1120,12 +1121,13 @@ Table of Contents
    Primary ECU MUST perform full verification (Section 5.4.4.2).  A
    Secondary ECU SHOULD perform full verification if possible.  If a
    Secondary cannot perform full verification, it SHALL perform partial
-   verification.  See Uptane Deployment Considerations [DEPLOY] for a
-   discussion of how to choose between partial and full verification.
+   verification.  See the Uptane Deployment Considerations ([DEPLOY])
+   for a discussion of how to choose between partial and full
+   verification.
 
    ECUs MUST have a secure source of time.  An OEM/Uptane implementor
    MAY use any external source of time that is demonstrably secure.  The
-   Uptane deployment considerations ([DEPLOY]) describe one way to
+   Uptane Deployment Considerations ([DEPLOY]) describe one way to
    implement an external time server to cryptographically attest time,
    as well as the security properties required.  When "loading time" is
    referenced in procedures in this standard, it should be understood to
@@ -1139,8 +1141,8 @@ Table of Contents
    installed in the vehicle:
 
    1.  A sufficiently recent copy of required Uptane metadata at the
-       time of manufacture or install.  See Uptane Deployment
-       Considerations [DEPLOY] for more information.
+       time of manufacture or install.  See the Uptane Deployment
+       Considerations ([DEPLOY]) for more information.
 
        *  Partial verification ECUs MUST have the Root and Targets
           metadata from the Director repository.
@@ -1620,7 +1622,7 @@ Table of Contents
            metadata file is indeed N+1.  If the version of the new Root
            metadata file is less than the latest metadata file, discard
            it, abort the update cycle, and report the rollback attack.
-           On the next update cycle, begin at step 0 and version N of
+           On the next update cycle, begin at step 1 and version N of
            the Root metadata file.  (Checks for a rollback attack.)
 
        5.  Set the latest Root metadata file to the new Root metadata
@@ -1723,7 +1725,7 @@ Table of Contents
        the version number does not match, discard it, abort the update
        cycle, and report the failure.  (Checks for a mix-and-match
        attack.)  Skip this step if checking Targets metadata on a
-       partial-verification ECU; partial-verification ECUs will not have
+       partial verification ECU; partial verification ECUs will not have
        Snapshot metadata.
 
    3.  Check that the Targets metadata has been signed by the threshold
@@ -1899,8 +1901,9 @@ Table of Contents
               digital-car-repair/>.
 
    [DEPLOY]   Members of the Uptane Alliance Community, ., "Uptane
-              Deployment Guidelines", n.d.,
-              <https://uptane.github.io/deployment/introduction.html>.
+              Deployment Considerations", n.d.,
+              <https://docs.google.com/document/
+              d/17wOs-T7mugwte5_Dt-KLGMsp-3_yAARejpFmrAMefSE/>.
 
    [IN-TOTO]  "in-toto: A framework to secure the integrity of software
               supply chains", October 2018,
