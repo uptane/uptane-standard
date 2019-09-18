@@ -12,4 +12,4 @@ jobs:
       - name: Build and publish artefacts
         env: 
           ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
-        uses: docker://advancedtelematic/uptane-ci
+        uses: docker://uptane/uptane-standard-ci
