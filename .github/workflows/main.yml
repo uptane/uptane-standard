@@ -3,7 +3,7 @@ name: 'Uptane Standard CI Job'
 on:
   push:
     branches:
-      - feat/ci-test
+      - master
 
 jobs:
   build:
