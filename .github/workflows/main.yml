@@ -1,0 +1,15 @@
+name: 'Uptane Standard CI Job'
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and publish artefacts
+        env: 
+          ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
+        uses: docker://uptane/uptane-standard-ci
