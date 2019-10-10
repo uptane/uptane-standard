@@ -429,7 +429,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-9-23" />
+  <meta name="dct.issued" scheme="ISO8601" content="2019-10-10" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -1062,6 +1062,7 @@
 <li>The signature of each Secondary&#8217;s contribution to the manifest matches the ECU key of that Secondary.</li>
 </ul>
 </li>
+<li>The Director SHOULD check that the nonce or counter in each ECU Version Report has not been used before to prevent a replay of the ECU Version Report. If the nonce or counter is reused the Director SHOULD drop the request.</li>
 <li>The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this standard. However, the Director MUST take into account <em>dependencies</em> and <em>conflicts</em> between images and SHOULD consult well-established techniques for dependency resolution.</li>
 <li>The Director MAY encrypt images for ECUs that require it.</li>
 <li>The Director generates new metadata representing the desired set of images to be installed on the vehicle, based on the dependency resolution in step 4. This includes Targets (<a href="#targets_meta" class="xref">Section 5.2.3</a>), Snapshot (<a href="#snapshot_meta" class="xref">Section 5.2.4</a>), and Timestamp (<a href="#timestamp_meta" class="xref">Section 5.2.5</a>) metadata. It then sends this metadata to the Primary as described in <a href="#download_meta_primary" class="xref">Section 5.4.2.3</a>.</li>
@@ -1174,7 +1175,7 @@
 <li>The filename, length, and hashes of its currently installed image (i.e. the non-custom targets metadata for this particular image)</li>
 <li>An indicator of any detected security attack</li>
 <li>The latest time the ECU can verify at the time this version report was generated</li>
-<li>A cryptographic nonce</li>
+<li>A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle and MAY be the cryptographic nonce used with a Time Server.</li>
 </ul>
 </li>
 </ul>
