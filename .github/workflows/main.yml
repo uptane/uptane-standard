@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Build and publish artefacts
+      - name: Build and publish artifacts
         env: 
           ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
-        uses: docker://uptane/uptane-standard-ci
+        uses: docker://docker.pkg.github.com/uptane/uptane-standard/uptane-standard-ci:latest
