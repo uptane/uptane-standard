@@ -305,6 +305,7 @@ There are a number of factors that could impede the completion of the above scen
 The following topics will not be addressed in this document, as they represent threats outside the scope of Uptane:
 
 * Physical attacks, such as manual tampering with ECUs outside the vehicle.
+* Compromise of the packaged software, such as malware embedded in a trusted package.
 * Compromise of the supply chain (e.g., build system, version control system, packaging process). A number of strategies (e.g., git signing, TPMs, in-toto {{IN-TOTO}})  already exist to address this problem. Therefore, there is no need to duplicate those techniques here.
 * Problems associated with OBD or UDS programming of ECUs, such as authentication of communications between ECUs.
 * Malicious mirrors of package repositories, which may substitute original packages with malicious packages with matching version numbers {{MERCURY}}.
