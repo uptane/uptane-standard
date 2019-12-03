@@ -429,7 +429,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-11-07" />
+  <meta name="dct.issued" scheme="ISO8601" content="2019-12-03" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -695,6 +695,7 @@
 
 <ul>
 <li>Physical attacks, such as manual tampering with ECUs outside the vehicle.</li>
+<li>Compromise of the packaged software, such as malware embedded in a trusted package.</li>
 <li>Compromise of the supply chain (e.g., build system, version control system, packaging process). A number of strategies (e.g., git signing, TPMs, in-toto <a href="#IN-TOTO" class="xref">[IN-TOTO]</a>)  already exist to address this problem. Therefore, there is no need to duplicate those techniques here.</li>
 <li>Problems associated with OBD or UDS programming of ECUs, such as authentication of communications between ECUs.</li>
 <li>Malicious mirrors of package repositories, which may substitute original packages with malicious packages with matching version numbers <a href="#MERCURY" class="xref">[MERCURY]</a>.</li>

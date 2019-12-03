@@ -377,6 +377,9 @@ Table of Contents
    o  Physical attacks, such as manual tampering with ECUs outside the
       vehicle.
 
+   o  Compromise of the packaged software, such as malware embedded in a
+      trusted package.
+
    o  Compromise of the supply chain (e.g., build system, version
       control system, packaging process).  A number of strategies (e.g.,
       git signing, TPMs, in-toto [IN-TOTO]) already exist to address
