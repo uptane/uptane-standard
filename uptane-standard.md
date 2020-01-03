@@ -770,7 +770,7 @@ The ECU SHALL load and verify the current time, or the most recent securely atte
 
 #### Verify metadata {#verify_metadata}
 
-The ECU SHALL verify the latest downloaded metadata ({{metadata_verification}}) using either full or partial verification. If the metadata verification fails for any reason, the ECU SHALL jump to the fifth step ({{create_version_report}}).
+The ECU SHALL verify the latest downloaded metadata ({{metadata_verification}}) using either full or partial verification. If the metadata verification fails for any reason, the ECU SHALL jump to the final step ({{create_version_report}}).
 
 #### Download latest image {#download_image}
 
@@ -785,7 +785,7 @@ The filename used to identify the latest known image (i.e., the file to request 
 
 When the Primary responds to the download request, the ECU SHALL overwrite its current image with the downloaded image from the Primary.
 
-If any part of this step fails, the ECU SHALL jump to the fifth step ({{create_version_report}}).
+If any part of this step fails, the ECU SHALL jump to the final step ({{create_version_report}}).
 
 #### Verify image {#verify_image}
 
