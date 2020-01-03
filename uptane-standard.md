@@ -206,7 +206,7 @@ These terms are defined in greater detail in {{roles}}.
 *Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.  
 *Role*: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
-* *Root Role*: Signs metadata that distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
+* *Root Role*: Signs metadata that distributes and revokes public keys used to verify the Root, Timestamp, Snapshot, and Targets role metadata.
 * *Snapshot Role*: Signs metadata that indicates which images the repository has released at the same time.
 * *Targets Role*: Signs metadata used to verify the image, such as cryptographic hashes and file size.
 * *Timestamp Role*: Signs metadata that indicates if there are any new metadata or images on the repository.
@@ -733,8 +733,7 @@ The Primary SHALL download metadata for all targets and perform a full verificat
 
 The Primary SHALL download and verify images for itself and for all of its associated Secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the Director's Targets metadata for that image.
 
-
-There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the primary has received multiple hashes for a given image binary via targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image despite the fact that just one hash is enough to obtain the image itself.
+There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the primary has received multiple hashes for a given image binary via the Targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image despite the fact that just one hash is enough to obtain the image itself.
 
 #### Send latest time to Secondaries {#send_time_primary}
 
