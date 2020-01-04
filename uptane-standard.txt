@@ -166,7 +166,7 @@ Table of Contents
    necessarily impact the security of the entire system.
 
    o  _Root Role_: Signs metadata that distributes and revokes public
-      keys used to verify the root, timestamp, snapshot, and targets
+      keys used to verify the Root, Timestamp, Snapshot, and Targets
       role metadata.
 
    o  _Snapshot Role_: Signs metadata that indicates which images the
@@ -1301,10 +1301,10 @@ Table of Contents
 
    There may be several different filenames that all refer to the same
    image binary, as described in Section 5.2.7.  If the primary has
-   received multiple hashes for a given image binary via targets role
-   (see Section 5.2.3.1) then it SHALL verify every hash for this image
-   despite the fact that just one hash is enough to obtain the image
-   itself.
+   received multiple hashes for a given image binary via the Targets
+   role (see Section 5.2.3.1) then it SHALL verify every hash for this
+   image despite the fact that just one hash is enough to obtain the
+   image itself.
 
 5.4.2.5.  Send latest time to Secondaries
 
@@ -1369,7 +1369,7 @@ Table of Contents
 
    The ECU SHALL verify the latest downloaded metadata (Section 5.4.4)
    using either full or partial verification.  If the metadata
-   verification fails for any reason, the ECU SHALL jump to the fifth
+   verification fails for any reason, the ECU SHALL jump to the final
    step (Section 5.4.3.6).
 
 5.4.3.3.  Download latest image
@@ -1404,7 +1404,7 @@ Table of Contents
    overwrite its current image with the downloaded image from the
    Primary.
 
-   If any part of this step fails, the ECU SHALL jump to the fifth step
+   If any part of this step fails, the ECU SHALL jump to the final step
    (Section 5.4.3.6).
 
 5.4.3.4.  Verify image
@@ -1533,20 +1533,35 @@ Table of Contents
    3.   Download and check the Timestamp metadata file from the Director
         repository, following the procedure in Section 5.4.4.4.
 
-   4.   Download and check the Snapshot metadata file from the Director
-        repository, following the procedure in Section 5.4.4.5.
+   4.   Check the previously downloaded Snapshot metadata file from the
+        Directory repository (if available).  If the hashes and version
+        number of that file match the hashes and version number listed
+        in the new Timestamp metadata, there are no new updates and the
+        verification process MAY be stopped and considered complete.
+        Otherwise, download and check the Snapshot metadata file from
+        the Director repository, following the procedure in
+        Section 5.4.4.5.
 
    5.   Download and check the Targets metadata file from the Director
         repository, following the procedure in Section 5.4.4.6.
 
-   6.   Download and check the Root metadata file from the Image
-        repository, following the procedure in Section 5.4.4.3.
+   6.   If the Targets metadata from the Directory repository indicates
+        that there are no new targets that are not already currently
+        installed, the verification process MAY be stopped and
+        considered complete.  Otherwise, download and check the Root
+        metadata file from the Image repository, following the procedure
+        in Section 5.4.4.3.
 
    7.   Download and check the Timestamp metadata file from the Image
         repository, following the procedure in Section 5.4.4.4.
 
-   8.   Download and check the Snapshot metadata file from the Image
-        repository, following the procedure in Section 5.4.4.5.
+   8.   Check the previously downloaded Snapshot metadata file from the
+        Image repository (if available).  If the hashes and version
+        number of that file match the hashes and version number listed
+        in the new Timestamp metadata, the ECU MAY skip to the last
+        step.  Otherwise, download and check the Snapshot metadata file
+        from the Image repository, following the procedure in
+        Section 5.4.4.5.
 
    9.   Download and check the top-level Targets metadata file from the
         Image repository, following the procedure in Section 5.4.4.6.
