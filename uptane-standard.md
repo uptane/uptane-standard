@@ -206,7 +206,7 @@ These terms are defined in greater detail in {{roles}}.
 *Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.  
 *Role*: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
-* *Root Role*: Signs metadata that distributes and revokes public keys used to verify the root, timestamp, snapshot, and targets role metadata.
+* *Root Role*: Signs metadata that distributes and revokes public keys used to verify the Root, Timestamp, Snapshot, and Targets role metadata.
 * *Snapshot Role*: Signs metadata that indicates which images the repository has released at the same time.
 * *Targets Role*: Signs metadata used to verify the image, such as cryptographic hashes and file size.
 * *Timestamp Role*: Signs metadata that indicates if there are any new metadata or images on the repository.
@@ -733,8 +733,7 @@ The Primary SHALL download metadata for all targets and perform a full verificat
 
 The Primary SHALL download and verify images for itself and for all of its associated Secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the Director's Targets metadata for that image.
 
-
-There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the primary has received multiple hashes for a given image binary via targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image despite the fact that just one hash is enough to obtain the image itself.
+There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the primary has received multiple hashes for a given image binary via the Targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image despite the fact that just one hash is enough to obtain the image itself.
 
 #### Send latest time to Secondaries {#send_time_primary}
 
@@ -771,7 +770,7 @@ The ECU SHALL load and verify the current time, or the most recent securely atte
 
 #### Verify metadata {#verify_metadata}
 
-The ECU SHALL verify the latest downloaded metadata ({{metadata_verification}}) using either full or partial verification. If the metadata verification fails for any reason, the ECU SHALL jump to the fifth step ({{create_version_report}}).
+The ECU SHALL verify the latest downloaded metadata ({{metadata_verification}}) using either full or partial verification. If the metadata verification fails for any reason, the ECU SHALL jump to the final step ({{create_version_report}}).
 
 #### Download latest image {#download_image}
 
@@ -786,7 +785,7 @@ The filename used to identify the latest known image (i.e., the file to request 
 
 When the Primary responds to the download request, the ECU SHALL overwrite its current image with the downloaded image from the Primary.
 
-If any part of this step fails, the ECU SHALL jump to the fifth step ({{create_version_report}}).
+If any part of this step fails, the ECU SHALL jump to the final step ({{create_version_report}}).
 
 #### Verify image {#verify_image}
 
@@ -846,11 +845,11 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 1. Load and verify the current time or the most recent securely attested time.
 1. Download and check the Root metadata file from the Director repository, following the procedure in {{check_root}}.
 1. Download and check the Timestamp metadata file from the Director repository, following the procedure in {{check_timestamp}}.
-1. Download and check the Snapshot metadata file from the Director repository, following the procedure in {{check_snapshot}}.
+1. Check the previously downloaded Snapshot metadata file from the Directory repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, there are no new updates and the verification process MAY be stopped and considered complete. Otherwise, download and check the Snapshot metadata file from the Director repository, following the procedure in {{check_snapshot}}.
 1. Download and check the Targets metadata file from the Director repository, following the procedure in {{check_targets}}.
-1. Download and check the Root metadata file from the Image repository, following the procedure in {{check_root}}.
+1. If the Targets metadata from the Directory repository indicates that there are no new targets that are not already currently installed, the verification process MAY be stopped and considered complete. Otherwise, download and check the Root metadata file from the Image repository, following the procedure in {{check_root}}.
 1. Download and check the Timestamp metadata file from the Image repository, following the procedure in {{check_timestamp}}.
-1. Download and check the Snapshot metadata file from the Image repository, following the procedure in {{check_snapshot}}.
+1. Check the previously downloaded Snapshot metadata file from the Image repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, the ECU MAY skip to the last step. Otherwise, download and check the Snapshot metadata file from the Image repository, following the procedure in {{check_snapshot}}.
 1. Download and check the top-level Targets metadata file from the Image repository, following the procedure in {{check_targets}}.
 1. Verify that Targets metadata from the Director and Image repositories match. A Primary ECU MUST perform this check on metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. A Secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the target metadata from the Director that contains the ECU identifier of the current ECU.) To check that the metadata for an image matches, complete the following procedure:
     1. Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same file name listed in the Director metadata, following the procedure in {{resolve_delegations}}.
