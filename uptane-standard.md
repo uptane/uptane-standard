@@ -658,7 +658,7 @@ ECUs MUST have a secure source of time. An OEM/Uptane implementor MAY use any ex
 For an ECU to be capable of receiving Uptane-secured updates, it MUST have the following data provisioned at the time it is manufactured or installed in the vehicle:
 
 1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See the Uptane Deployment Considerations ({{DEPLOY}}) for more information.
-    * Partial verification ECUs MUST have the Root and Targets metadata from the Director repository.
+    * Partial verification ECUs MUST have the Targets metadata from the Director repository.
     * Full verification ECUs MUST have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories, as well as the repository mapping metadata ({{repo_mapping_meta}}).
 2. The current time, or a secure attestation of a sufficiently recent time.
 3. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
@@ -905,7 +905,7 @@ To properly check Targets metadata, an ECU SHOULD:
 
 1. Download up to Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.
 1. The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) Skip this step if checking Targets metadata on a partial verification ECU; partial verification ECUs will not have Snapshot metadata.
-1. Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack):
+1. Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file. (Checks for an arbitrary software attack.) Skip this step if checking Targets metadata on a partial verification ECU.
     1. If checking top-level Targets metadata, the threshold of keys is specified in the Root metadata.
     1. If checking delegated Targets metadata, the threshold of keys is specified in the Targets metadata file that delegated authority to this role.
 1. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
