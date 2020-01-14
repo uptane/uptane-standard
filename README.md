@@ -39,6 +39,10 @@ Do not hyphenate the adjectival phrase "partial verification Secondary".
 
 Use American English spellings (i.e. write "color" instead of "colour" and "artifacts" instead of "artefacts").
 
+Links to the Standard (from outside the Standard) should point to the latest rendered released version. It is preferred to link by section name, not number, as the numbers tend to change more than the names. Internal links within the Standard should use the standard cross-link syntax.
+
+Links to the Deployment Considerations should point to the [deployed web pages](https://uptane.github.io/deployment-considerations/index.html).
+
 ## Building/rendering the document
 
 We use [kramdown-rfc2629](https://github.com/cabo/kramdown-rfc2629) to render the markdown source into xml, and [xml2rfc](https://xml2rfc.tools.ietf.org/) to render the XML into HTML or plaintext. A Makefile is included for convenience. You can also render using [Docker](https://www.docker.com/) if you don't wish to install the tools. See `make help` for options.
