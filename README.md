@@ -10,8 +10,7 @@ The Uptane Standards document should be considered the authoritative resource fo
 
 * [Uptane Standards Document](https://uptane.github.io/papers/ieee-isto-6100.1.0.0.uptane-standard.html)
 * [Reference Implementation and Demonstration Code](https://github.com/uptane/uptane)
-* [Deployment Considerations (stable version](https://docs.google.com/document/d/17wOs-T7mugwte5_Dt-KLGMsp-3_yAARejpFmrAMefSE/edit#heading=h.6t6kk53v3scx)
-* [Deployment Considerations (WIP)](https://github.com/uptane/deployment-considerations)
+* [Deployment Considerations](https://uptane.github.io/deployment-considerations/index.html)
 * [Uptane POUF (Protocols, Operations, Usage, and Formats)Guidelines](https://uptane.github.io/pouf.html)
 * [Example POUF](https://uptane.github.io/reference_pouf.html)
 
@@ -38,6 +37,10 @@ For headings and sub-headings, capitalize only the first word in a heading UNLES
 Do not hyphenate the adjectival phrase "partial verification Secondary".
 
 Use American English spellings (i.e. write "color" instead of "colour" and "artifacts" instead of "artefacts").
+
+Links to the Standard (from outside the Standard) should point to the latest rendered released version. It is preferred to link by section name, not number, as the numbers tend to change more than the names. Internal links within the Standard should use the standard cross-link syntax.
+
+Links to the Deployment Considerations should point to the [deployed web pages](https://uptane.github.io/deployment-considerations/index.html).
 
 ## Building/rendering the document
 
