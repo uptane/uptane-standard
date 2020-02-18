@@ -658,8 +658,8 @@ ECUs MUST have a secure source of time. An OEM/Uptane implementor MAY use any ex
 For an ECU to be capable of receiving Uptane-secured updates, it MUST have the following data provisioned at the time it is manufactured or installed in the vehicle:
 
 1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See the Uptane Deployment Considerations ({{DEPLOY}}) for more information.
-    * Partial verification ECUs MUST have the Root and Targets metadata from the Director repository.
-    * Full verification ECUs MUST have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories, as well as the repository mapping metadata ({{repo_mapping_meta}}).
+    * Partial verification Secondary ECUs MUST have the Root and Targets metadata from the Director repository (to reduce the scope of rollback and replay attacks). These ECUs MAY also have metadata from other roles or the Image repository if they will be used by the Secondary.
+    * Full verification ECUs MUST have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories (to prevent rollback and replay attacks), as well as the repository mapping metadata ({{repo_mapping_meta}}). Delegations are not required.
 2. The current time, or a secure attestation of a sufficiently recent time.
 3. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
 
@@ -674,7 +674,6 @@ A Primary downloads, verifies, and distributes the latest time, metadata and ima
 1. OPTIONAL: Send latest time to secondaries ({{send_time_primary}})
 1. Send metadata to Secondaries ({{send_metadata_primary}})
 1. Send images to Secondaries ({{send_images_primary}})
-
 
 Note that the subsequent sections concerning requirements for a Primary do not prohibit implementing Primary capabilities on an ECU that does not communicate directly with the Uptane repositories. This allows for implementations to have multiple ECUs within the vehicle performing functions equivalent to a Primary.
 If multiple such Primaries are included within a vehicle, each Secondary ECU SHALL have a single Primary responsible for providing its updates.
