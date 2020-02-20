@@ -657,7 +657,7 @@ ECUs MUST have a secure source of time. An OEM/Uptane implementor MAY use any ex
 
 For an ECU to be capable of receiving Uptane-secured updates, it MUST have the following data provisioned at the time it is manufactured or installed in the vehicle:
 
-1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See the Uptane Deployment Considerations ({{DEPLOY}}) for more information.
+1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. This is necessary for the ECU to authenticate that the remote repository is legitmate when it first downloads metadata in the field. See the Uptane Deployment Considerations ({{DEPLOY}}) for more information.
     * Partial verification Secondary ECUs MUST have the Root and Targets metadata from the Director repository (to reduce the scope of rollback and replay attacks). These ECUs MAY also have metadata from other roles or the Image repository if they will be used by the Secondary.
     * Full verification ECUs MUST have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories (to prevent rollback and replay attacks), as well as the repository mapping metadata ({{repo_mapping_meta}}). Delegations are not required.
 2. The current time, or a secure attestation of a sufficiently recent time.
