@@ -386,7 +386,7 @@ At a high level, Uptane requires:
 * A public key infrastructure supporting the required metadata production/signing roles on each repository:
     * Root - Certificate authority for the Uptane ecosystem. Distributes public keys for verifying all the other roles' metadata
     * Timestamp - Indicates whether there are new metadata or images
-    * Snapshot - Indicates images released by the repository at a point in time, via signing metadata about targets metadata
+    * Snapshot - Indicates images released by the repository at a point in time, via signing metadata about Targets metadata
     * Targets - Indicates metadata about images, such as hashes and file sizes
 * A secure way for ECUs to know the time.
 * An ECU capable of downloading images and associated metadata from the Uptane servers.
@@ -716,7 +716,7 @@ An ECU version report is a metadata structure that MUST contain the following in
   * The signature of the hash
 * A payload containing:
   * The ECU's unique identifier (e.g. the serial number)
-  * The filename, length, and hashes of its currently installed image (i.e. the non-custom targets metadata for this particular image)
+  * The filename, length, and hashes of its currently installed image (i.e. the non-custom Targets metadata for this particular image)
   * An indicator of any detected security attack
   * The latest time the ECU can verify at the time this version report was generated
   * A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle and MAY be the cryptographic nonce used with a Time Server.
@@ -868,7 +868,7 @@ To properly check Root metadata, an ECU SHOULD:
 
 1. Load the previous Root metadata file.
 2. Update to the latest Root metadata file.
-    1. Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous root metadata file).
+    1. Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous Root metadata file).
     2. Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the Root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, the current Root metadata file is the latest; continue with step 3.
     3. Version N+1 of the Root metadata file MUST have been signed by the following: (1) a threshold of keys specified in the latest Root metadata file (version N), and (2) a threshold of keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at version N of the Root metadata file. (Checks for an arbitrary software attack.)
     4. The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 1 and version N of the Root metadata file. (Checks for a rollback attack.)
