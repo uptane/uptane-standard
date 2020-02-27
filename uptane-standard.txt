@@ -555,7 +555,7 @@ Table of Contents
       *  Timestamp - Indicates whether there are new metadata or images
 
       *  Snapshot - Indicates images released by the repository at a
-         point in time, via signing metadata about targets metadata
+         point in time, via signing metadata about Targets metadata
 
       *  Targets - Indicates metadata about images, such as hashes and
          file sizes
@@ -1271,7 +1271,7 @@ Table of Contents
       *  The ECU's unique identifier (e.g. the serial number)
 
       *  The filename, length, and hashes of its currently installed
-         image (i.e. the non-custom targets metadata for this particular
+         image (i.e. the non-custom Targets metadata for this particular
          image)
 
       *  An indicator of any detected security attack
@@ -1619,7 +1619,7 @@ Table of Contents
    2.  Update to the latest Root metadata file.
 
        1.  Let N denote the version number of the latest Root metadata
-           file (which at first could be the same as the previous root
+           file (which at first could be the same as the previous Root
            metadata file).
 
        2.  Try downloading a new version N+1 of the Root metadata file,
