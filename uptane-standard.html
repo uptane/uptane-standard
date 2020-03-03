@@ -429,7 +429,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2020-2-27" />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-3-03" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -1102,9 +1102,9 @@
 <p></p>
 
 <ol>
-<li>A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. See the Uptane Deployment Considerations (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) for more information.  <ul>
-<li>Partial verification ECUs MUST have the Root and Targets metadata from the Director repository.</li>
-<li>Full verification ECUs MUST have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories, as well as the repository mapping metadata (<a href="#repo_mapping_meta" class="xref">Section 5.2.6</a>).</li>
+<li>A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. This is necessary for the ECU to authenticate that the remote repository is legitmate when it first downloads metadata in the field. See the Uptane Deployment Considerations (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) for more information.  <ul>
+<li>Partial verification Secondary ECUs MUST have the Root and Targets metadata from the Director repository (to reduce the scope of rollback and replay attacks). These ECUs MAY also have metadata from other roles or the Image repository if they will be used by the Secondary.</li>
+<li>Full verification ECUs MUST have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories (to prevent rollback and replay attacks), as well as the repository mapping metadata (<a href="#repo_mapping_meta" class="xref">Section 5.2.6</a>). Delegations are not required.</li>
 </ul>
 </li>
 <li>The current time, or a secure attestation of a sufficiently recent time.</li>
