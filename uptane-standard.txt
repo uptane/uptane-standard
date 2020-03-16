@@ -1611,11 +1611,6 @@ Table of Contents
    (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD
    return an error code that indicates the type of attack.
 
-   If the ECU performing the verification is the Primary ECU, it SHOULD
-   also ensure that the Targets metadata from the Director repository
-   doesn't contain any ECU identifiers for ECUs not actually present in
-   the vehicle.
-
 5.4.4.3.  How to check Root metadata
 
    To properly check Root metadata, an ECU SHOULD:
@@ -1783,6 +1778,11 @@ Table of Contents
 
    7.  If checking Targets metadata from the Director repository, check
        that no ECU identifier is represented more than once.
+
+   8.  If checking Targets metadata from the Director repository, and
+       the ECU performing the verification is the Primary ECU, check
+       that all listed ECU identifiers correspond to ECUs that are
+       actually present in the vehicle.
 
 5.4.4.7.  How to resolve delegations
 

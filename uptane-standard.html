@@ -429,7 +429,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2020-3-03" />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-3-16" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -1323,7 +1323,6 @@
 </li>
 </ol>
 <p id="rfc.section.5.4.4.2.p.7">If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.</p>
-<p id="rfc.section.5.4.4.2.p.8">If the ECU performing the verification is the Primary ECU, it SHOULD also ensure that the Targets metadata from the Director repository doesn&#8217;t contain any ECU identifiers for ECUs not actually present in the vehicle.</p>
 <h1 id="rfc.section.5.4.4.3">
 <a href="#rfc.section.5.4.4.3">5.4.4.3.</a> <a href="#check_root" id="check_root">How to check Root metadata</a>
 </h1>
@@ -1389,6 +1388,7 @@
 <li>Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)</li>
 <li>If checking Targets metadata from the Director repository, verify that there are no delegations.</li>
 <li>If checking Targets metadata from the Director repository, check that no ECU identifier is represented more than once.</li>
+<li>If checking Targets metadata from the Director repository, and the ECU performing the verification is the Primary ECU, check that all listed ECU identifiers correspond to ECUs that are actually present in the vehicle.</li>
 </ol>
 <h1 id="rfc.section.5.4.4.7">
 <a href="#rfc.section.5.4.4.7">5.4.4.7.</a> <a href="#resolve_delegations" id="resolve_delegations">How to resolve delegations</a>
