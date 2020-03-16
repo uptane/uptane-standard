@@ -859,8 +859,6 @@ In order to perform full verification, an ECU SHALL perform the following steps:
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
-If the ECU performing the verification is the Primary ECU, it SHOULD also ensure that the Targets metadata from the Director repository doesn't contain any ECU identifiers for ECUs not actually present in the vehicle.
-
 #### How to check Root metadata {#check_root}
 
 To properly check Root metadata, an ECU SHOULD:
@@ -911,6 +909,7 @@ To properly check Targets metadata, an ECU SHOULD:
 1. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Targets metadata file. (Checks for a freeze attack.)
 1. If checking Targets metadata from the Director repository, verify that there are no delegations.
 1. If checking Targets metadata from the Director repository, check that no ECU identifier is represented more than once.
+1. If checking Targets metadata from the Director repository, and the ECU performing the verification is the Primary ECU, check that all listed ECU identifiers correspond to ECUs that are actually present in the vehicle.
 
 #### How to resolve delegations {#resolve_delegations}
 
