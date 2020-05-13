@@ -1309,8 +1309,8 @@ Table of Contents
    image binary, as described in Section 5.2.7.  If the primary has
    received multiple hashes for a given image binary via the Targets
    role (see Section 5.2.3.1) then it SHALL verify every hash for this
-   image despite the fact that just one hash is enough to obtain the
-   image itself.
+   image despite that the image is identified by a single hash as part
+   of its filename.
 
 5.4.2.5.  Send latest time to Secondaries
 
@@ -1403,8 +1403,8 @@ Table of Contents
        Additionally, in the case of failure, the ECU SHALL retain its
        previous Targets metadata instead of using the new Targets
        metadata.  Otherwise, download the image (up to the number of
-       bytes specified in the Targets metadata), and verify that its
-       hashes match the Targets metadata.
+       bytes specified in the Targets metadata) and verify it according
+       to Section 5.4.3.4.
 
    When the Primary responds to the download request, the ECU SHALL
    overwrite its current image with the downloaded image from the
@@ -1448,8 +1448,8 @@ Table of Contents
           the target metadata, the ECU SHALL use its ECU key for image
           decryption.
 
-   7.  Check that the hash of the image matches the hash in the
-       metadata.
+   7.  Check that all hashes listed in the metadata match the
+       corresponding hashes of the image.
 
    If the ECU has secondary storage, the checks SHOULD be performed on
    the image in secondary storage before it is installed.
