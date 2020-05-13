@@ -732,7 +732,7 @@ The Primary SHALL download metadata for all targets and perform a full verificat
 
 The Primary SHALL download and verify images for itself and for all of its associated Secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the Director's Targets metadata for that image.
 
-There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the primary has received multiple hashes for a given image binary via the Targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image despite the fact that just one hash is enough to obtain the image itself.
+There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the primary has received multiple hashes for a given image binary via the Targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image despite that the image is identified by a single hash as part of its filename.
 
 #### Send latest time to Secondaries {#send_time_primary}
 
@@ -780,7 +780,7 @@ The filename used to identify the latest known image (i.e., the file to request 
 1. Load the Targets metadata file from the Director repository.
 2. Find the Targets metadata associated with this ECU identifier.
 3. Construct the Image filename using the rule in {{metadata_filename_rules}}, or use the download URL specified in the Director metadata.
-4. If there is no Targets metadata about this image, abort the update cycle and report that there is no such image. Additionally, in the case of failure, the ECU SHALL retain its previous Targets metadata instead of using the new Targets metadata. Otherwise, download the image (up to the number of bytes specified in the Targets metadata), and verify that its hashes match the Targets metadata.
+4. If there is no Targets metadata about this image, abort the update cycle and report that there is no such image. Additionally, in the case of failure, the ECU SHALL retain its previous Targets metadata instead of using the new Targets metadata. Otherwise, download the image (up to the number of bytes specified in the Targets metadata) and verify it according to {{verify_image}}.
 
 When the Primary responds to the download request, the ECU SHALL overwrite its current image with the downloaded image from the Primary.
 
@@ -799,7 +799,7 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
     * If the ECU key is a symmetric key, the ECU SHALL use the ECU key for image decryption.
     * If the ECU key is asymmetric, the ECU SHALL check the Targets metadata for an encrypted symmetric key. If such a key is found, the ECU SHALL decrypt the symmetric key using its ECU key, and use the decrypted symmetric key for image decryption.
     * If the ECU key is asymmetric and there is no symmetric key in the target metadata, the ECU SHALL use its ECU key for image decryption.
-7. Check that the hash of the image matches the hash in the metadata.
+7. Check that all hashes listed in the metadata match the corresponding hashes of the image.
 
 If the ECU has secondary storage, the checks SHOULD be performed on the image in secondary storage before it is installed.
 
