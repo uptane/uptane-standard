@@ -577,7 +577,7 @@ Unless stated otherwise, all files SHALL be written to repositories in accordanc
 For example:
 
 * The version number of the Snapshot metadata file is 61, and its filename in the Timestamp metadata is "snapshot.json". The filename on the repository will be "61.snapshot.json".
-* There is an image with the filename "acme_firmware.bin" specified in the Targets metadata, with a SHA256 of "aaaa" and a SHA512-256 of "bbbb". It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin".
+* There is an image with the filename "acme_firmware.bin" specified in the Targets metadata, with a SHA3-256 of "aaaa" and a SHA-512/224 of "bbbb". It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin".
 
 ## Server / repository implementation requirements
 
@@ -694,7 +694,7 @@ The vehicle version manifest is a metadata structure that MUST contain the follo
   * The public key identifier of the key being used to sign the payload
   * The signing method (e.g. ed25519, rsassa-pss, etc.)
   * A hash of the payload to be signed
-  * The hashing function used (e.g. sha256, sha512-224, etc.)
+  * The hashing function used (e.g. SHA3-256, SHA-512/224, etc.)
   * The signature of the hash
 * A payload representing the installed versions of each software image on the vehicle. This payload SHALL contain:
   * The vehicle's unique identifier (e.g. the VIN)
@@ -711,7 +711,7 @@ An ECU version report is a metadata structure that MUST contain the following in
   * The public key identifier of the key being used to sign the payload
   * The signing method (e.g. ed25519, rsassa-pss, etc.)
   * A hash of the payload to be signed
-  * The hashing function used (e.g. sha256, sha512-224, etc.)
+  * The hashing function used (e.g. SHA3-256, SHA-512/224, etc.)
   * The signature of the hash
 * A payload containing:
   * The ECU's unique identifier (e.g. the serial number)
