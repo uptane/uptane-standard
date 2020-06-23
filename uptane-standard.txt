@@ -959,8 +959,8 @@ Table of Contents
       filename on the repository will be "61.snapshot.json".
 
    o  There is an image with the filename "acme_firmware.bin" specified
-      in the Targets metadata, with a SHA256 of "aaaa" and a SHA512-256
-      of "bbbb".  It will have two filenames on the repository:
+      in the Targets metadata, with a SHA3-256 of "aaaa" and a SHA-
+      512/224 of "bbbb".  It will have two filenames on the repository:
       "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin".
 
 5.3.  Server / repository implementation requirements
@@ -1237,7 +1237,7 @@ Table of Contents
 
       *  A hash of the payload to be signed
 
-      *  The hashing function used (e.g. sha256, sha512-224, etc.)
+      *  The hashing function used (e.g.  SHA3-256, SHA-512/224, etc.)
 
       *  The signature of the hash
 
@@ -1268,7 +1268,7 @@ Table of Contents
 
       *  A hash of the payload to be signed
 
-      *  The hashing function used (e.g. sha256, sha512-224, etc.)
+      *  The hashing function used (e.g.  SHA3-256, SHA-512/224, etc.)
 
       *  The signature of the hash
 

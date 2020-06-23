@@ -429,7 +429,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2020-5-13" />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-6-23" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -1020,7 +1020,7 @@
 
 <ul>
 <li>The version number of the Snapshot metadata file is 61, and its filename in the Timestamp metadata is &#8220;snapshot.json&#8221;. The filename on the repository will be &#8220;61.snapshot.json&#8221;.</li>
-<li>There is an image with the filename &#8220;acme_firmware.bin&#8221; specified in the Targets metadata, with a SHA256 of &#8220;aaaa&#8221; and a SHA512-256 of &#8220;bbbb&#8221;. It will have two filenames on the repository: &#8220;aaaa.acme_firmware.bin&#8221; and &#8220;bbbb.acme_firmware.bin&#8221;.</li>
+<li>There is an image with the filename &#8220;acme_firmware.bin&#8221; specified in the Targets metadata, with a SHA3-256 of &#8220;aaaa&#8221; and a SHA-512/224 of &#8220;bbbb&#8221;. It will have two filenames on the repository: &#8220;aaaa.acme_firmware.bin&#8221; and &#8220;bbbb.acme_firmware.bin&#8221;.</li>
 </ul>
 <h1 id="rfc.section.5.3">
 <a href="#rfc.section.5.3">5.3.</a> <a href="#server-repository-implementation-requirements" id="server-repository-implementation-requirements">Server / repository implementation requirements</a>
@@ -1143,7 +1143,7 @@
 <li>The public key identifier of the key being used to sign the payload</li>
 <li>The signing method (e.g. ed25519, rsassa-pss, etc.)</li>
 <li>A hash of the payload to be signed</li>
-<li>The hashing function used (e.g. sha256, sha512-224, etc.)</li>
+<li>The hashing function used (e.g. SHA3-256, SHA-512/224, etc.)</li>
 <li>The signature of the hash</li>
 </ul>
 </li>
@@ -1167,7 +1167,7 @@
 <li>The public key identifier of the key being used to sign the payload</li>
 <li>The signing method (e.g. ed25519, rsassa-pss, etc.)</li>
 <li>A hash of the payload to be signed</li>
-<li>The hashing function used (e.g. sha256, sha512-224, etc.)</li>
+<li>The hashing function used (e.g. SHA3-256, SHA-512/224, etc.)</li>
 <li>The signature of the hash</li>
 </ul>
 </li>
