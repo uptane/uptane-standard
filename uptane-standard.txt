@@ -1508,9 +1508,10 @@ Table of Contents
    the Targets metadata about the same images from the Image repository.
    This provides resilience to a key compromise in the system.
 
-   Full verification MAY be performed by either Primary or Secondary
-   ECUs.  In the following instructions, whenever an ECU is directed to
-   download metadata, it applies only to Primary ECUs.
+   Full verification MUST be performed by Primary ECUS and MAY be
+   performed by Secondary ECUs.  In the following instructions, whenever
+   an ECU is directed to download metadata, it applies only to Primary
+   ECUs.
 
    If [TAP-5] is supported and a Primary has an external connection to
    the Uptane repositories, a Primary ECU SHALL download metadata and
