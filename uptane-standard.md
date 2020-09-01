@@ -273,7 +273,7 @@ The following use cases provide a number of scenarios illustrating the manner in
 An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and an accurate attestation of the latest time. The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers' assembly lines or can choose to add the materials later at the OEM's assembly lines. The OEM's implementation is Uptane-compliant if:
 
 1. all primaries perform full verification;
-1. all secondaries that are updated via OTA perform partial verification at a minimum; and
+1. all secondaries that are updated via OTA MUST at least perform partial verification; and
 1. all other ECUs that do not perform verification cannot be updated via OTA.
 
 #### Updating one ECU with a complete image
@@ -649,7 +649,7 @@ An Uptane-compliant ECU SHALL be able to download and verify Image metadata and 
 
 Each ECU in a vehicle receiving over-the-air updates is either a Primary or a Secondary ECU. A Primary ECU collects and delivers vehicle manifests to the Director ({{vehicle_version_manifest}}) that contain information about which images have been installed on ECUs in the vehicle. It also verifies the time and downloads and verifies the latest metadata and images for itself and for its secondaries. A Secondary ECU verifies the time, and downloads and verifies the latest metadata and images for itself from its associated Primary ECU. It also sends signed information about its installed images to its associated Primary.
 
-All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification ({{full_verification}}). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL perform partial verification at a minimum, but MAY perform any additional subset of full verification. See the Uptane Deployment Considerations ({{DEPLOY}}) for a discussion of how to choose between partial and full verification.
+All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification ({{full_verification}}). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it MAY also perform some steps from the full verification process. See the Uptane Deployment Considerations ({{DEPLOY}}) for a discussion of how to choose between partial and full verification.
 
 ECUs MUST have a secure source of time. An OEM/Uptane implementor MAY use any external source of time that is demonstrably secure. The Uptane Deployment Considerations ({{DEPLOY}}) describe one way to implement an external time server to cryptographically attest time, as well as the security properties required. When "loading time" is referenced in procedures in this standard, it should be understood to mean loading into memory the current time (if the ECU has its own secure clock), or the most recent attested time.
 
@@ -818,7 +818,7 @@ The ECU SHALL create a version report as described in {{version_report}}, and se
 
 ### Metadata verification procedures {#metadata_verification}
 
-A Primary ECU MUST perform full verification of metadata. A Secondary ECU SHOULD perform full verification of metadata. If a Secondary cannot perform full verification, it SHALL perform at least partial verification instead.
+A Primary ECU MUST perform full verification of metadata. A Secondary ECU SHOULD perform full verification of metadata. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification.
 
 If a step in the following workflows does not succeed (e.g., the update is aborted because a new metadata file was not signed), an ECU SHOULD still be able to update again in the future. Errors raised during the update process SHOULD NOT leave ECUs in an unrecoverable state.
 
@@ -831,7 +831,7 @@ In order to perform partial verification, an ECU SHALL perform the following ste
 
 Note that this verification procedure is intended to be a minimum. A partial verification ECU MAY implement more metadata checks.
 
-For example, in many cases it is desirable to also fetch and verify Root metadata from the Director (following the procedure in {{check_root}}) before checking Targets metadata. Without this check, an ECU will not be able to verify any metadata from the Director if the Director's Targets key is rotated, possible necessitating a recall.
+For example, in many cases it is desirable to also fetch and verify Root metadata from the Director (following the procedure in {{check_root}}) before checking Targets metadata. Without this check, an ECU will not be able to verify any metadata from the Director if the Director's Targets key is rotated, possibly necessitating a recall.
 
 See {{DEPLOY}} for more discussion on this topic.
 
