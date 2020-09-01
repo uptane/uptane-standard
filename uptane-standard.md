@@ -274,7 +274,7 @@ An OEM plans to install Uptane on new vehicles. This entails the following compo
 
 1. all Primaries perform full verification;
 1. all Secondaries that are updated via OTA at least perform partial verification; and
-1. all other ECUs that do not perform verification cannot be updated via OTA.
+1. all other ECUs that do not perform any type of verification cannot be updated via OTA.
 
 #### Updating one ECU with a complete image
 
