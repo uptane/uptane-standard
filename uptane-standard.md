@@ -756,7 +756,7 @@ For Secondaries without storage, the Primary SHOULD wait for a request from the 
 
 An ECU SHALL perform the following steps when attempting to install a new image:
 
-1. Verify latest attested time ({{verify_time}})
+1. Verify latest attested time. This is optional if the ECU does not have the capacity to verify a time message ({{verify_time}})
 2. Verify metadata ({{verify_metadata}})
 3. Download latest image ({{download_image}})
 4. Verify image ({{verify_image}})
@@ -765,7 +765,7 @@ An ECU SHALL perform the following steps when attempting to install a new image:
 
 #### Load and verify the latest attested time {#verify_time}
 
-The ECU SHALL load and verify the current time, or the most recent securely attested time.
+The ECU SHALL load and verify the current time, or the most recent securely attested time. This is optional if the ECU does not have the capacity to verify a time message. 
 
 #### Verify metadata {#verify_metadata}
 
