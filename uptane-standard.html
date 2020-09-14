@@ -429,7 +429,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2020-9-01" />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-9-14" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -572,7 +572,7 @@
 <p><em>Hardware Identifier</em>: An attribute used to identify a model of an ECU.</p>
 <p><em>Image</em>: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.</p>
 <p><em>Metadata</em>:  Information describing the characteristics of data including, for example, structural metadata describing data structures (e.g., data format, syntax, and semantics) and descriptive metadata describing data contents (e.g., information security labels). As used in Uptane, metadata can be described as information associated with a role or an image that contains the characteristics or parameters thereof (e.g. cryptographic material parameters, file names and versions.)</p>
-<p><em>Primary/Secondary ECUs</em>: Terms used to describe the control units within a ground vehicle. A primary ECU downloads and verifies update images and metadata for itself and for secondary ECUs, and distributes images and metadata to secondaries. Thus, it requires extra storage space and a means to download images and metadata.  Secondary ECUs receive their update images and metadata from the primary, and only need to verify and install their own metadata and images.</p>
+<p><em>Primary/Secondary ECUs</em>: Terms used to describe the control units within a ground vehicle. A Primary ECU downloads and verifies update images and metadata for itself and for Secondary ECUs, and distributes images and metadata to Secondaries. Thus, it requires extra storage space and a means to download images and metadata.  Secondary ECUs receive their update images and metadata from the Primary, and only need to verify and install their own metadata and images.</p>
 <p><em>POUF</em>: A document that contains the protocol, operations, usage, and formats (POUF) of a specific Uptane implementation. The POUF contains decisions about SHOULDs and MAYs in an implementation, as well as descriptions of data binding formats. POUFs MAY be used to create compatible Uptane implementations.</p>
 <p><em>Repository</em>: A server containing metadata about images. May also contain the images themselves. Other data may be stored on the repository to be accessed by ECUs during the update process.</p>
 <p><em>Suppliers</em>: Independent companies to which auto manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that perform outsourced work for Tier-1 suppliers.</p>
@@ -652,13 +652,13 @@
 <h1 id="rfc.section.3.2.2.1">
 <a href="#rfc.section.3.2.2.1">3.2.2.1.</a> <a href="#oems-initializing-uptane-at-the-factory-using-sota" id="oems-initializing-uptane-at-the-factory-using-sota">OEMs initializing Uptane at the factory using SOTA</a>
 </h1>
-<p id="rfc.section.3.2.2.1.p.1">An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and an accurate attestation of the latest time. The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers&#8217; assembly lines or can choose to add the materials later at the OEM&#8217;s assembly lines. The OEM&#8217;s implementation is Uptane-compliant if:</p>
+<p id="rfc.section.3.2.2.1.p.1">An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and an accurate attestation of the latest time. The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers&#8217; assembly lines or can choose to add the materials later at the OEM&#8217;s assembly lines. The OEM&#8217;s in-vehicle implementation is Uptane-compliant if:</p>
 <p></p>
 
 <ol>
-<li>all primaries perform full verification;</li>
-<li>all secondaries that are updated via OTA perform full or partial verification; and</li>
-<li>all other ECUs that do not perform verification cannot be updated via OTA.</li>
+<li>all Primaries perform full verification;</li>
+<li>all Secondaries that are updated via OTA at least perform partial verification; and</li>
+<li>all other ECUs that do not perform any type of verification cannot be updated via OTA.</li>
 </ol>
 <h1 id="rfc.section.3.2.2.2">
 <a href="#rfc.section.3.2.2.2">3.2.2.2.</a> <a href="#updating-one-ecu-with-a-complete-image" id="updating-one-ecu-with-a-complete-image">Updating one ECU with a complete image</a>
@@ -815,7 +815,7 @@
 </li>
 <li>A secure way for ECUs to know the time.</li>
 <li>An ECU capable of downloading images and associated metadata from the Uptane servers.</li>
-<li>An in-vehicle client on a Primary ECU capable of verifying the signatures on all update metadata and downloading updates on behalf of its associated Secondary ECUs. The primary ECU MAY be the same ECU that communicates with the server.</li>
+<li>An in-vehicle client on a Primary ECU capable of verifying the signatures on all update metadata and downloading updates on behalf of its associated Secondary ECUs. The Primary ECU MAY be the same ECU that communicates with the server.</li>
 <li>A client or library on each Secondary ECU capable of performing either full or partial verification of metadata</li>
 </ul>
 <h1 id="rfc.section.5.1">
@@ -1046,7 +1046,7 @@
 <a href="#rfc.section.5.3.2">5.3.2.</a> <a href="#director_repository" id="director_repository">Director repository</a>
 </h1>
 <p id="rfc.section.5.3.2.p.1">The Director repository instructs ECUs as to which images should be installed by producing signed metadata on demand. Unlike the Image repository, it is mostly controlled by automated, online processes. It also consults a private inventory database containing information on vehicles, ECUs, and software revisions.</p>
-<p id="rfc.section.5.3.2.p.2">The Director repository SHALL expose an interface for primaries to upload vehicle version manifests (<a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>) and download metadata. This interface SHOULD be public.  The Director MAY encrypt images for ECUs that require them, either by encrypting on-the-fly or by storing encrypted images in the repository.</p>
+<p id="rfc.section.5.3.2.p.2">The Director repository SHALL expose an interface for Primaries to upload vehicle version manifests (<a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>) and download metadata. This interface SHOULD be public.  The Director MAY encrypt images for ECUs that require them, either by encrypting on-the-fly or by storing encrypted images in the repository.</p>
 <p id="rfc.section.5.3.2.p.3">The Director repository SHALL implement storage which permits an automated service to write generated metadata files. It MAY use any filesystem, key-value store, or database that fulfills this requirement.</p>
 <h1 id="rfc.section.5.3.2.1">
 <a href="#rfc.section.5.3.2.1">5.3.2.1.</a> <a href="#directing-installation-of-images-on-vehicles" id="directing-installation-of-images-on-vehicles">Directing installation of images on vehicles</a>
@@ -1092,8 +1092,8 @@
 <a href="#rfc.section.5.4">5.4.</a> <a href="#in-vehicle-implementation-requirements" id="in-vehicle-implementation-requirements">In-vehicle implementation requirements</a>
 </h1>
 <p id="rfc.section.5.4.p.1">An Uptane-compliant ECU SHALL be able to download and verify Image metadata and image binaries before installing a new image and MUST have a secure way of verifying the current time, or a sufficiently recent attestation of the time.</p>
-<p id="rfc.section.5.4.p.2">Each ECU in a vehicle receiving over-the-air updates is either a Primary or a Secondary ECU. A Primary ECU collects and delivers vehicle manifests to the Director (<a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>) that contain information about which images have been installed on ECUs in the vehicle. It also verifies the time and downloads and verifies the latest metadata and images for itself and for its secondaries. A Secondary ECU verifies the time, and downloads and verifies the latest metadata and images for itself from its associated Primary ECU. It also sends signed information about its installed images to its associated Primary.</p>
-<p id="rfc.section.5.4.p.3">All ECUs MUST verify image metadata as specified in <a href="#metadata_verification" class="xref">Section 5.4.4</a> before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification (<a href="#full_verification" class="xref">Section 5.4.4.2</a>). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL perform partial verification. See the Uptane Deployment Considerations (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) for a discussion of how to choose between partial and full verification.</p>
+<p id="rfc.section.5.4.p.2">Each ECU receiving over-the-air updates in a vehicle is either a Primary or a Secondary ECU. A Primary ECU collects and delivers vehicle manifests to the Director (<a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>) that contain information about which images have been installed on ECUs in the vehicle. It also verifies the time and downloads and verifies the latest metadata and images for itself and for its Secondaries. A Secondary ECU verifies the time, and downloads and verifies the latest metadata and images for itself from its associated Primary ECU. It also sends signed information about its installed images to its associated Primary.</p>
+<p id="rfc.section.5.4.p.3">All ECUs MUST verify image metadata as specified in <a href="#metadata_verification" class="xref">Section 5.4.4</a> before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification (<a href="#full_verification" class="xref">Section 5.4.4.2</a>). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it MAY also perform some steps from the full verification process. See the Uptane Deployment Considerations (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) for a discussion of how to choose between partial and full verification.</p>
 <p id="rfc.section.5.4.p.4">ECUs MUST have a secure source of time. An OEM/Uptane implementor MAY use any external source of time that is demonstrably secure. The Uptane Deployment Considerations (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) describe one way to implement an external time server to cryptographically attest time, as well as the security properties required. When &#8220;loading time&#8221; is referenced in procedures in this standard, it should be understood to mean loading into memory the current time (if the ECU has its own secure clock), or the most recent attested time.</p>
 <h1 id="rfc.section.5.4.1">
 <a href="#rfc.section.5.4.1">5.4.1.</a> <a href="#build-time-prerequisite-requirements-for-ecus" id="build-time-prerequisite-requirements-for-ecus">Build-time prerequisite requirements for ECUs</a>
@@ -1121,7 +1121,7 @@
 <li>Download and check current time (<a href="#check_time_primary" class="xref">Section 5.4.2.2</a>)</li>
 <li>Download and verify metadata (<a href="#download_meta_primary" class="xref">Section 5.4.2.3</a>)</li>
 <li>Download and verify images (<a href="#download_images_primary" class="xref">Section 5.4.2.4</a>)</li>
-<li>OPTIONAL: Send latest time to secondaries (<a href="#send_time_primary" class="xref">Section 5.4.2.5</a>)</li>
+<li>OPTIONAL: Send latest time to Secondaries (<a href="#send_time_primary" class="xref">Section 5.4.2.5</a>)</li>
 <li>Send metadata to Secondaries (<a href="#send_metadata_primary" class="xref">Section 5.4.2.6</a>)</li>
 <li>Send images to Secondaries (<a href="#send_images_primary" class="xref">Section 5.4.2.7</a>)</li>
 </ol>
@@ -1192,7 +1192,7 @@
 <a href="#rfc.section.5.4.2.4">5.4.2.4.</a> <a href="#download_images_primary" id="download_images_primary">Download and verify images</a>
 </h1>
 <p id="rfc.section.5.4.2.4.p.1">The Primary SHALL download and verify images for itself and for all of its associated Secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the Director&#8217;s Targets metadata for that image.</p>
-<p id="rfc.section.5.4.2.4.p.2">There may be several different filenames that all refer to the same image binary, as described in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>. If the primary has received multiple hashes for a given image binary via the Targets role (see <a href="#targets_images_meta" class="xref">Section 5.2.3.1</a>) then it SHALL verify every hash for this image despite that the image is identified by a single hash as part of its filename.</p>
+<p id="rfc.section.5.4.2.4.p.2">There may be several different filenames that all refer to the same image binary, as described in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>. If the Primary has received multiple hashes for a given image binary via the Targets role (see <a href="#targets_images_meta" class="xref">Section 5.2.3.1</a>) then it SHALL verify every hash for this image despite that the image is identified by a single hash as part of its filename.</p>
 <h1 id="rfc.section.5.4.2.5">
 <a href="#rfc.section.5.4.2.5">5.4.2.5.</a> <a href="#send_time_primary" id="send_time_primary">Send latest time to Secondaries</a>
 </h1>
@@ -1200,7 +1200,7 @@
 <h1 id="rfc.section.5.4.2.6">
 <a href="#rfc.section.5.4.2.6">5.4.2.6.</a> <a href="#send_metadata_primary" id="send_metadata_primary">Send metadata to Secondaries</a>
 </h1>
-<p id="rfc.section.5.4.2.6.p.1">The Primary SHALL send its latest downloaded metadata to all of its associated Secondaries. The metadata it sends to each Secondary MUST include all of the metadata required for verification on that Secondary. For full verification Secondaries, this includes the metadata for all four roles from both repositories, plus any delegated Targets metadata files the Secondary will recurse through to find the proper delegation. For partial verification Secondaries, this includes only the Targets metadata file from the Director repository.</p>
+<p id="rfc.section.5.4.2.6.p.1">The Primary SHALL send its latest downloaded metadata to all of its associated Secondaries. The metadata it sends to each Secondary MUST include all of the metadata required for verification on that Secondary. For full verification Secondaries, this includes the metadata for all four roles from both repositories, plus any delegated Targets metadata files the Secondary will recurse through to find the proper delegation. For partial verification Secondaries, this MAY include fewer metadata files; it includes only the Targets metadata file from the Director repository at a minimum.</p>
 <p id="rfc.section.5.4.2.6.p.2">The Primary SHOULD determine the minimal set of metadata files to send to each Secondary by performing delegation resolution as described in <a href="#full_verification" class="xref">Section 5.4.4.2</a>.</p>
 <p id="rfc.section.5.4.2.6.p.3">Each Secondary SHALL store the latest copy of all metadata required for its own verification.</p>
 <h1 id="rfc.section.5.4.2.7">
@@ -1233,7 +1233,7 @@
 <h1 id="rfc.section.5.4.3.3">
 <a href="#rfc.section.5.4.3.3">5.4.3.3.</a> <a href="#download_image" id="download_image">Download latest image</a>
 </h1>
-<p id="rfc.section.5.4.3.3.p.1">If the ECU does not have secondary storage, i.e. buffer storage to temporarily store the latest image before installing it, it SHALL download the latest image from the Primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in <a href="#send_images_primary" class="xref">Section 5.4.2.7</a>, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the primary).</p>
+<p id="rfc.section.5.4.3.3.p.1">If the ECU does not have secondary storage, i.e. buffer storage to temporarily store the latest image before installing it, it SHALL download the latest image from the Primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in <a href="#send_images_primary" class="xref">Section 5.4.2.7</a>, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the Primary).</p>
 <p id="rfc.section.5.4.3.3.p.2">The filename used to identify the latest known image (i.e., the file to request from the Primary) SHALL be determined as follows:</p>
 <p></p>
 
@@ -1281,7 +1281,7 @@
 <h1 id="rfc.section.5.4.4">
 <a href="#rfc.section.5.4.4">5.4.4.</a> <a href="#metadata_verification" id="metadata_verification">Metadata verification procedures</a>
 </h1>
-<p id="rfc.section.5.4.4.p.1">A Primary ECU MUST perform full verification of metadata. A Secondary ECU SHOULD perform full verification of metadata. If a Secondary cannot perform full verification, it SHALL perform partial verification instead.</p>
+<p id="rfc.section.5.4.4.p.1">A Primary ECU MUST perform full verification of metadata. A Secondary ECU SHOULD perform full verification of metadata. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification.</p>
 <p id="rfc.section.5.4.4.p.2">If a step in the following workflows does not succeed (e.g., the update is aborted because a new metadata file was not signed), an ECU SHOULD still be able to update again in the future. Errors raised during the update process SHOULD NOT leave ECUs in an unrecoverable state.</p>
 <h1 id="rfc.section.5.4.4.1">
 <a href="#rfc.section.5.4.4.1">5.4.4.1.</a> <a href="#partial_verification" id="partial_verification">Partial verification</a>
@@ -1293,6 +1293,9 @@
 <li>Load and verify the current time or the most recent securely attested time.</li>
 <li>Download and check the Targets metadata file from the Director repository, following the procedure in <a href="#check_targets" class="xref">Section 5.4.4.6</a>.</li>
 </ol>
+<p id="rfc.section.5.4.4.1.p.3">Note that this verification procedure is the smallest set of Uptane checks permissible for an Uptane Secondary ECU. An ECU MAY additionally implement more metadata checks.</p>
+<p id="rfc.section.5.4.4.1.p.4">For example, an ECU MAY also fetch and verify Root metadata from the Director (following the procedure in <a href="#check_root" class="xref">Section 5.4.4.3</a>) before checking Targets metadata. Performing this additional check would provide the ECU with a secure way to receive and validate a rotation of the Director&#8217;s Targets key.</p>
+<p id="rfc.section.5.4.4.1.p.5">See <a href="#DEPLOY" class="xref">[DEPLOY]</a> for more discussion on this topic.</p>
 <h1 id="rfc.section.5.4.4.2">
 <a href="#rfc.section.5.4.4.2">5.4.4.2.</a> <a href="#full_verification" id="full_verification">Full verification</a>
 </h1>
@@ -1380,7 +1383,7 @@
 
 <ol>
 <li>Download up to Z number of bytes, constructing the metadata filename as defined in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.</li>
-<li>The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) Skip this step if checking Targets metadata on a partial verification ECU; partial verification ECUs will not have Snapshot metadata.</li>
+<li>The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU; partial verification ECUs might not have Snapshot metadata.</li>
 <li>Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack): <ol>
 <li>If checking top-level Targets metadata, the threshold of keys is specified in the Root metadata.</li>
 <li>If checking delegated Targets metadata, the threshold of keys is specified in the Targets metadata file that delegated authority to this role.</li>
@@ -1483,7 +1486,7 @@
 <tr>
 <td class="reference"><b id="DEPLOY">[DEPLOY]</b></td>
 <td class="top">
-<a>Members of the Uptane Alliance Community, .</a>, "<a href="https://docs.google.com/document/d/17wOs-T7mugwte5_Dt-KLGMsp-3_yAARejpFmrAMefSE/">Uptane Deployment Considerations</a>", n.d..</td>
+<a>Members of the Uptane Alliance Community, .</a>, "<a href="https://uptane.github.io/deployment-considerations/index.html">Uptane Deployment Considerations</a>", n.d..</td>
 </tr>
 <tr>
 <td class="reference"><b id="IN-TOTO">[IN-TOTO]</b></td>

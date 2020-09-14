@@ -125,12 +125,12 @@ Table of Contents
    names and versions.)
 
    _Primary/Secondary ECUs_: Terms used to describe the control units
-   within a ground vehicle.  A primary ECU downloads and verifies update
-   images and metadata for itself and for secondary ECUs, and
-   distributes images and metadata to secondaries.  Thus, it requires
+   within a ground vehicle.  A Primary ECU downloads and verifies update
+   images and metadata for itself and for Secondary ECUs, and
+   distributes images and metadata to Secondaries.  Thus, it requires
    extra storage space and a means to download images and metadata.
    Secondary ECUs receive their update images and metadata from the
-   primary, and only need to verify and install their own metadata and
+   Primary, and only need to verify and install their own metadata and
    images.
 
    _POUF_: A document that contains the protocol, operations, usage, and
@@ -292,16 +292,16 @@ Table of Contents
    accurate attestation of the latest time.  The OEM then either
    requires its tier-1 suppliers to provide these materials to the
    suppliers' assembly lines or can choose to add the materials later at
-   the OEM's assembly lines.  The OEM's implementation is Uptane-
-   compliant if:
+   the OEM's assembly lines.  The OEM's in-vehicle implementation is
+   Uptane-compliant if:
 
-   1.  all primaries perform full verification;
+   1.  all Primaries perform full verification;
 
-   2.  all secondaries that are updated via OTA perform full or partial
+   2.  all Secondaries that are updated via OTA at least perform partial
        verification; and
 
-   3.  all other ECUs that do not perform verification cannot be updated
-       via OTA.
+   3.  all other ECUs that do not perform any type of verification
+       cannot be updated via OTA.
 
 3.2.2.2.  Updating one ECU with a complete image
 
@@ -567,7 +567,7 @@ Table of Contents
 
    o  An in-vehicle client on a Primary ECU capable of verifying the
       signatures on all update metadata and downloading updates on
-      behalf of its associated Secondary ECUs.  The primary ECU MAY be
+      behalf of its associated Secondary ECUs.  The Primary ECU MAY be
       the same ECU that communicates with the server.
 
    o  A client or library on each Secondary ECU capable of performing
@@ -1010,7 +1010,7 @@ Table of Contents
    It also consults a private inventory database containing information
    on vehicles, ECUs, and software revisions.
 
-   The Director repository SHALL expose an interface for primaries to
+   The Director repository SHALL expose an interface for Primaries to
    upload vehicle version manifests (Section 5.4.2.1.1) and download
    metadata.  This interface SHOULD be public.  The Director MAY encrypt
    images for ECUs that require them, either by encrypting on-the-fly or
@@ -1113,12 +1113,12 @@ Table of Contents
    have a secure way of verifying the current time, or a sufficiently
    recent attestation of the time.
 
-   Each ECU in a vehicle receiving over-the-air updates is either a
+   Each ECU receiving over-the-air updates in a vehicle is either a
    Primary or a Secondary ECU.  A Primary ECU collects and delivers
    vehicle manifests to the Director (Section 5.4.2.1.1) that contain
    information about which images have been installed on ECUs in the
    vehicle.  It also verifies the time and downloads and verifies the
-   latest metadata and images for itself and for its secondaries.  A
+   latest metadata and images for itself and for its Secondaries.  A
    Secondary ECU verifies the time, and downloads and verifies the
    latest metadata and images for itself from its associated Primary
    ECU.  It also sends signed information about its installed images to
@@ -1128,10 +1128,11 @@ Table of Contents
    before installing an image or making it available to other ECUs.  A
    Primary ECU MUST perform full verification (Section 5.4.4.2).  A
    Secondary ECU SHOULD perform full verification if possible.  If a
-   Secondary cannot perform full verification, it SHALL perform partial
-   verification.  See the Uptane Deployment Considerations ([DEPLOY])
-   for a discussion of how to choose between partial and full
-   verification.
+   Secondary cannot perform full verification, it SHALL, at the very
+   least, perform partial verification.  In addition, it MAY also
+   perform some steps from the full verification process.  See the
+   Uptane Deployment Considerations ([DEPLOY]) for a discussion of how
+   to choose between partial and full verification.
 
    ECUs MUST have a secure source of time.  An OEM/Uptane implementor
    MAY use any external source of time that is demonstrably secure.  The
@@ -1191,7 +1192,7 @@ Table of Contents
 
    4.  Download and verify images (Section 5.4.2.4)
 
-   5.  OPTIONAL: Send latest time to secondaries (Section 5.4.2.5)
+   5.  OPTIONAL: Send latest time to Secondaries (Section 5.4.2.5)
 
    6.  Send metadata to Secondaries (Section 5.4.2.6)
 
@@ -1306,7 +1307,7 @@ Table of Contents
    Director's Targets metadata for that image.
 
    There may be several different filenames that all refer to the same
-   image binary, as described in Section 5.2.7.  If the primary has
+   image binary, as described in Section 5.2.7.  If the Primary has
    received multiple hashes for a given image binary via the Targets
    role (see Section 5.2.3.1) then it SHALL verify every hash for this
    image despite that the image is identified by a single hash as part
@@ -1329,8 +1330,8 @@ Table of Contents
    metadata for all four roles from both repositories, plus any
    delegated Targets metadata files the Secondary will recurse through
    to find the proper delegation.  For partial verification Secondaries,
-   this includes only the Targets metadata file from the Director
-   repository.
+   this MAY include fewer metadata files; it includes only the Targets
+   metadata file from the Director repository at a minimum.
 
    The Primary SHOULD determine the minimal set of metadata files to
    send to each Secondary by performing delegation resolution as
@@ -1386,7 +1387,7 @@ Table of Contents
    secondary storage, it will already have the latest image in its
    secondary storage as specified in Section 5.4.2.7, and should skip to
    the next step.)  The ECU MAY first create a backup of its previous
-   working image and store it elsewhere (e.g., the primary).
+   working image and store it elsewhere (e.g., the Primary).
 
    The filename used to identify the latest known image (i.e., the file
    to request from the Primary) SHALL be determined as follows:
@@ -1487,8 +1488,8 @@ Table of Contents
 
    A Primary ECU MUST perform full verification of metadata.  A
    Secondary ECU SHOULD perform full verification of metadata.  If a
-   Secondary cannot perform full verification, it SHALL perform partial
-   verification instead.
+   Secondary cannot perform full verification, it SHALL, at the very
+   least, perform partial verification.
 
    If a step in the following workflows does not succeed (e.g., the
    update is aborted because a new metadata file was not signed), an ECU
@@ -1506,6 +1507,18 @@ Table of Contents
 
    2.  Download and check the Targets metadata file from the Director
        repository, following the procedure in Section 5.4.4.6.
+
+   Note that this verification procedure is the smallest set of Uptane
+   checks permissible for an Uptane Secondary ECU.  An ECU MAY
+   additionally implement more metadata checks.
+
+   For example, an ECU MAY also fetch and verify Root metadata from the
+   Director (following the procedure in Section 5.4.4.3) before checking
+   Targets metadata.  Performing this additional check would provide the
+   ECU with a secure way to receive and validate a rotation of the
+   Director's Targets key.
+
+   See [DEPLOY] for more discussion on this topic.
 
 5.4.4.2.  Full verification
 
@@ -1757,9 +1770,9 @@ Table of Contents
        the version number listed in the latest Snapshot metadata.  If
        the version number does not match, discard it, abort the update
        cycle, and report the failure.  (Checks for a mix-and-match
-       attack.)  Skip this step if checking Targets metadata on a
-       partial verification ECU; partial verification ECUs will not have
-       Snapshot metadata.
+       attack.)  This step MAY be skipped when checking Targets metadata
+       on a partial verification ECU; partial verification ECUs might
+       not have Snapshot metadata.
 
    3.  Check that the Targets metadata has been signed by the threshold
        of keys specified in the relevant metadata file (Checks for an
@@ -1940,8 +1953,8 @@ Table of Contents
 
    [DEPLOY]   Members of the Uptane Alliance Community, ., "Uptane
               Deployment Considerations", n.d.,
-              <https://docs.google.com/document/
-              d/17wOs-T7mugwte5_Dt-KLGMsp-3_yAARejpFmrAMefSE/>.
+              <https://uptane.github.io/deployment-considerations/
+              index.html>.
 
    [IN-TOTO]  "in-toto: A framework to secure the integrity of software
               supply chains", October 2018,
