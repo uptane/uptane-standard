@@ -429,7 +429,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2020-9-14" />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-9-17" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -1215,7 +1215,7 @@
 <p></p>
 
 <ol>
-<li>Verify latest attested time (<a href="#verify_time" class="xref">Section 5.4.3.1</a>)</li>
+<li>Verify latest attested time. This is optional if the ECU does not have the capacity to verify a time message (<a href="#verify_time" class="xref">Section 5.4.3.1</a>)</li>
 <li>Verify metadata (<a href="#verify_metadata" class="xref">Section 5.4.3.2</a>)</li>
 <li>Download latest image (<a href="#download_image" class="xref">Section 5.4.3.3</a>)</li>
 <li>Verify image (<a href="#verify_image" class="xref">Section 5.4.3.4</a>)</li>
@@ -1225,7 +1225,7 @@
 <h1 id="rfc.section.5.4.3.1">
 <a href="#rfc.section.5.4.3.1">5.4.3.1.</a> <a href="#verify_time" id="verify_time">Load and verify the latest attested time</a>
 </h1>
-<p id="rfc.section.5.4.3.1.p.1">The ECU SHALL load and verify the current time, or the most recent securely attested time.</p>
+<p id="rfc.section.5.4.3.1.p.1">IF the ECU has the capability to verify a time message, the ECU is CONDITIONALLY REQUIRED to load and verify the current time, or the most recent securely attested time.</p>
 <h1 id="rfc.section.5.4.3.2">
 <a href="#rfc.section.5.4.3.2">5.4.3.2.</a> <a href="#verify_metadata" id="verify_metadata">Verify metadata</a>
 </h1>

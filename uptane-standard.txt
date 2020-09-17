@@ -1355,7 +1355,8 @@ Table of Contents
    An ECU SHALL perform the following steps when attempting to install a
    new image:
 
-   1.  Verify latest attested time (Section 5.4.3.1)
+   1.  Verify latest attested time.  This is optional if the ECU does
+       not have the capacity to verify a time message (Section 5.4.3.1)
 
    2.  Verify metadata (Section 5.4.3.2)
 
@@ -1369,8 +1370,9 @@ Table of Contents
 
 5.4.3.1.  Load and verify the latest attested time
 
-   The ECU SHALL load and verify the current time, or the most recent
-   securely attested time.
+   IF the ECU has the capability to verify a time message, the ECU is
+   CONDITIONALLY REQUIRED to load and verify the current time, or the
+   most recent securely attested time.
 
 5.4.3.2.  Verify metadata
 
