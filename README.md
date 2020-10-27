@@ -1,6 +1,6 @@
 # Uptane Standard
 
-[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group under [IEEE-ISTO](https://ieee-isto.org/) began the process of describing the system's design, implementation, and deployment considerations as a formal standard. On July 31, IEEE/ISTO released *IEEE-ISTO 6100.1.0.0: Uptane Standard for Design and Implementation* (see link below under documentation). Uptane is now a [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/) project. 
+[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group under [IEEE-ISTO](https://ieee-isto.org/) began the process of describing the system's design, implementation, and deployment as a formal standard. On July 31, IEEE/ISTO released *IEEE-ISTO 6100.1.0.0: Uptane Standard for Design and Implementation* (see link below under documentation). Uptane is now a [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/) project. 
 
 This repository is the public home of all standardization work for Uptane.
 
@@ -10,8 +10,8 @@ The Uptane Standards document should be considered the authoritative resource fo
 
 * [Uptane Standards Document](https://uptane.github.io/papers/ieee-isto-6100.1.0.0.uptane-standard.html)
 * [Reference Implementation and Demonstration Code](https://github.com/uptane/uptane)
-* [Deployment Considerations](https://uptane.github.io/deployment-considerations/index.html)
-* [Uptane POUF (Protocols, Operations, Usage, and Formats)Guidelines](https://uptane.github.io/pouf.html)
+* [Deployment Best Practices](https://uptane.github.io/deployment-considerations/index.html)
+* [Uptane POUF (Protocols, Operations, Usage, and Formats) Guidelines](https://uptane.github.io/pouf.html)
 * [Example POUF](https://uptane.github.io/reference_pouf.html)
 
 ## Contributing
@@ -40,7 +40,7 @@ Use American English spellings (i.e. write "color" instead of "colour" and "arti
 
 Links to the Standard (from outside the Standard) should point to the latest rendered released version. It is preferred to link by section name, not number, as the numbers tend to change more than the names. Internal links within the Standard should use the standard cross-link syntax.
 
-Links to the Deployment Considerations should point to the [deployed web pages](https://uptane.github.io/deployment-considerations/index.html).
+Links to the Deployment Best Practices should point to the [deployed web pages](https://uptane.github.io/deployment-considerations/index.html).
 
 ## Building/rendering the document
 
