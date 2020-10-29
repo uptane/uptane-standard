@@ -652,9 +652,9 @@ Table of Contents
    as defined in [RFC5198], including normalization into Unicode
    Normalization Form C ([NFC]).
 
-   In the Deployment Considerations document ([DEPLOY]), the Uptane
-   Alliance provides some examples of compliant metadata structures in
-   ASN.1 and JSON.
+   In the _Deployment Best Practices_ ([DEPLOY]), Joint Development
+   Foundation Projects, LLC, Uptane Series provides some examples of
+   compliant metadata structures in ASN.1 and JSON.
 
 5.2.1.  Common metadata structures
 
@@ -755,11 +755,11 @@ Table of Contents
    In addition to the required metadata, Targets metadata files MAY
    contain extra metadata for images on the repository.  This metadata
    can be customized for a particular use case.  Examples of use cases
-   for different types of custom metadata can be found in the Deployment
-   Considerations document ([DEPLOY]).  However, there are a few
-   important pieces of custom metadata that SHOULD be present in most
-   implementations.  In addition, there is one element in the custom
-   metadata that MUST be present in the Targets metadata from the
+   for different types of custom metadata can be found in the
+   _Deployment Best Practices_ document ([DEPLOY]).  However, there are
+   a few important pieces of custom metadata that SHOULD be present in
+   most implementations.  In addition, there is one element in the
+   custom metadata that MUST be present in the Targets metadata from the
    Director.
 
    Custom metadata MAY also contain a demarcated field or section that
@@ -920,9 +920,9 @@ Table of Contents
    no explicit mapping would be defined, because the mapping is defined
    as part of the Uptane client implementation.
 
-   The _Uptane Deployment Considerations_ document ([DEPLOY]) gives more
-   guidance on how to implement repository mapping metadata for more
-   complex use cases.  It also discusses strategies for updating
+   The _Uptane Deployment Best Practices_ document ([DEPLOY]) provides
+   more guidance on how to implement repository mapping metadata for
+   more complex use cases.  It also discusses strategies for updating
    repository mapping metadata, if required.
 
 5.2.7.  Rules for filenames in repositories and metadata
@@ -1131,17 +1131,17 @@ Table of Contents
    Secondary cannot perform full verification, it SHALL, at the very
    least, perform partial verification.  In addition, it MAY also
    perform some steps from the full verification process.  See the
-   Uptane Deployment Considerations ([DEPLOY]) for a discussion of how
-   to choose between partial and full verification.
+   _Uptane Deployment Best Practices_ document ([DEPLOY]) for a
+   discussion of how to choose between partial and full verification.
 
    ECUs MUST have a secure source of time.  An OEM/Uptane implementor
    MAY use any external source of time that is demonstrably secure.  The
-   Uptane Deployment Considerations ([DEPLOY]) describe one way to
-   implement an external time server to cryptographically attest time,
-   as well as the security properties required.  When "loading time" is
-   referenced in procedures in this standard, it should be understood to
-   mean loading into memory the current time (if the ECU has its own
-   secure clock), or the most recent attested time.
+   _Uptane Deployment Best Practices_ document ([DEPLOY]) describes one
+   way to implement an external time server to cryptographically attest
+   time, as well as the security properties required.  When "loading
+   time" is referenced in procedures in this Standard, it should be
+   understood to mean loading into memory the current time (if the ECU
+   has its own secure clock), or the most recent attested time.
 
 5.4.1.  Build-time prerequisite requirements for ECUs
 
@@ -1151,9 +1151,10 @@ Table of Contents
 
    1.  A sufficiently recent copy of required Uptane metadata at the
        time of manufacture or install.  This is necessary for the ECU to
-       authenticate that the remote repository is legitmate when it
-       first downloads metadata in the field.  See the Uptane Deployment
-       Considerations ([DEPLOY]) for more information.
+       authenticate that the remote repository is legitimate when it
+       first downloads metadata in the field.  See the _Uptane
+       Deployment Best Practices_ document ([DEPLOY]) for more
+       information.
 
        *  Partial verification Secondary ECUs MUST have the Root and
           Targets metadata from the Director repository (to reduce the
@@ -1954,7 +1955,7 @@ Table of Contents
               digital-car-repair/>.
 
    [DEPLOY]   Members of the Uptane Alliance Community, ., "Uptane
-              Deployment Considerations", n.d.,
+              Deployment Best Practices", n.d.,
               <https://uptane.github.io/deployment-considerations/
               index.html>.
 

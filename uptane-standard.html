@@ -429,7 +429,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Alliance Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2020-9-17" />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-10-29" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -851,7 +851,7 @@
 </h1>
 <p id="rfc.section.5.2.p.1">Uptane&#8217;s security guarantees all rely on properly created metadata that follows a designated structure. The Uptane standard <strong>does not</strong> mandate any particular format or encoding for the metadata as a whole. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.</p>
 <p id="rfc.section.5.2.p.2">However, string comparison is required as part of metadata verification. To ensure an accurate basis for comparing strings, all strings MUST be encoded in the Unicode Format for Network Interchange as defined in <a href="#RFC5198" class="xref">[RFC5198]</a>, including normalization into Unicode Normalization Form C (<a href="#NFC" class="xref">[NFC]</a>).</p>
-<p id="rfc.section.5.2.p.3">In the Deployment Considerations document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>), the Uptane Alliance provides some examples of compliant metadata structures in ASN.1 and JSON.</p>
+<p id="rfc.section.5.2.p.3">In the <em>Deployment Best Practices</em> (<a href="#DEPLOY" class="xref">[DEPLOY]</a>), Joint Development Foundation Projects, LLC, Uptane Series provides some examples of compliant metadata structures in ASN.1 and JSON.</p>
 <h1 id="rfc.section.5.2.1">
 <a href="#rfc.section.5.2.1">5.2.1.</a> <a href="#common_metadata" id="common_metadata">Common metadata structures</a>
 </h1>
@@ -915,7 +915,7 @@
 <h1 id="rfc.section.5.2.3.1.1">
 <a href="#rfc.section.5.2.3.1.1">5.2.3.1.1.</a> <a href="#custom-metadata-about-images" id="custom-metadata-about-images">Custom metadata about images</a>
 </h1>
-<p id="rfc.section.5.2.3.1.1.p.1">In addition to the required metadata, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the Deployment Considerations document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>). However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the Targets metadata from the Director.</p>
+<p id="rfc.section.5.2.3.1.1.p.1">In addition to the required metadata, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the <em>Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>). However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the Targets metadata from the Director.</p>
 <p id="rfc.section.5.2.3.1.1.p.2">Custom metadata MAY also contain a demarcated field or section that MUST match whenever two pieces of metadata are checked against each other, such as when Targets metadata from the Director repository is checked against Targets metadata from the Image repository.</p>
 <p id="rfc.section.5.2.3.1.1.p.3">The information listed below SHOULD be provided for each image on both the Image repository and the Director repository. If a &#8220;MUST match section&#8221; is to be implemented, that is where this information SHOULD be placed.</p>
 <p></p>
@@ -1003,7 +1003,7 @@
 <li>A single mapping indicating that all images (<samp>*</samp>) MUST be signed by both the Director and Image repository</li>
 </ul>
 <p id="rfc.section.5.2.6.p.7">Note that the metadata need not be in the form of a metadata file. For example, in the basic case where there is only one Director and one Image repository, and all images need to have signed metadata from both repositories, it would be sufficient to have a configuration file with URLs for the two repositories, and a client that always checks for metadata matches between them. In this case, no explicit mapping would be defined, because the mapping is defined as part of the Uptane client implementation.</p>
-<p id="rfc.section.5.2.6.p.8">The <em>Uptane Deployment Considerations</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) gives more guidance on how to implement repository mapping metadata for more complex use cases. It also discusses strategies for updating repository mapping metadata, if required.</p>
+<p id="rfc.section.5.2.6.p.8">The <em>Uptane Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) provides more guidance on how to implement repository mapping metadata for more complex use cases. It also discusses strategies for updating repository mapping metadata, if required.</p>
 <h1 id="rfc.section.5.2.7">
 <a href="#rfc.section.5.2.7">5.2.7.</a> <a href="#metadata_filename_rules" id="metadata_filename_rules">Rules for filenames in repositories and metadata</a>
 </h1>
@@ -1093,8 +1093,8 @@
 </h1>
 <p id="rfc.section.5.4.p.1">An Uptane-compliant ECU SHALL be able to download and verify Image metadata and image binaries before installing a new image and MUST have a secure way of verifying the current time, or a sufficiently recent attestation of the time.</p>
 <p id="rfc.section.5.4.p.2">Each ECU receiving over-the-air updates in a vehicle is either a Primary or a Secondary ECU. A Primary ECU collects and delivers vehicle manifests to the Director (<a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>) that contain information about which images have been installed on ECUs in the vehicle. It also verifies the time and downloads and verifies the latest metadata and images for itself and for its Secondaries. A Secondary ECU verifies the time, and downloads and verifies the latest metadata and images for itself from its associated Primary ECU. It also sends signed information about its installed images to its associated Primary.</p>
-<p id="rfc.section.5.4.p.3">All ECUs MUST verify image metadata as specified in <a href="#metadata_verification" class="xref">Section 5.4.4</a> before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification (<a href="#full_verification" class="xref">Section 5.4.4.2</a>). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it MAY also perform some steps from the full verification process. See the Uptane Deployment Considerations (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) for a discussion of how to choose between partial and full verification.</p>
-<p id="rfc.section.5.4.p.4">ECUs MUST have a secure source of time. An OEM/Uptane implementor MAY use any external source of time that is demonstrably secure. The Uptane Deployment Considerations (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) describe one way to implement an external time server to cryptographically attest time, as well as the security properties required. When &#8220;loading time&#8221; is referenced in procedures in this standard, it should be understood to mean loading into memory the current time (if the ECU has its own secure clock), or the most recent attested time.</p>
+<p id="rfc.section.5.4.p.3">All ECUs MUST verify image metadata as specified in <a href="#metadata_verification" class="xref">Section 5.4.4</a> before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification (<a href="#full_verification" class="xref">Section 5.4.4.2</a>). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it MAY also perform some steps from the full verification process. See the <em>Uptane Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) for a discussion of how to choose between partial and full verification.</p>
+<p id="rfc.section.5.4.p.4">ECUs MUST have a secure source of time. An OEM/Uptane implementor MAY use any external source of time that is demonstrably secure. The <em>Uptane Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) describes one way to implement an external time server to cryptographically attest time, as well as the security properties required. When &#8220;loading time&#8221; is referenced in procedures in this Standard, it should be understood to mean loading into memory the current time (if the ECU has its own secure clock), or the most recent attested time.</p>
 <h1 id="rfc.section.5.4.1">
 <a href="#rfc.section.5.4.1">5.4.1.</a> <a href="#build-time-prerequisite-requirements-for-ecus" id="build-time-prerequisite-requirements-for-ecus">Build-time prerequisite requirements for ECUs</a>
 </h1>
@@ -1102,7 +1102,7 @@
 <p></p>
 
 <ol>
-<li>A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. This is necessary for the ECU to authenticate that the remote repository is legitmate when it first downloads metadata in the field. See the Uptane Deployment Considerations (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) for more information.  <ul>
+<li>A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. This is necessary for the ECU to authenticate that the remote repository is legitimate when it first downloads metadata in the field. See the <em>Uptane Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) for more information.  <ul>
 <li>Partial verification Secondary ECUs MUST have the Root and Targets metadata from the Director repository (to reduce the scope of rollback and replay attacks). These ECUs MAY also have metadata from other roles or the Image repository if they will be used by the Secondary.</li>
 <li>Full verification ECUs MUST have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories (to prevent rollback and replay attacks), as well as the repository mapping metadata (<a href="#repo_mapping_meta" class="xref">Section 5.2.6</a>). Delegations are not required.</li>
 </ul>
@@ -1486,7 +1486,7 @@
 <tr>
 <td class="reference"><b id="DEPLOY">[DEPLOY]</b></td>
 <td class="top">
-<a>Members of the Uptane Alliance Community, .</a>, "<a href="https://uptane.github.io/deployment-considerations/index.html">Uptane Deployment Considerations</a>", n.d..</td>
+<a>Members of the Uptane Alliance Community, .</a>, "<a href="https://uptane.github.io/deployment-considerations/index.html">Uptane Deployment Best Practices</a>", n.d..</td>
 </tr>
 <tr>
 <td class="reference"><b id="IN-TOTO">[IN-TOTO]</b></td>
