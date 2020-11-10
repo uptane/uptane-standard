@@ -70,12 +70,12 @@ Table of Contents
    faster and easier recovery process should a compromise occur.
 
    These instructions specify the components necessary for a compliant
-   implementation.  Individual implementors can make their own
+   implementation.  Individual implementers can make their own
    technological choices within those requirements.  This flexibility
    makes Uptane adaptable to the many customized update solutions used
-   by manufacturers.  If implementors wish to have compatible formats,
+   by manufacturers.  If implementers wish to have compatible formats,
    they may use POUFs.  POUFs contain a description of implementation
-   choices as well as data binding formats.  An implementor who adopts a
+   choices as well as data binding formats.  An implementer who adopts a
    POUF, as well as the Uptane Standard, will be able to interoperate
    with other implementations using that POUF.
 
@@ -529,7 +529,7 @@ Table of Contents
    Uptane is a secure software update framework for automobiles.  We do
    not specify implementation details.  Instead, we describe the
    components necessary for a compliant implementation and leave it up
-   to individual implementors to make their own technological choices
+   to individual implementers to make their own technological choices
    within those requirements.
 
    At a high level, Uptane requires:
@@ -1078,7 +1078,7 @@ Table of Contents
 5.3.2.2.  Inventory Database
 
    The Director SHALL use a private inventory database to store
-   information about ECUs and vehicles.  An implementor MAY use any
+   information about ECUs and vehicles.  An implementer MAY use any
    durable database for this purpose.
 
    The inventory database MUST record the following pieces of
@@ -1134,7 +1134,7 @@ Table of Contents
    _Uptane Deployment Best Practices_ document ([DEPLOY]) for a
    discussion of how to choose between partial and full verification.
 
-   ECUs MUST have a secure source of time.  An OEM/Uptane implementor
+   ECUs MUST have a secure source of time.  An OEM/Uptane implementer
    MAY use any external source of time that is demonstrably secure.  The
    _Uptane Deployment Best Practices_ document ([DEPLOY]) describes one
    way to implement an external time server to cryptographically attest
@@ -1648,7 +1648,7 @@ Table of Contents
 
        2.  Try downloading a new version N+1 of the Root metadata file,
            up to some X number of bytes.  The value for X is set by the
-           implementor.  For example, X may be tens of kilobytes.  The
+           implementer.  For example, X may be tens of kilobytes.  The
            filename used to download the Root metadata file is of the
            fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json).
            If this file is not available, the current Root metadata file
@@ -1692,7 +1692,7 @@ Table of Contents
    To properly check Timestamp metadata, an ECU SHOULD:
 
    1.  Download up to Y number of bytes.  The value for Y is set by the
-       implementor.  For example, Y may be tens of kilobytes.  The
+       implementer.  For example, Y may be tens of kilobytes.  The
        filename used to download the Timestamp metadata file is of the
        fixed form FILENAME.EXT (e.g., timestamp.json).
 
@@ -1767,7 +1767,7 @@ Table of Contents
 
    1.  Download up to Z number of bytes, constructing the metadata
        filename as defined in Section 5.2.7.  The value for Z is set by
-       the implementor.  For example, Z may be tens of kilobytes.
+       the implementer.  For example, Z may be tens of kilobytes.
 
    2.  The version number of the new Targets metadata file MUST match
        the version number listed in the latest Snapshot metadata.  If
