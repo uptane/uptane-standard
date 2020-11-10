@@ -161,7 +161,7 @@ This document describes a framework for securing ground vehicle software update 
 
 Uptane is a secure software update framework for ground vehicles. This document describes procedures to enable programmers for OEMs and suppliers to securely design and implement this framework in a manner that better protects connected units on ground vehicles. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to compromise critical systems. It also assures a faster and easier recovery process should a compromise occur.
 
-These instructions specify the components necessary for a compliant implementation. Individual implementors can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementors wish to have compatible formats, they may use POUFs. POUFs contain a description of implementation choices as well as data binding formats. An implementor who adopts a POUF, as well as the Uptane Standard, will be able to interoperate with other implementations using that POUF.
+These instructions specify the components necessary for a compliant implementation. Individual implementers can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementers wish to have compatible formats, they may use POUFs. POUFs contain a description of implementation choices as well as data binding formats. An implementer who adopts a POUF, as well as the Uptane Standard, will be able to interoperate with other implementations using that POUF.
 
 # Terminology
 
@@ -375,7 +375,7 @@ Full control of a vehicle, or one or more ECUs within a vehicle, is the most sev
 
 # Detailed design of Uptane {#design}
 
-Uptane is a secure software update framework for automobiles. We do not specify implementation details. Instead, we describe the components necessary for a compliant implementation and leave it up to individual implementors to make their own technological choices within those requirements.
+Uptane is a secure software update framework for automobiles. We do not specify implementation details. Instead, we describe the components necessary for a compliant implementation and leave it up to individual implementers to make their own technological choices within those requirements.
 
 At a high level, Uptane requires:
 
@@ -628,7 +628,7 @@ A Director repository MUST conform to the following six-step process for directi
 
 #### Inventory Database {#inventory_db}
 
-The Director SHALL use a private inventory database to store information about ECUs and vehicles. An implementor MAY use any durable database for this purpose.
+The Director SHALL use a private inventory database to store information about ECUs and vehicles. An implementer MAY use any durable database for this purpose.
 
 The inventory database MUST record the following pieces of information:
 
@@ -651,7 +651,7 @@ Each ECU receiving over-the-air updates in a vehicle is either a Primary or a Se
 
 All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification ({{full_verification}}). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it MAY also perform some steps from the full verification process. See the *Uptane Deployment Best Practices* document ({{DEPLOY}}) for a discussion of how to choose between partial and full verification.
 
-ECUs MUST have a secure source of time. An OEM/Uptane implementor MAY use any external source of time that is demonstrably secure. The *Uptane Deployment Best Practices* document ({{DEPLOY}}) describes one way to implement an external time server to cryptographically attest time, as well as the security properties required. When "loading time" is referenced in procedures in this Standard, it should be understood to mean loading into memory the current time (if the ECU has its own secure clock), or the most recent attested time.
+ECUs MUST have a secure source of time. An OEM/Uptane implementer MAY use any external source of time that is demonstrably secure. The *Uptane Deployment Best Practices* document ({{DEPLOY}}) describes one way to implement an external time server to cryptographically attest time, as well as the security properties required. When "loading time" is referenced in procedures in this Standard, it should be understood to mean loading into memory the current time (if the ECU has its own secure clock), or the most recent attested time.
 
 ### Build-time prerequisite requirements for ECUs
 
@@ -876,7 +876,7 @@ To properly check Root metadata, an ECU SHOULD:
 1. Load the previous Root metadata file.
 2. Update to the latest Root metadata file.
     1. Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous Root metadata file).
-    2. Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementor. For example, X may be tens of kilobytes. The filename used to download the Root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, the current Root metadata file is the latest; continue with step 3.
+    2. Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementer. For example, X may be tens of kilobytes. The filename used to download the Root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, the current Root metadata file is the latest; continue with step 3.
     3. Version N+1 of the Root metadata file MUST have been signed by the following: (1) a threshold of keys specified in the latest Root metadata file (version N), and (2) a threshold of keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at version N of the Root metadata file. (Checks for an arbitrary software attack.)
     4. The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 1 and version N of the Root metadata file. (Checks for a rollback attack.)
     5. Set the latest Root metadata file to the new Root metadata file.
@@ -888,7 +888,7 @@ To properly check Root metadata, an ECU SHOULD:
 
 To properly check Timestamp metadata, an ECU SHOULD:
 
-1. Download up to Y number of bytes. The value for Y is set by the implementor. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).
+1. Download up to Y number of bytes. The value for Y is set by the implementer. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).
 2. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
 3. Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
 4. Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)
@@ -910,7 +910,7 @@ To properly check Snapshot metadata, an ECU SHOULD:
 
 To properly check Targets metadata, an ECU SHOULD:
 
-1. Download up to Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementor. For example, Z may be tens of kilobytes.
+1. Download up to Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementer. For example, Z may be tens of kilobytes.
 1. The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU; partial verification ECUs might not have Snapshot metadata.
 1. Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack):
     1. If checking top-level Targets metadata, the threshold of keys is specified in the Root metadata.
