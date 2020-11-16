@@ -553,7 +553,7 @@ Repository mapping metadata, or the equivalent informational content, MUST be pr
 * A list of repository names and one or more URLs at which the named repository can be accessed. At a minimum, this MUST include the Director and Image repositories.
 * A list of mappings of image paths to repositories, each of which contains:
     * A list of image paths. Image paths MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.
-    * A list of repositories that MUST sign the Targets metadata for the image paths.
+    * A list of repositories that MUST provide signed Targets metadata for images stored at those paths.
 
 For example, in the most basic Uptane case, the repository mapping metadata would contain:
 
