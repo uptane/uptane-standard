@@ -531,7 +531,7 @@ The Snapshot metadata lists version numbers and filenames of all Targets metadat
 
 For each Targets metadata file on the repository, the Snapshot metadata SHALL contain the following information:
 
-* The filename and version number of the each Targets metadata file on the repository
+* The filename and version number of the Targets metadata file.
 
 The Snapshot metadata MAY also list the Root metadata filename and version number. This is not required, particularly for implementations of {{TAP-5}}, but MAY be included in all cases for backward compatibility.
 
