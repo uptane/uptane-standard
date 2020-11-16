@@ -183,7 +183,7 @@ In order to be considered Uptane-compliant, an implementation MUST follow all of
 
 *Hardware Identifier*: An attribute used to identify a model of an ECU.
 
-*Image*: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.  
+*Image*: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.
 
 *Metadata*:  Information describing the characteristics of data including, for example, structural
 metadata describing data structures (e.g., data format, syntax, and semantics) and
@@ -195,15 +195,15 @@ descriptive metadata describing data contents (e.g., information security labels
 
 *Repository*: A server containing metadata about images. May also contain the images themselves. Other data may be stored on the repository to be accessed by ECUs during the update process.
 
-*Suppliers*: Independent companies to which vehicle manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that perform outsourced work for Tier-1 suppliers.  
+*Suppliers*: Independent companies to which vehicle manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that perform outsourced work for Tier-1 suppliers.
 
-*Vehicle Version Manifest*: A compilation of all ECU version manifests on a vehicle. It serves as a master list of all images currently running on all ECUs in the vehicle.  
+*Vehicle Version Manifest*: A compilation of all ECU version manifests on a vehicle. It serves as a master list of all images currently running on all ECUs in the vehicle.
 
 ## Uptane role terminology
 
 These terms are defined in greater detail in {{roles}}.
 
-*Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.  
+*Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.
 *Role*: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
 * *Root role*: Signs metadata that distributes and revokes public keys used to verify the Root, Timestamp, Snapshot, and Targets role metadata.
@@ -214,7 +214,7 @@ These terms are defined in greater detail in {{roles}}.
 
 ## Acronyms and abbreviations
 
-*CAN Bus*: Controller Area Network bus standard  
+*CAN Bus*: Controller Area Network bus standard
 
 *CDN*: Content Delivery Network
 
@@ -224,7 +224,7 @@ These terms are defined in greater detail in {{roles}}.
 
 *OBD*: On-board diagnostics
 
-*SOTA*: Software Updates Over-the-Air  
+*SOTA*: Software Updates Over-the-Air
 
 *UDS*: Unified Diagnostic Services
 
@@ -809,7 +809,7 @@ NOTE: Verifying image size along with hash will become a requirement in a future
 
 NOTE: See {{DEPLOY}} for guidance on how to deal with Secondary ECU failures for ECUs that do not have secondary storage.
 
-If any step fails, the ECU SHALL jump to the ({{create_version_report}}) step.  
+If any step fails, the ECU SHALL jump to the ({{create_version_report}}) step.
 
 
 #### Install image {#install_image}
