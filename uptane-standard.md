@@ -326,20 +326,20 @@ The overarching goal of Uptane is to provide a system that is resilient in the f
 
 We assume that attackers may want to achieve one or more of the following goals, in increasing order of severity:
 
-* Read the contents of updates to discover confidential information, reverse-engineer firmware, or compare two firmware images to identify security fixes and hence determine the fixed security vulnerability
-* Deny installation of updates to prevent vehicles from fixing software problems
-* Cause one or more ECUs in the vehicle to fail, denying use of the vehicle or of certain functions
-* Control ECUs within the vehicle, and possibly the vehicle itself
+* Read the contents of updates to discover confidential information, reverse-engineer firmware, or compare two firmware images to identify security fixes and hence determine the fixed security vulnerability.
+* Deny installation of updates to prevent vehicles from fixing software problems.
+* Cause one or more ECUs in the vehicle to fail, denying use of the vehicle or of certain functions.
+* Control ECUs within the vehicle, and possibly the vehicle itself.
 
 ## Attacker capabilities {#capabilities}
 
 Uptane is designed with resilience to compromise in mind. We assume that attackers may develop one or more of the following capabilities:
 
 * Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability may be developed in two domains:
-    * Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories
-    * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g., via an OBD port or using a compromised ECU as a vector)
+    * Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories.
+    * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g., via an OBD port or using a compromised ECU as a vector).
 * Compromise and control either a Director repository or Image repository server, and any keys stored on that repository, but not both the Director and Image repositories.
-* Compromise either a Primary ECU or a Secondary ECU, but not both in the same vehicle
+* Compromise either a Primary ECU or a Secondary ECU, but not both in the same vehicle.
 
 ## Description of threats {#threats}
 
@@ -380,18 +380,18 @@ Uptane is a secure software update framework for automobiles. We do not specify 
 At a high level, Uptane requires:
 
 * Two software repositories:
-    * An Image repository containing binary images to install and signed metadata about those images
-    * A Director repository connected to an inventory database that can sign metadata on demand for images in the Image repository
-* Repository tools for generating Uptane-specific metadata about images
+    * An Image repository containing binary images to install and signed metadata about those images.
+    * A Director repository connected to an inventory database that can sign metadata on demand for images in the Image repository.
+* Repository tools for generating Uptane-specific metadata about images.
 * A public key infrastructure supporting the required metadata production and signing roles on each repository:
-    * Root - The certificate authority for the Uptane ecosystem. Distributes public keys for verifying all the other roles' metadata
-    * Timestamp - Indicates whether there are new metadata or images
-    * Snapshot - Indicates images released by the repository at a point in time via signing metadata about Targets metadata
-    * Targets - Indicates metadata about images, such as hashes and file sizes
+    * Root - The certificate authority for the Uptane ecosystem. Distributes public keys for verifying all the other roles' metadata.
+    * Timestamp - Indicates whether there are new metadata or images.
+    * Snapshot - Indicates images released by the repository at a point in time via signing metadata about Targets metadata.
+    * Targets - Indicates metadata about images, such as hashes and file sizes.
 * A secure way for ECUs to know the time.
 * An ECU capable of downloading images and associated metadata from the Uptane servers.
 * An in-vehicle client on a Primary ECU capable of verifying the signatures on all update metadata and downloading updates on behalf of its associated Secondary ECUs. The Primary ECU MAY be the same ECU that communicates with the server.
-* A client or library on each Secondary ECU capable of performing either full or partial verification of metadata
+* A client or library on each Secondary ECU capable of performing either full or partial verification of metadata.
 
 ## Roles on repositories {#roles}
 
@@ -467,7 +467,7 @@ The following sections describe the role-specific metadata. All roles SHALL foll
 A repository's Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
 
 * A representation of the public keys for all four roles. Each key SHALL have a unique public key identifier.
-* An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
+* An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role.
 
 Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded.  If this mapping of URLs is used, the implementer SHOULD implement this functionality following {{TAP-5}} to avoid adding unforeseen security risks.
 
@@ -557,9 +557,9 @@ Repository mapping metadata, or the equivalent informational content, MUST be pr
 
 For example, in the most basic Uptane case, the repository mapping metadata would contain:
 
-* The name and URL of the Director repository
-* The name and URL of the Image repository
-* A single mapping indicating that all images (`*`) MUST be signed by both the Director and Image repository
+* The name and URL of the Director repository.
+* The name and URL of the Image repository.
+* A single mapping indicating that all images (`*`) MUST be signed by both the Director and Image repository.
 
 Note that the metadata need not be in the form of a metadata file. For example, in the basic case where there is only one Director and one Image repository, and all images need to have signed metadata from both repositories, it would be sufficient to have a configuration file with URLs for the two repositories and a client that always checks for metadata matches between them. In this case, no explicit mapping would be defined, because the mapping is defined as part of the Uptane client implementation.
 
