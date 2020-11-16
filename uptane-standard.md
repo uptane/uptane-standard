@@ -203,7 +203,7 @@ descriptive metadata describing data contents (e.g., information security labels
 
 These terms are defined in greater detail in {{roles}}.
 
-*Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.
+*Delegation*: A process by which the responsibility of signing metadata about images is assigned to another party.
 *Role*: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
 * *Root role*: Signs metadata that distributes and revokes public keys used to verify the Root, Timestamp, Snapshot, and Targets role metadata.
