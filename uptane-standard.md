@@ -169,13 +169,13 @@ These instructions specify the components necessary for a compliant implementati
 
 The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in {{RFC2119}}.
 
-In order to be considered “Uptane-compliant,” an implementation MUST follow all of these rules as specified in the document.
+In order to be considered Uptane-compliant, an implementation MUST follow all of these rules as specified in the document.
 
 ## Terminology
 
 *Bundle*: A set of images released by the repository that is meant to be installed by one or more target ECUs on a vehicle during the same update cycle.
 
-*Bus*: An internal communications network that interconnects components within a vehicle. A vehicle can have a number of buses that will vary in terms of power, speed and resources.
+*Bus*: An internal communications network that interconnects components within a vehicle. A vehicle can have a number of buses that will vary in terms of power, speed, and resources.
 
 *ECU Identifier*: An attribute used to identify a specific ECU (e.g., such as a unique serial number).
 
@@ -187,7 +187,7 @@ In order to be considered “Uptane-compliant,” an implementation MUST follow 
 
 *Metadata*:  Information describing the characteristics of data including, for example, structural
 metadata describing data structures (e.g., data format, syntax, and semantics) and
-descriptive metadata describing data contents (e.g., information security labels). As used in Uptane, metadata can be described as information associated with a role or an image that contains the characteristics or parameters thereof (e.g. cryptographic material parameters, file names and versions.)
+descriptive metadata describing data contents (e.g., information security labels). As used in Uptane, metadata can be described as information associated with a role or an image that contains the characteristics or parameters thereof (e.g. cryptographic material parameters, file names, and versions.)
 
 *Primary/Secondary ECUs*: Terms used to describe the control units within a ground vehicle. A Primary ECU downloads and verifies update images and metadata for itself and for Secondary ECUs, and distributes images and metadata to Secondaries. Thus, it requires extra storage space and a means to download images and metadata.  Secondary ECUs receive their update images and metadata from the Primary, and only need to verify and install their own metadata and images.
 
@@ -232,13 +232,13 @@ These terms are defined in greater detail in {{roles}}.
 
 # Rationale for and scope of Uptane Standards
 
-This Standards document clarifies the essential components and best practices for the secure design, implementation and deployment of Uptane by OEMs and suppliers. These practices contribute to compromise resilience, or the ability to minimize the extent of the threat posed by any given attack.
+This Standards document clarifies the essential components and best practices for the secure design, implementation, and deployment of Uptane by OEMs and suppliers. These practices contribute to compromise resilience, or the ability to minimize the extent of the threat posed by any given attack.
 
 However, this specification is intended as an implementation guide, and not as a detailed technical argument about the security properties that Uptane provides.  Readers interested in such documentation should refer to published papers that cover this topic.  {{UPTANEESCAR}}
 
 ## Why Uptane requires a standards document
 
-A standards document that can guide the safe design, integration and deployment of Uptane in vehicles is needed at this time because:
+A standards document that can guide the safe design, integration, and deployment of Uptane in vehicles is needed at this time because:
 
 * The number of connected units on the average vehicle continues to grow, with mainstream cars now containing up to 100 million lines of code. {{USATODAY}}
 * The expanded use of software over-the-air strategies creates new attack surfaces for malicious parties. {{CR-OTA}}
@@ -246,7 +246,7 @@ A standards document that can guide the safe design, integration and deployment 
 * Conventional strategies are also complicated by the differing resources of the ECUs, which can vary greatly in memory, storage space, and Internet connectivity.
 * The design of Uptane makes it possible to offer improved design flexibility, without sacrificing security.
 * This added design flexibility, however, could be a liability if the framework is implemented incorrectly.
-* Standardization of crucial steps in the design, implementation and use of Uptane can assure that customizability does not impact security or functionality.
+* Standardization of crucial steps in the design, implementation, and use of Uptane can assure that customizability does not impact security or functionality.
 
 ## Scope of Standards coverage
 
@@ -665,7 +665,7 @@ For an ECU to be capable of receiving Uptane-secured updates, it MUST have the f
 
 ### What the Primary does
 
-A Primary downloads, verifies, and distributes the latest time, metadata and images. To do so, it SHALL perform the following seven steps:
+A Primary downloads, verifies, and distributes the latest time, metadata, and images. To do so, it SHALL perform the following seven steps:
 
 1. Construct and send vehicle version manifest ({{construct_manifest_primary}})
 1. Download and check current time ({{check_time_primary}})
