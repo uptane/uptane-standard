@@ -30,7 +30,7 @@ Don't use fixed-width columns. The `plaintext` rendering target will produce a t
 
 ### Style guide
 
-Capitalize proper nouns and titles of things, such as the names of roles, repositories, and specific types of metadata. Do not capitalize the words "roles", "repository", and "metadata", however. For example, write "Targets role", "Director repository", "Primary ECU", and so on.
+Capitalize proper nouns and titles of things, such as the names of roles, repositories, and specific types of metadata. Do not capitalize the words "role", "repository", and "metadata", however. For example, write "Targets role", "Director repository", "Primary ECU", and so on.
 
 For headings and sub-headings, capitalize only the first word in a heading UNLESS the heading contains a proper noun.
 

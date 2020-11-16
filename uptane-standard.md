@@ -199,17 +199,17 @@ descriptive metadata describing data contents (e.g., information security labels
 
 *Vehicle Version Manifest*: A compilation of all ECU version manifests on a vehicle. It serves as a master list of all images currently running on all ECUs in the vehicle.  
 
-## Uptane Role terminology
+## Uptane role terminology
 
 These terms are defined in greater detail in {{roles}}.
 
 *Delegations*: A process by which the responsibility of signing metadata about images is assigned to another party.  
 *Role*: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
-* *Root Role*: Signs metadata that distributes and revokes public keys used to verify the Root, Timestamp, Snapshot, and Targets role metadata.
-* *Snapshot Role*: Signs metadata that indicates which images the repository has released at the same time.
-* *Targets Role*: Signs metadata used to verify the image, such as cryptographic hashes and file size.
-* *Timestamp Role*: Signs metadata that indicates if there are any new metadata or images on the repository.
+* *Root role*: Signs metadata that distributes and revokes public keys used to verify the Root, Timestamp, Snapshot, and Targets role metadata.
+* *Snapshot role*: Signs metadata that indicates which images the repository has released at the same time.
+* *Targets role*: Signs metadata used to verify the image, such as cryptographic hashes and file size.
+* *Timestamp role*: Signs metadata that indicates if there are any new metadata or images on the repository.
 
 
 ## Acronyms and abbreviations
@@ -278,7 +278,7 @@ An OEM plans to install Uptane on new vehicles. This entails the following compo
 
 #### Updating one ECU with a complete image
 
-A tier-1 supplier completes work on a revised image for an electronic brake control module. This module will control the brakes on all models of an SUV produced by the OEM mentioned above. Assuming supplier delegation is supported by the OEM for this ECU, each tier-1 supplier digitally signs the image, then delivers the signature and all of its metadata, including delegations, and associated images to the OEM. The OEM adds these metadata and images to its image repository, along with information about any dependencies and conflicts between this image and those for other ECUs used in the OEM's vehicles. The OEM also updates the inventory database, so that the director repository can instruct the ECU on how to install these updated images.
+A tier-1 supplier completes work on a revised image for an electronic brake control module. This module will control the brakes on all models of an SUV produced by the OEM mentioned above. Assuming supplier delegation is supported by the OEM for this ECU, each tier-1 supplier digitally signs the image, then delivers the signature, all of its metadata, including delegations, and associated images to the OEM. The OEM adds these metadata and images to its Image repository, along with information about any dependencies and conflicts between this image and those for other ECUs used in the OEM's vehicles. The OEM also updates the inventory database, so that the Director repository can instruct the ECU on how to install these updated images.
 
 ####  Updating individual ECUs on demand
 
@@ -300,7 +300,7 @@ There are a number of factors that could impede the completion of the above scen
 * Vehicles may be offline for extended periods of time, thus missing required updates (e.g., key rotations).
 * OEMs may be unwilling to implement costly security or hardware requirements.
 
-## Out of Scope
+## Out of scope
 
 The following topics will not be addressed in this document, as they represent threats outside the scope of Uptane:
 
@@ -505,7 +505,7 @@ The following information MUST be provided for each image in the Targets metadat
 
 * An ECU identifier (such as a serial number), specifying the ECU that should install the image.
 
-The Director repository MAY provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the director wishes to provide a signed URL.
+The Director repository MAY provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the Director wishes to provide a signed URL.
 
 #### Metadata about delegations {#delegations_meta}
 
