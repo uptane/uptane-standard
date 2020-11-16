@@ -177,7 +177,7 @@ In order to be considered Uptane-compliant, an implementation MUST follow all of
 
 *Bus*: An internal communications network that interconnects components within a vehicle. A vehicle can have a number of buses that will vary in terms of power, speed, and resources.
 
-*ECU Identifier*: An attribute used to identify a specific ECU (e.g., such as a unique serial number).
+*ECU Identifier*: An attribute used to identify a specific ECU (e.g., a unique serial number).
 
 *ECU Version Manifest*: Metadata which details the software version currently installed on the ECU.
 
@@ -187,7 +187,7 @@ In order to be considered Uptane-compliant, an implementation MUST follow all of
 
 *Metadata*:  Information describing the characteristics of data including, for example, structural
 metadata describing data structures (e.g., data format, syntax, and semantics) and
-descriptive metadata describing data contents (e.g., information security labels). As used in Uptane, metadata can be described as information associated with a role or an image that contains the characteristics or parameters thereof (e.g. cryptographic material parameters, file names, and versions.)
+descriptive metadata describing data contents (e.g., information security labels). As used in Uptane, metadata can be described as information associated with a role or an image that contains the characteristics or parameters thereof (e.g., cryptographic material parameters, file names, and versions.)
 
 *Primary/Secondary ECUs*: Terms used to describe the control units within a ground vehicle. A Primary ECU downloads and verifies update images and metadata for itself and for Secondary ECUs, and distributes images and metadata to Secondaries. Thus, it requires extra storage space and a means to download images and metadata.  Secondary ECUs receive their update images and metadata from the Primary, and only need to verify and install their own metadata and images.
 
@@ -337,7 +337,7 @@ Uptane is designed with resilience to compromise in mind. We assume that attacke
 
 * Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability may be developed in two domains:
     * Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories
-    * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g. via an OBD port or using a compromised ECU as a vector)
+    * Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g., via an OBD port or using a compromised ECU as a vector)
 * Compromise and control either a Director repository or Image repository server, and any keys stored on that repository, but not both the Director and Image repositories.
 * Compromise either a Primary ECU or a Secondary ECU, but not both in the same vehicle
 
@@ -519,7 +519,7 @@ A list of delegations MUST provide the following information:
   * An optional list of the hardware identifiers to which this role applies.  If this is omitted, any hardware identifier will match.
   * An indicator of whether or not this is a terminating delegation. (See {{targets_role_delegations}}.)
   * A list of the roles to which this delegation applies. Each role needs to specify:
-    * A name for the role (e.g. "supplier1-qa")
+    * A name for the role (e.g., "supplier1-qa")
     * The key identifiers for each key this role uses
     * A threshold of keys that must sign for this role
 
@@ -571,7 +571,7 @@ There is a difference between the file name in a metadata file or an ECU, and th
 
 Unless stated otherwise, all files SHALL be written to repositories in accordance with the following two rules:
 
-1. Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT, where VERSION is A's version number, as defined in {{common_metadata}}, with one exception: If the version number of the Timestamp metadata file might not be known in advance by a client, it MAY be read from, and written to, a repository using a filename without a version number qualification, i.e. FILENAME.EXT.
+1. Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT, where VERSION is A's version number, as defined in {{common_metadata}}, with one exception: If the version number of the Timestamp metadata file might not be known in advance by a client, it MAY be read from, and written to, a repository using a filename without a version number qualification, i.e., FILENAME.EXT.
 2. If an image is specified in a Targets metadata file as FILENAME.EXT, it SHALL be written to the repository as HASH.FILENAME.EXT, where HASH is one of the hash digests of the file, as specified in {{targets_images_meta}}. The file MUST be written to the repository using *n* different filenames, one for each hash digest listed in its corresponding Targets metadata.
 
 For example:
@@ -692,13 +692,13 @@ The vehicle version manifest is a metadata structure that MUST contain the follo
 
 * An attribute containing the signature(s) of the payload, each specified by:
   * The public key identifier of the key being used to sign the payload
-  * The signing method (e.g. ed25519, rsassa-pss, etc.)
+  * The signing method (e.g., ed25519, rsassa-pss, etc.)
   * A hash of the payload to be signed
-  * The hashing function used (e.g. SHA3-256, SHA-512/224, etc.)
+  * The hashing function used (e.g., SHA3-256, SHA-512/224, etc.)
   * The signature of the hash
 * A payload representing the installed versions of each software image on the vehicle. This payload SHALL contain:
-  * The vehicle's unique identifier (e.g. the VIN)
-  * The Primary ECU's unique identifier (e.g. the serial number)
+  * The vehicle's unique identifier (e.g., the VIN)
+  * The Primary ECU's unique identifier (e.g., the serial number)
   * A list of ECU version reports as specified in {{version_report}}
 
 Note that one of the ECU version reports should be the version report for the Primary itself.
@@ -709,13 +709,13 @@ An ECU version report is a metadata structure that MUST contain the following in
 
 * An attribute containing the signature(s) of the payload, each specified by:
   * The public key identifier of the key being used to sign the payload
-  * The signing method (e.g. ed25519, rsassa-pss, etc.)
+  * The signing method (e.g., ed25519, rsassa-pss, etc.)
   * A hash of the payload to be signed
-  * The hashing function used (e.g. SHA3-256, SHA-512/224, etc.)
+  * The hashing function used (e.g., SHA3-256, SHA-512/224, etc.)
   * The signature of the hash
 * A payload containing:
-  * The ECU's unique identifier (e.g. the serial number)
-  * The filename, length, and hashes of its currently installed image (i.e. the non-custom Targets metadata for this particular image)
+  * The ECU's unique identifier (e.g., the serial number)
+  * The filename, length, and hashes of its currently installed image (i.e., the non-custom Targets metadata for this particular image)
   * An indicator of any detected security attack
   * The latest time the ECU can verify at the time this version report was generated
   * A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle and MAY be the cryptographic nonce used with a Time Server.
@@ -773,7 +773,7 @@ The ECU SHALL verify the latest downloaded metadata ({{metadata_verification}}) 
 
 #### Download latest image {#download_image}
 
-If the ECU does not have secondary storage, i.e. buffer storage to temporarily store the latest image before installing it, it SHALL download the latest image from the Primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in {{send_images_primary}}, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the Primary).
+If the ECU does not have secondary storage, i.e., buffer storage to temporarily store the latest image before installing it, it SHALL download the latest image from the Primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in {{send_images_primary}}, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the Primary).
 
 The filename used to identify the latest known image (i.e., the file to request from the Primary) SHALL be determined as follows:
 
@@ -867,7 +867,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
         2. Check that all "MUST match" custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous Targets metadata file is less than or equal to the release counter in this Targets metadata file.
 
-If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g. rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
+If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g., rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
 #### How to check Root metadata {#check_root}
 
@@ -940,7 +940,7 @@ It is possible to delegate signing authority to multiple delegated roles as desc
 
 1. For each of the roles in the delegation, find and load the image metadata (or error) following the procedure in {{resolve_delegations}}.
 2. Inspect the non-custom part of the metadata loaded in step 1:
-    1. Locate all sets of roles which have agreeing (i.e. identical) non-custom metadata and "MUST match" custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.
+    1. Locate all sets of roles which have agreeing (i.e., identical) non-custom metadata and "MUST match" custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.
     2. Check for a conflict. A conflict exists if there remains more than one agreeing set of roles, each set having different metadata. If a conflict is found, choose and return the metadata from the set of roles which includes the earliest role in the multi-delegation list.
     3. If there is no conflict, check if there is any single set of roles with matching non-custom metadata. If there is, choose and return the metadata from this set.
     4. If no agreeing set can be found that meets the agreement threshold, return an error indicating that image metadata could not be found.
