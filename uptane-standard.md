@@ -244,7 +244,7 @@ A standards document that can guide the safe design, integration, and deployment
 * The expanded use of software over-the-air strategies creates new attack surfaces for malicious parties. {{CR-OTA}}
 * Legacy update strategies, such as SSL/TLS or GPG/RSA, are not feasible for use on vehicle ECUs because they force manufacturers to chose between enhanced security and customizability.
 * Conventional strategies are also complicated by the differing resources of the ECUs, which can vary greatly in memory, storage space, and Internet connectivity.
-* The design of Uptane makes it possible to offer improved design flexibility, without sacrificing security.
+* The design of Uptane makes it possible to offer improved design flexibility without sacrificing security.
 * This added design flexibility, however, could be a liability if the framework is implemented incorrectly.
 * Standardization of crucial steps in the design, implementation, and use of Uptane can assure that customizability does not impact security or functionality.
 
@@ -295,7 +295,7 @@ There are a number of factors that could impede the completion of the above scen
 * ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that render performance of public key cryptography infeasible; a lack of sufficient storage to undo installation of bad software; or an ECU simply may reside on a low-speed network (e.g., LIN).
 * ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.
 * A user may replace OEM-installed ECUs with aftermarket ECUs.
-* A vehicle may be able to download only a limited amount of data via a cellular channel, due to limits on a data plan.
+* A vehicle may be able to download only a limited amount of data via a cellular channel due to limits on a data plan.
 * A system may lack sufficient power to download or install software updates.
 * Vehicles may be offline for extended periods of time, thus missing required updates (e.g., key rotations).
 * OEMs may be unwilling to implement costly security or hardware requirements.
@@ -380,13 +380,13 @@ Uptane is a secure software update framework for automobiles. We do not specify 
 At a high level, Uptane requires:
 
 * Two software repositories:
-    * An Image repository containing binary images to install, and signed metadata about those images
+    * An Image repository containing binary images to install and signed metadata about those images
     * A Director repository connected to an inventory database that can sign metadata on demand for images in the Image repository
 * Repository tools for generating Uptane-specific metadata about images
-* A public key infrastructure supporting the required metadata production/signing roles on each repository:
-    * Root - Certificate authority for the Uptane ecosystem. Distributes public keys for verifying all the other roles' metadata
+* A public key infrastructure supporting the required metadata production and signing roles on each repository:
+    * Root - The certificate authority for the Uptane ecosystem. Distributes public keys for verifying all the other roles' metadata
     * Timestamp - Indicates whether there are new metadata or images
-    * Snapshot - Indicates images released by the repository at a point in time, via signing metadata about Targets metadata
+    * Snapshot - Indicates images released by the repository at a point in time via signing metadata about Targets metadata
     * Targets - Indicates metadata about images, such as hashes and file sizes
 * A secure way for ECUs to know the time.
 * An ECU capable of downloading images and associated metadata from the Uptane servers.
@@ -402,7 +402,7 @@ A repository contains images and metadata. Each role has a particular type of me
 A repository's Root role SHALL be responsible for a Certificate Authority as defined in {{RFC3647}}.
 A repository's Root role SHALL produce and sign Root metadata as described in {{root_meta}}.
 A repository's Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.
-A repository's Root role SHALL revoke keys for the other roles, in case of compromise.
+A repository's Root role SHALL revoke keys for the other roles if they are compromised.
 
 ### The Targets role {#targets_role}
 
@@ -561,7 +561,7 @@ For example, in the most basic Uptane case, the repository mapping metadata woul
 * The name and URL of the Image repository
 * A single mapping indicating that all images (`*`) MUST be signed by both the Director and Image repository
 
-Note that the metadata need not be in the form of a metadata file. For example, in the basic case where there is only one Director and one Image repository, and all images need to have signed metadata from both repositories, it would be sufficient to have a configuration file with URLs for the two repositories, and a client that always checks for metadata matches between them. In this case, no explicit mapping would be defined, because the mapping is defined as part of the Uptane client implementation.
+Note that the metadata need not be in the form of a metadata file. For example, in the basic case where there is only one Director and one Image repository, and all images need to have signed metadata from both repositories, it would be sufficient to have a configuration file with URLs for the two repositories and a client that always checks for metadata matches between them. In this case, no explicit mapping would be defined, because the mapping is defined as part of the Uptane client implementation.
 
 The *Uptane Deployment Best Practices* document ({{DEPLOY}}) provides more guidance on how to implement repository mapping metadata for more complex use cases. It also discusses strategies for updating repository mapping metadata, if required.
 
