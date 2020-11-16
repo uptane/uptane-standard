@@ -375,7 +375,7 @@ Full control of a vehicle, or one or more ECUs within a vehicle, is the most sev
 
 # Detailed design of Uptane {#design}
 
-Uptane is a secure software update framework for automobiles. We do not specify implementation details. Instead, we describe the components necessary for a compliant implementation and leave it up to individual implementers to make their own technological choices within those requirements.
+Uptane does not specify implementation details. Instead, this Standard describes the components necessary for a compliant implementation and leaves it up to individual implementers to make their own technological choices within those requirements.
 
 At a high level, Uptane requires:
 
