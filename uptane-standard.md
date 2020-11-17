@@ -430,7 +430,7 @@ A repository's Timestamp role SHALL produce and sign metadata indicating whether
 
 ## Metadata structures {#meta_structures}
 
-Uptane's security guarantees all rely on properly created metadata that follows a designated structure. The Uptane standard **does not** mandate any particular format or encoding for the metadata as a whole. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.
+Uptane's security guarantees all rely on properly created metadata that follows a designated structure. The Uptane Standard **does not** mandate any particular format or encoding for the metadata as a whole. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.
 
 However, string comparison is required as part of metadata verification. To ensure an accurate basis for comparing strings, all strings MUST be encoded in the Unicode Format for Network Interchange as defined in {{RFC5198}}, including normalization into Unicode Normalization Form C ({{NFC}}).
 
@@ -622,7 +622,7 @@ A Director repository MUST conform to the following six-step process for directi
     * The signature of the manifest matches the ECU key of the Primary that sent it.
     * The signature of each Secondary's contribution to the manifest matches the ECU key of that Secondary.
 1. The Director SHOULD check that the nonce or counter in each ECU Version Report has not been used before to prevent a replay of the ECU Version Report. If the nonce or counter is reused the Director SHOULD drop the request.
-1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this standard. However, the Director MUST take into account *dependencies* and *conflicts* between images and SHOULD consult well-established techniques for dependency resolution.
+1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this Standard. However, the Director MUST take into account *dependencies* and *conflicts* between images and SHOULD consult well-established techniques for dependency resolution.
 1. The Director MAY encrypt images for ECUs that require it.
 1. The Director generates new metadata representing the desired set of images to be installed on the vehicle, based on the dependency resolution in step 4. This includes Targets ({{targets_meta}}), Snapshot ({{snapshot_meta}}), and Timestamp ({{timestamp_meta}}) metadata. It then sends this metadata to the Primary as described in {{download_meta_primary}}.
 
@@ -661,7 +661,7 @@ For an ECU to be capable of receiving Uptane-secured updates, it MUST have the f
     * Partial verification Secondary ECUs MUST have the Root and Targets metadata from the Director repository (to reduce the scope of rollback and replay attacks). These ECUs MAY also have metadata from other roles or the Image repository if they will be used by the Secondary.
     * Full verification ECUs MUST have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories (to prevent rollback and replay attacks), as well as the repository mapping metadata ({{repo_mapping_meta}}). Delegations are not required.
 2. The current time, or a secure attestation of a sufficiently recent time.
-3. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
+3. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version manifests and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this Standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
 
 ### What the Primary does
 
@@ -805,7 +805,7 @@ If the ECU has secondary storage, the checks SHOULD be performed on the image in
 
 When checking hashes, the ECU SHOULD additionally check that the length of the image matches the length listed in the metadata.
 
-NOTE: Verifying image size along with hash will become a requirement in a future version of the Uptane standard.
+NOTE: Verifying image size along with hash will become a requirement in a future version of the Uptane Standard.
 
 NOTE: See {{DEPLOY}} for guidance on how to deal with Secondary ECU failures for ECUs that do not have secondary storage.
 
