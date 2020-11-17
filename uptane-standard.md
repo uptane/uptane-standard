@@ -843,7 +843,7 @@ See {{DEPLOY}} for more discussion on this topic.
 
 Full verification of metadata means that the ECU checks that the Targets metadata about images from the Director repository matches the Targets metadata about the same images from the Image repository. This provides resilience to a key compromise in the system.
 
-Full verification MUST be performed by Primary ECUs and MAY be performed by Secondary ECUs. In the following instructions, whenever an ECU is directed to download metadata, it applies only to Primary ECUs.
+Full verification MUST be performed by Primary ECUs and SHOULD be performed by Secondary ECUs. In the following instructions, whenever an ECU is directed to download metadata, it applies only to Primary ECUs.
 
 If {{TAP-5}} is supported and a Primary has an external connection to the Uptane repositories, a Primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, or if the Primary does not have an external connection to the Uptane repositories, the download SHOULD follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
