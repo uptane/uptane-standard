@@ -692,9 +692,9 @@ The vehicle version manifest is a metadata structure that MUST contain the follo
 
 * An attribute containing the signature(s) of the payload, each specified by:
   * The public key identifier of the key being used to sign the payload
-  * The signing method (e.g., ed25519, rsassa-pss, etc.)
+  * The signing method (i.e., ed25519, rsassa-pss, etc.)
   * A hash of the payload to be signed
-  * The hashing function used (e.g., SHA3-256, SHA-512/224, etc.)
+  * The hashing function used (i.e., SHA3-256, SHA-512/224, etc.)
   * The signature of the hash
 * A payload representing the installed versions of each software image on the vehicle. This payload SHALL contain:
   * The vehicle's unique identifier (e.g., the VIN)
@@ -709,9 +709,9 @@ An ECU version report is a metadata structure that MUST contain the following in
 
 * An attribute containing the signature(s) of the payload, each specified by:
   * The public key identifier of the key being used to sign the payload
-  * The signing method (e.g., ed25519, rsassa-pss, etc.)
+  * The signing method (i.e., ed25519, rsassa-pss, etc.)
   * A hash of the payload to be signed
-  * The hashing function used (e.g., SHA3-256, SHA-512/224, etc.)
+  * The hashing function used (i.e., SHA3-256, SHA-512/224, etc.)
   * The signature of the hash
 * A payload containing:
   * The ECU's unique identifier (e.g., the serial number)
@@ -867,7 +867,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
         2. Check that all "MUST match" custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous Targets metadata file is less than or equal to the release counter in this Targets metadata file.
 
-If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (e.g., rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
+If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (i.e., rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
 
 #### How to check Root metadata {#check_root}
 
