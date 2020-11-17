@@ -792,7 +792,7 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
 
 1. Load the latest Targets metadata file from the Director.
 2. Find the Targets metadata associated with this ECU identifier.
-3. Check that the hardware identifier in the metadata matches the ECUs hardware identifier.
+3. Check that the hardware identifier in the metadata matches the ECU's hardware identifier.
 4. Check that the image filename is valid for this ECU. This MAY be a comparison against a wildcard path, which restricts the ECUs to which a delegation will apply.
 5. Check that the release counter of the image in the previous metadata, if it exists, is less than or equal to the release counter in the latest metadata.
 6. If the image is encrypted, decrypt the image with a decryption key to be chosen as follows:
@@ -805,11 +805,11 @@ If the ECU has secondary storage, the checks SHOULD be performed on the image in
 
 When checking hashes, the ECU SHOULD additionally check that the length of the image matches the length listed in the metadata.
 
-NOTE: Verifying image size along with hash will become a requirement in a future version of the Uptane Standard.
+NOTE: Verifying image size along with the hashes will become a requirement in a future version of the Uptane Standard.
 
 NOTE: See {{DEPLOY}} for guidance on how to deal with Secondary ECU failures for ECUs that do not have secondary storage.
 
-If any step fails, the ECU SHALL jump to the ({{create_version_report}}) step.
+If any step fails, the ECU SHALL jump to the final step ({{create_version_report}}).
 
 
 #### Install image {#install_image}
@@ -843,7 +843,7 @@ See {{DEPLOY}} for more discussion on this topic.
 
 Full verification of metadata means that the ECU checks that the Targets metadata about images from the Director repository matches the Targets metadata about the same images from the Image repository. This provides resilience to a key compromise in the system.
 
-Full verification MUST be performed by Primary ECUS and MAY be performed by Secondary ECUs. In the following instructions, whenever an ECU is directed to download metadata, it applies only to Primary ECUs.
+Full verification MUST be performed by Primary ECUs and MAY be performed by Secondary ECUs. In the following instructions, whenever an ECU is directed to download metadata, it applies only to Primary ECUs.
 
 If {{TAP-5}} is supported and a Primary has an external connection to the Uptane repositories, a Primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, or if the Primary does not have an external connection to the Uptane repositories, the download SHOULD follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
