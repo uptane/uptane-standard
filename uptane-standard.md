@@ -718,7 +718,7 @@ An ECU version report is a metadata structure that MUST contain the following in
   * The filename, length, and hashes of its currently installed image (i.e., the non-custom Targets metadata for this particular image)
   * An indicator of any detected security attack
   * The latest time the ECU can verify at the time this version report was generated
-  * A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle and MAY be the cryptographic nonce used with a Time Server.
+  * A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle. It MAY be a cryptographic nonce used with a time server as described in the *Uptane Deployment Best Practices* document ({{DEPLOY}}).
 
 #### Download and check current time {#check_time_primary}
 
