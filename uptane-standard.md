@@ -230,9 +230,9 @@ These terms are defined in greater detail in {{roles}}.
 
 *VIN*: Vehicle Identification Number
 
-# Rationale for and scope of Uptane Standards
+# Rationale for and scope of the Uptane Standard
 
-This Standards document provides the essential components for the secure design, implementation, and deployment of Uptane by OEMs and suppliers. These guidelines contribute to compromise resilience, or the ability to minimize the extent of the threat posed by any given attack.
+This Standard document provides the essential components for the secure design, implementation, and deployment of Uptane by OEMs and suppliers. These guidelines contribute to compromise resilience, or the ability to minimize the extent of the threat posed by any given attack.
 
 However, this specification is intended as an implementation guide, and not as a detailed technical argument about the security properties that Uptane provides.  Readers interested in such documentation should refer to published papers that cover this topic.  {{UPTANEESCAR}}
 
@@ -248,7 +248,7 @@ A standards document that can guide the safe design, integration, and deployment
 * This added design flexibility, however, could be a liability if the framework is implemented incorrectly.
 * Standardization of crucial steps in the design, implementation, and use of Uptane can assure that customizability does not impact security or functionality.
 
-## Scope of Standards coverage
+## Scope of Standard coverage
 
 This document sets guidelines for implementing Uptane in most systems capable of updating software on connected units in ground vehicles, including passenger vehicles, light-duty trucks, heavy-duty trucks, and motorcycles. Uptane could potentially also be applied to other ground vehicles, such as automated shuttles, recreational vehicles, and military ground vehicles. Uptane could even be applied to domains such as IoT devices, medical devices, and autonomous aerial vehicles. In this section, we define the scope of that applicability by providing sample use cases and possible exceptions, aspects of software update security that are not applicable to Uptane, and the design requirements governing the preparation of these standards.
 
