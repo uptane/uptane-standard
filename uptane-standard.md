@@ -259,7 +259,7 @@ We assume the following system preconditions for Uptane:
 * Vehicles have the ability to establish connectivity to required backend services. For example, this could be done through cellular, Wi-Fi, or hard-wired mechanisms.
 * ECUs are either directly connected to the communication channel, or are indirectly connected via some sort of network gateway.
 * ECUs are programmable and provide sufficient performance to be updated.
-* ECUs must be able to perform a public key cryptography operation as well as some supporting operations.
+* ECUs must be able to perform public key cryptography operations and calculate hashes of images and metadata files.
 * There are state-of-the-art secure servers in place, such as the Director and Image repository servers.
 
 It is important that any bugs detected in Uptane implementations be patched promptly. Failure to do so could interfere with the effectiveness of Uptane's operations.
@@ -511,7 +511,7 @@ The Director repository MAY provide a download URL for the image file. This may 
 
 A Targets metadata file on the Image repository (but not the Director repository) MUST be able to delegate signing authority to other entities. For example, it could delegate signing authority for a particular ECU's firmware to that ECU's supplier. A metadata file MAY contain any number of delegations and MUST keep the delegations in prioritized order.
 
-A list of delegations MUST provide the following information:
+Any metadata file with delegations MUST provide the following information:
 
 * A list of public keys of all delegatees. Each key should have a unique public key identifier and a key type.
 * A list of delegations, each of which contains:
@@ -938,7 +938,7 @@ To properly check Targets metadata for an image, an ECU MUST locate the metadata
 
 It is possible to delegate signing authority to multiple delegated roles as described in {{TAP-3}}. Each multi-role delegation effectively contains a list of ordinary delegations, plus a threshold of those roles that must be in agreement about the non-custom metadata for the image. All multi-role delegations MUST be resolved using the following procedure. Note that there may be sub-delegations inside multi-role delegations.
 
-1. For each of the roles in the delegation, find and load the image metadata (or error) following the procedure in {{resolve_delegations}}.
+1. For each of the roles in the delegation, find and load the image metadata following the procedure in {{resolve_delegations}}.
 2. Inspect the non-custom part of the metadata loaded in step 1:
     1. Locate all sets of roles which have agreeing (i.e., identical) non-custom metadata and "MUST match" custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.
     2. Check for a conflict. A conflict exists if there remains more than one agreeing set of roles, each set having different metadata. If a conflict is found, choose and return the metadata from the set of roles which includes the earliest role in the multi-delegation list.
