@@ -1,12 +1,12 @@
 # Uptane Standard
 
-[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group under [IEEE-ISTO](https://ieee-isto.org/) began the process of describing the system's design, implementation, and deployment as a formal standard. On July 31, IEEE/ISTO released *IEEE-ISTO 6100.1.0.0: Uptane Standard for Design and Implementation* (see link below under documentation). Uptane is now a [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/) project. 
+[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group under [IEEE-ISTO](https://ieee-isto.org/) began the process of describing the system's design, implementation, and deployment as a formal standard. On July 31, 2019 IEEE/ISTO released *IEEE-ISTO 6100.1.0.0: Uptane Standard for Design and Implementation* (see link below under documentation). Uptane is now a [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/) project. 
 
 This repository is the public home of all standardization work for Uptane.
 
 ## Existing documentation
 
-The Uptane Standards document should be considered the authoritative resource for the framework. Several other documents and materials are available or currently in development. The information in all of these other guidelines should be viewed as complementary to the official Uptane standard, and as recommendations rather than mandatory instructions. 
+The Uptane Standards document should be considered the authoritative resource for the framework. Several other documents and materials are available or currently in development. The information in all of these other guidelines should be viewed as complementary to the official Uptane Standard, and as recommendations rather than mandatory instructions. 
 
 * [Uptane Standards Document](https://uptane.github.io/papers/ieee-isto-6100.1.0.0.uptane-standard.html)
 * [Reference Implementation and Demonstration Code](https://github.com/uptane/uptane)
@@ -16,9 +16,9 @@ The Uptane Standards document should be considered the authoritative resource fo
 
 ## Contributing
 
-The standard is being written in [RFC 2629](https://tools.ietf.org/html/rfc2629)/[RFC 7749](https://tools.ietf.org/html/rfc7749) format, using markdown as a source. Comments, issues, and pull requests are welcome.
+The standard is being written in [RFC 2629](https://tools.ietf.org/html/rfc2629)/[RFC 7749](https://tools.ietf.org/html/rfc7749) format, using Markdown as a source. Comments, issues, and pull requests are welcome.
 
-We use [GitHub Flow](https://guides.github.com/introduction/flow/) for contributing content. When you are working on a section, make a branch off the current master, and submit a pull request when it's ready to merge. If github reports any merge conflicts in the PR, please rebase until the merge can be done cleanly.
+We use [GitHub Flow](https://guides.github.com/introduction/flow/) for contributing content. When you are working on a section, make a branch off the current master, and submit a pull request when it's ready to merge. If GitHub reports any merge conflicts in the PR, please rebase until the merge can be done cleanly.
 
 ### Commit messages and squashes
 
@@ -26,11 +26,11 @@ Use clear, informative commit messages, and squash any minor commits that do not
 
 ### Text formatting
 
-Don't use fixed-width columns. The `plaintext` rendering target will produce a text file with fixed-width columns; using fixed-width columns in the markdown source just makes the diffs harder to read.
+Don't use fixed-width columns. The `plaintext` rendering target will produce a text file with fixed-width columns; using fixed-width columns in the Markdown source just makes the diffs harder to read.
 
 ### Style guide
 
-Capitalize proper nouns and titles of things, such as the names of roles, repositories, and specific types of metadata. Do not capitalize the words "role", "repository", and "metadata", however. For example, write "Targets role", "Director repository", "Primary ECU", and so on.
+Capitalize proper nouns and titles of things, such as the names of roles, repositories, and specific types of metadata. Do not capitalize the words role, repository, and metadata, however. For example, write "Targets role" and "Director repository."
 
 For headings and sub-headings, capitalize only the first word in a heading UNLESS the heading contains a proper noun.
 
@@ -44,9 +44,9 @@ Links to the Deployment Best Practices should point to the [deployed web pages](
 
 ## Building/rendering the document
 
-We use [kramdown-rfc2629](https://github.com/cabo/kramdown-rfc2629) to render the markdown source into xml, and [xml2rfc](https://xml2rfc.tools.ietf.org/) to render the XML into HTML or plaintext. A Makefile is included for convenience. You can also render using [Docker](https://www.docker.com/) if you don't wish to install the tools. See `make help` for options.
+We use [kramdown-rfc2629](https://github.com/cabo/kramdown-rfc2629) to render the Markdown source into xml, and [xml2rfc](https://xml2rfc.tools.ietf.org/) to render the XML into HTML or plaintext. A Makefile is included for convenience. You can also render using [Docker](https://www.docker.com/) if you don't wish to install the tools. See `make help` for options.
 
-### Pushing to github pages
+### Pushing to GitHub pages
 
 The rendered HTML from the markdown source at `master` will be available at https://uptane.github.io/uptane-standard/uptane-standard.html. You can update this, if you have commit rights to this repository, by pushing `uptane-standard.html` to the `gh-pages` branch.
 
