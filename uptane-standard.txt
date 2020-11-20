@@ -180,13 +180,9 @@ Table of Contents
 
 2.4.  Acronyms and abbreviations
 
-   _CAN Bus_: Controller Area Network bus standard
-
    _CDN_: Content Delivery Network
 
    _ECUs_: Electronic Control Units, the computing units on a vehicle
-
-   _LIN Bus_: Local Interconnect Bus
 
    _OBD_: On-board diagnostics
 
