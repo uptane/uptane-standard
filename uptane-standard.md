@@ -173,7 +173,7 @@ In order to be considered Uptane-compliant, an implementation MUST follow all of
 
 ## Terminology
 
-*Bundle*: A set of images released by the repository that is meant to be installed by one or more target ECUs on a vehicle during the same update cycle.
+*Bundle*: A set of images released by the repository that is meant to be installed by one or more ECUs on a vehicle during the same update cycle.
 
 *Bus*: An internal communications network that interconnects components within a vehicle. A vehicle can have a number of buses that will vary in terms of power, speed, and resources.
 
@@ -214,9 +214,13 @@ These terms are defined in greater detail in {{roles}}.
 
 ## Acronyms and abbreviations
 
+*CAN Bus*: Controller Area Network bus standard
+
 *CDN*: Content Delivery Network
 
 *ECUs*: Electronic Control Units, the computing units on a vehicle
+
+*LIN Bus*: Local Interconnect Bus
 
 *OBD*: On-board diagnostics
 
@@ -288,7 +292,7 @@ The OEM wants to use delta updates to save over-the-air bytes. The delta images 
 
 There are a number of factors that could impede the completion of the above scenarios:
 
-* ECUs may be lacking the necessary resources to function as designated. These resources could include weaknesses, in terms of CPU or RAM, that render performance of public key cryptography infeasible; a lack of sufficient storage to undo installation of bad software; or an ECU simply may reside on a low-speed network (e.g., LIN).
+* ECUs may be lacking the necessary resources to function as designated. These insufficient resources could include limited CPU or RAM inadequate for performance of public key cryptography; a lack of sufficient storage to undo installation of bad software; or a location on a low-speed network (e.g., LIN).
 * ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.
 * A user may replace OEM-installed ECUs with aftermarket ECUs.
 * A vehicle may be able to download only a limited amount of data via a cellular channel due to limits on a data plan.
@@ -347,7 +351,7 @@ Uptane's threat model includes the following types of attacks, organized accordi
 
 ### Deny installation of updates {#deny_updates}
 
-An attacker seeking to deny the installation of updates may attempt one or more of the following strategies, among others:
+An attacker seeking to deny the installation of updates may attempt one or more of the following strategies:
 
 * *Drop-request attack:* Block network traffic outside or inside the vehicle.
 * *Slow retrieval attack:* Slow down network traffic, in the extreme case sending barely enough packets to avoid a timeout. Similar to a drop-request attack, except that both the sender and receiver of the traffic still think network traffic is unimpeded.
@@ -360,7 +364,7 @@ An attacker seeking to deny the installation of updates may attempt one or more 
 Attackers seeking to interfere with the functionality of vehicle ECUs in order to cause an operational failure or unexpected behavior may do so in one of the following ways:
 
 * *Rollback attack:* Cause an ECU to install a previously valid software revision that is older than the currently installed version.
-* *Endless data attack:* Send a large amount of data to an ECU, until it runs out of storage, possibly causing the ECU to fail to operate.
+* *Endless data attack:* Send a large amount of data to an ECU until it runs out of storage, possibly causing the ECU to fail to operate.
 * *Mix-and-match attack:* Install a malicious software bundle in which some of the updates do not interoperate properly. This may be accomplished even if all of the individual images being installed are valid, as long as valid versions exist that are mutually incompatible.
 
 ### Control an ECU or vehicle {#control_ecu}
@@ -469,7 +473,7 @@ Additionally, it MAY contain a mapping of roles to a list of valid URLs from whi
 
 ### Targets metadata {#targets_meta}
 
-The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filenames, hashes, file sizes, and MAY also include other useful information about images, such as what types of hardware are compatible with a particular image.
+The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filenames, hashes, file sizes, and MAY also include other useful information, such as what types of hardware are compatible with a particular image.
 
 Targets metadata can also contain metadata about delegations, allowing one Targets role to delegate its authority to another. This means that an individual Targets metadata file might contain only metadata about delegations, only metadata about images, or some combination of the two. The details of how ECUs traverse the delegation tree to find valid metadata about images is specified in {{resolve_delegations}}.
 
@@ -497,7 +501,7 @@ The following information is CONDITIONALLY REQUIRED for each image on the Direct
 * Information about filenames, hashes, and file size of the encrypted image.
 * Information about the encryption method, and other relevant information--for example, a symmetric encryption key encrypted by the ECU's asymmetric key could be included in the Director repository metadata.
 
-The following information MUST be provided for each image in the Targets metadata from the Director repository:
+The following information MUST be provided from the Director repository for each image in the Targets metadata:
 
 * An ECU identifier (such as a serial number), specifying the ECU that should install the image.
 
@@ -572,8 +576,8 @@ Unless stated otherwise, all files SHALL be written to repositories in accordanc
 
 For example:
 
-* The version number of the Snapshot metadata file is 61, and its filename in the Timestamp metadata is "snapshot.json". The filename on the repository will be "61.snapshot.json".
-* There is an image with the filename "acme_firmware.bin" specified in the Targets metadata, with a SHA3-256 of "aaaa" and a SHA-512/224 of "bbbb". It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin".
+* The version number of the Snapshot metadata file is 61, and its filename in the Timestamp metadata is "snapshot.json." The filename on the repository will be "61.snapshot.json."
+* There is an image with the filename "acme_firmware.bin" specified in the Targets metadata, with a SHA3-256 of "aaaa" and a SHA-512/224 of "bbbb". It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin."
 
 ## Server / repository implementation requirements
 
@@ -653,7 +657,7 @@ ECUs MUST have a secure source of time. An OEM/Uptane implementer MAY use any ex
 
 For an ECU to be capable of receiving Uptane-secured updates, it MUST have the following data provisioned at the time it is manufactured or installed in the vehicle:
 
-1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. This is necessary for the ECU to authenticate that the remote repository is legitimate when it first downloads metadata in the field. See the *Uptane Deployment Best Practices* document ({{DEPLOY}}) for more information.
+1. A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. This is necessary for the ECU to authenticate that the remote repository is legitimate when it first downloads metadata in the field. See *Uptane Deployment Best Practices* ({{DEPLOY}}) for more information.
     * Partial verification Secondary ECUs MUST have the Root and Targets metadata from the Director repository (to reduce the scope of rollback and replay attacks). These ECUs MAY also have metadata from other roles or the Image repository if they will be used by the Secondary.
     * Full verification ECUs MUST have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories (to prevent rollback and replay attacks), as well as the repository mapping metadata ({{repo_mapping_meta}}). Delegations are not required.
 2. The current time, or a secure attestation of a sufficiently recent time.
@@ -714,7 +718,7 @@ An ECU version report is a metadata structure that MUST contain the following in
   * The filename, length, and hashes of its currently installed image (i.e., the non-custom Targets metadata for this particular image)
   * An indicator of any detected security attack
   * The latest time the ECU can verify at the time this version report was generated
-  * A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle. It MAY be a cryptographic nonce used with a time server as described in the *Uptane Deployment Best Practices* document ({{DEPLOY}}).
+  * A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle. It MAY be a cryptographic nonce used with a time server as described in *Uptane Deployment Best Practices*  ({{DEPLOY}}).
 
 #### Download and check current time {#check_time_primary}
 
@@ -728,7 +732,7 @@ The Primary SHALL download metadata for all targets and perform a full verificat
 
 The Primary SHALL download and verify images for itself and for all of its associated Secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the Director's Targets metadata for that image.
 
-There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the Primary has received multiple hashes for a given image binary via the Targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image despite that the image is identified by a single hash as part of its filename.
+There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the Primary has received multiple hashes for a given image binary via the Targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image even if the image is identified by a single hash as part of its filename.
 
 #### Send latest time to Secondaries {#send_time_primary}
 
@@ -736,7 +740,7 @@ Unless the Secondary ECU has its own way of verifying the time or does not have 
 
 #### Send metadata to Secondaries {#send_metadata_primary}
 
-The Primary SHALL send its latest downloaded metadata to all of its associated Secondaries. The metadata it sends to each Secondary MUST include all of the metadata required for verification on that Secondary. For full verification Secondaries, this includes the metadata for all four roles from both repositories, plus any delegated Targets metadata files the Secondary will recurse through to find the proper delegation. For partial verification Secondaries, this MAY include fewer metadata files; it includes only the Targets metadata file from the Director repository at a minimum.
+The Primary SHALL send its latest downloaded metadata to all of its associated Secondaries. The metadata it sends to each Secondary MUST include all of the metadata required for verification on that Secondary. For full verification Secondaries, this includes the metadata for all four roles from both repositories, plus any delegated Targets metadata files the Secondary will recurse through to find the proper delegation. For partial verification Secondaries, this MAY include fewer metadata files; at a minimum, it includes only the Targets metadata file from the Director repository.
 
 The Primary SHOULD determine the minimal set of metadata files to send to each Secondary by performing delegation resolution as described in {{full_verification}}.
 
