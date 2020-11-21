@@ -13,9 +13,9 @@ stand_alone: yes
 pi: [toc, sortrefs, symrefs]
 
 author:
-  - ins: Members of the Uptane Alliance Community
-    name: Uptane Alliance Community
-    organization: Uptane Alliance (c/o Prof. Justin Cappos)
+  - ins: Members of the Uptane Community
+    name: Uptane Community
+    organization: Joint Development Foundation Projects, LLC, Uptane Series (c/o Prof. Justin Cappos)
     email: uptane-standards@googlegroups.com
     street: 6 MetroTech
     country: USA
@@ -131,7 +131,7 @@ informative:
     target: https://uptane.github.io/deployment-considerations/index.html
     title: "Uptane Deployment Best Practices"
     author:
-      - ins: Members of the Uptane Alliance Community
+      - ins: Members of the Uptane Community
   USATODAY:
     target: https://www.usatoday.com/story/tech/columnist/2016/06/28/your-average-car-lot-more-code-driven-than-you-think/86437052/
     title: Your average car is a lot more code-driven than you think
