@@ -577,7 +577,7 @@ Unless stated otherwise, all files SHALL be written to repositories in accordanc
 For example:
 
 * The version number of the Snapshot metadata file is 61, and its filename in the Timestamp metadata is *snapshot.json*. The filename on the repository will be *61.snapshot.json*.
-* There is an image with the *filename acme_firmware.bin* specified in the Targets metadata, with a SHA3-256 of *aaaa* and a SHA-512/224 of *bbbb*. It will have two filenames on the repository: *aaaa.acme_firmware.bin* and *bbbb.acme_firmware.bin.*
+* There is an image with the *filename acme_firmware.bin* specified in the Targets metadata, with a SHA3-256 of *aaaa* and a SHA-512/224 of *bbbb*. It will have two filenames on the repository: *aaaa.acme_firmware.bin* and *bbbb.acme_firmware.bin*.
 
 ## Server / repository implementation requirements
 
