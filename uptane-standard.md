@@ -214,8 +214,6 @@ These terms are defined in greater detail in {{roles}}.
 
 ## Acronyms and abbreviations
 
-*CAN Bus*: Controller Area Network bus standard
-
 *CDN*: Content Delivery Network
 
 *ECUs*: Electronic Control Units, the computing units on a vehicle
