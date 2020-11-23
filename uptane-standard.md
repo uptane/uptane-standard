@@ -576,8 +576,8 @@ Unless stated otherwise, all files SHALL be written to repositories in accordanc
 
 For example:
 
-* The version number of the Snapshot metadata file is 61, and its filename in the Timestamp metadata is "snapshot.json." The filename on the repository will be "61.snapshot.json."
-* There is an image with the filename "acme_firmware.bin" specified in the Targets metadata, with a SHA3-256 of "aaaa" and a SHA-512/224 of "bbbb". It will have two filenames on the repository: "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin."
+* The version number of the Snapshot metadata file is 61, and its filename in the Timestamp metadata is *snapshot.json*. The filename on the repository will be *61.snapshot.json*.
+* There is an image with the *filename acme_firmware.bin* specified in the Targets metadata, with a SHA3-256 of *aaaa* and a SHA-512/224 of *bbbb*. It will have two filenames on the repository: *aaaa.acme_firmware.bin* and *bbbb.acme_firmware.bin.*
 
 ## Server / repository implementation requirements
 
@@ -732,7 +732,7 @@ The Primary SHALL download metadata for all targets and perform a full verificat
 
 The Primary SHALL download and verify images for itself and for all of its associated Secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the Director's Targets metadata for that image.
 
-There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the Primary has received multiple hashes for a given image binary via the Targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image even if the image is identified by a single hash as part of its filename.
+There may be several different filenames that all refer to the same image binary, as described in {{metadata_filename_rules}}. If the Primary has received multiple hashes for a given image binary via the Targets role (see {{targets_images_meta}}) then it SHALL verify every hash for this image even though the image is identified by a single hash as part of its filename.
 
 #### Send latest time to Secondaries {#send_time_primary}
 
@@ -864,7 +864,7 @@ In order to perform full verification, an ECU SHALL perform the following steps:
     1. Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same filename listed in the Director metadata, following the procedure in {{resolve_delegations}}.
     2. Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
         1. Check that the non-custom metadata (i.e., length and hashes) of the unencrypted or encrypted image are the same in both sets of metadata. Note: the Primary is responsible for validating encrypted images and associated metadata. The target ECU (Primary or Secondary) is responsible for validating the unencrypted image and associated metadata.
-        2. Check that all "MUST match" custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
+        2. Check that all MUST match custom metadata (e.g., hardware identifier and release counter) are the same in both sets of metadata.
         3. Check that the release counter in the previous Targets metadata file is less than or equal to the release counter in this Targets metadata file.
 
 If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (i.e., rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.
