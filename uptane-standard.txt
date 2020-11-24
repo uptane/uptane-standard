@@ -93,8 +93,8 @@ Table of Contents
 2.2.  Terminology
 
    _Bundle_: A set of images released by the repository that is meant to
-   be installed by one or more target ECUs on a vehicle during the same
-   update cycle.
+   be installed by one or more ECUs on a vehicle during the same update
+   cycle.
 
    _Bus_: An internal communications network that interconnects
    components within a vehicle.  A vehicle can have a number of buses
@@ -183,6 +183,8 @@ Table of Contents
    _CDN_: Content Delivery Network
 
    _ECUs_: Electronic Control Units, the computing units on a vehicle
+
+   _LIN Bus_: Local Interconnect Bus
 
    _OBD_: On-board diagnostics
 
@@ -341,11 +343,10 @@ Table of Contents
    above scenarios:
 
    o  ECUs may be lacking the necessary resources to function as
-      designated.  These resources could include weaknesses, in terms of
-      CPU or RAM, that render performance of public key cryptography
-      infeasible; a lack of sufficient storage to undo installation of
-      bad software; or an ECU simply may reside on a low-speed network
-      (e.g., LIN).
+      designated.  These insufficient resources could include limited
+      CPU or RAM inadequate for performance of public key cryptography;
+      a lack of sufficient storage to undo installation of bad software;
+      or a location on a low-speed network (e.g., LIN).
 
    o  ECUs may reside on different network segments, and may not be able
       to directly reach each other, requiring a gateway to facilitate
@@ -473,7 +474,7 @@ Table of Contents
 4.3.2.  Deny installation of updates
 
    An attacker seeking to deny the installation of updates may attempt
-   one or more of the following strategies, among others:
+   one or more of the following strategies:
 
    o  _Drop-request attack:_ Block network traffic outside or inside the
       vehicle.
@@ -502,8 +503,8 @@ Table of Contents
       software revision that is older than the currently installed
       version.
 
-   o  _Endless data attack:_ Send a large amount of data to an ECU,
-      until it runs out of storage, possibly causing the ECU to fail to
+   o  _Endless data attack:_ Send a large amount of data to an ECU until
+      it runs out of storage, possibly causing the ECU to fail to
       operate.
 
    o  _Mix-and-match attack:_ Install a malicious software bundle in
@@ -719,9 +720,9 @@ Table of Contents
 
    The Targets metadata on a repository contains all of the information
    about images to be installed on ECUs.  This includes filenames,
-   hashes, file sizes, and MAY also include other useful information
-   about images, such as what types of hardware are compatible with a
-   particular image.
+   hashes, file sizes, and MAY also include other useful information,
+   such as what types of hardware are compatible with a particular
+   image.
 
    Targets metadata can also contain metadata about delegations,
    allowing one Targets role to delegate its authority to another.  This
@@ -789,8 +790,8 @@ Table of Contents
       the ECU's asymmetric key could be included in the Director
       repository metadata.
 
-   The following information MUST be provided for each image in the
-   Targets metadata from the Director repository:
+   The following information MUST be provided from the Director
+   repository for each image in the Targets metadata:
 
    o  An ECU identifier (such as a serial number), specifying the ECU
       that should install the image.
@@ -950,13 +951,13 @@ Table of Contents
    For example:
 
    o  The version number of the Snapshot metadata file is 61, and its
-      filename in the Timestamp metadata is "snapshot.json".  The
-      filename on the repository will be "61.snapshot.json".
+      filename in the Timestamp metadata is _snapshot.json_. The
+      filename on the repository will be _61.snapshot.json_.
 
-   o  There is an image with the filename "acme_firmware.bin" specified
-      in the Targets metadata, with a SHA3-256 of "aaaa" and a SHA-
-      512/224 of "bbbb".  It will have two filenames on the repository:
-      "aaaa.acme_firmware.bin" and "bbbb.acme_firmware.bin".
+   o  There is an image with the _filename acme_firmware.bin_ specified
+      in the Targets metadata, with a SHA3-256 of _aaaa_ and a SHA-
+      512/224 of _bbbb_. It will have two filenames on the repository:
+      _aaaa.acme_firmware.bin_ and _bbbb.acme_firmware.bin_.
 
 5.3.  Server / repository implementation requirements
 
@@ -1144,9 +1145,8 @@ Table of Contents
    1.  A sufficiently recent copy of required Uptane metadata at the
        time of manufacture or install.  This is necessary for the ECU to
        authenticate that the remote repository is legitimate when it
-       first downloads metadata in the field.  See the _Uptane
-       Deployment Best Practices_ document ([DEPLOY]) for more
-       information.
+       first downloads metadata in the field.  See _Uptane Deployment
+       Best Practices_ ([DEPLOY]) for more information.
 
        *  Partial verification Secondary ECUs MUST have the Root and
           Targets metadata from the Director repository (to reduce the
@@ -1281,8 +1281,8 @@ Table of Contents
 
       *  A nonce or counter to prevent a replay of the ECU version
          report.  This value MUST change each update cycle.  It MAY be a
-         cryptographic nonce used with a time server as described in the
-         _Uptane Deployment Best Practices_ document ([DEPLOY]).
+         cryptographic nonce used with a time server as described in
+         _Uptane Deployment Best Practices_ ([DEPLOY]).
 
 5.4.2.2.  Download and check current time
 
@@ -1304,8 +1304,8 @@ Table of Contents
    image binary, as described in Section 5.2.7.  If the Primary has
    received multiple hashes for a given image binary via the Targets
    role (see Section 5.2.3.1) then it SHALL verify every hash for this
-   image despite that the image is identified by a single hash as part
-   of its filename.
+   image even though the image is identified by a single hash as part of
+   its filename.
 
 5.4.2.5.  Send latest time to Secondaries
 
@@ -1324,8 +1324,8 @@ Table of Contents
    metadata for all four roles from both repositories, plus any
    delegated Targets metadata files the Secondary will recurse through
    to find the proper delegation.  For partial verification Secondaries,
-   this MAY include fewer metadata files; it includes only the Targets
-   metadata file from the Director repository at a minimum.
+   this MAY include fewer metadata files; at a minimum, it includes only
+   the Targets metadata file from the Director repository.
 
    The Primary SHOULD determine the minimal set of metadata files to
    send to each Secondary by performing delegation resolution as
@@ -1615,7 +1615,7 @@ Table of Contents
                 Secondary) is responsible for validating the unencrypted
                 image and associated metadata.
 
-            2.  Check that all "MUST match" custom metadata (e.g.,
+            2.  Check that all MUST match custom metadata (e.g.,
                 hardware identifier and release counter) are the same in
                 both sets of metadata.
 
@@ -1948,10 +1948,9 @@ Table of Contents
               automakers-embrace-over-the-air-updates-can-we-trust-
               digital-car-repair/>.
 
-   [DEPLOY]   Members of the Uptane Alliance Community, ., "Uptane
-              Deployment Best Practices", n.d.,
-              <https://uptane.github.io/deployment-considerations/
-              index.html>.
+   [DEPLOY]   Members of the Uptane Community, ., "Uptane Deployment
+              Best Practices", n.d., <https://uptane.github.io/
+              deployment-considerations/index.html>.
 
    [IN-TOTO]  "in-toto: A framework to secure the integrity of software
               supply chains", October 2018,
@@ -1984,11 +1983,11 @@ Table of Contents
 
 Author's Address
 
-   Uptane Alliance Community
-   Uptane Alliance (c/o Prof. Justin Cappos)
-   6 MetroTech
-   Brooklyn, NY  11201
-   USA
+Uptane Community
+Joint Development Foundation Projects, LLC, Uptane Series (c/o Prof. Justin Cappos)
+6 MetroTech
+Brooklyn, NY  11201
+USA
 
-   Email: uptane-standards@googlegroups.com
+Email: uptane-standards@googlegroups.com
 
