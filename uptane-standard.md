@@ -912,7 +912,7 @@ To properly check Targets metadata, an ECU SHOULD:
 
 1. Download up to Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementer. For example, Z may be tens of kilobytes.
 1. The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU; partial verification ECUs might not have Snapshot metadata.
-1. Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack.):
+1. Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file. (Checks for an arbitrary software attack.):
     1. If checking top-level Targets metadata, the threshold of keys is specified in the Root metadata.
     1. If checking delegated Targets metadata, the threshold of keys is specified in the Targets metadata file that delegated authority to this role.
 1. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
