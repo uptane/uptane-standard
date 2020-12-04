@@ -62,18 +62,6 @@ normative:
       - ins: J. Moshenko
       - ins: J. Cappos
     date: 2017-12-15
-  # TAP 5 at rev 01726d2
-  TAP-5:
-    target: https://github.com/theupdateframework/taps/blob/01726d203c9b9c029d26f6612069ce3180500d9a/tap5.md#downloading-metadata-and-target-files
-    title: The Update Framework TAP 5 - Setting URLs for roles in the root metadata file
-    author:
-      - ins: T.K. Kuppusamy
-      - ins: S. Awwad
-      - ins: E. Cordell
-      - ins: V. Diaz
-      - ins: J. Moshenko
-      - ins: J. Cappos
-    date: 2018-01-22
   # TUF at rev 2b4e184
   TUF-spec:
     target: https://github.com/theupdateframework/specification/blob/2b4e18472fe25d5b57f36f6fa50104967c8faeaa/tuf-spec.md
@@ -467,8 +455,6 @@ A repository's Root metadata distributes the public keys of the top-level Root, 
 * A representation of the public keys for all four roles. Each key SHALL have a unique public key identifier.
 * An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role.
 
-Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded.  If this mapping of URLs is used, the implementer SHOULD implement this functionality following {{TAP-5}} to avoid adding unforeseen security risks.
-
 ### Targets metadata {#targets_meta}
 
 The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filenames, hashes, file sizes, and MAY also include other useful information, such as what types of hardware are compatible with a particular image.
@@ -531,7 +517,7 @@ For each Targets metadata file on the repository, the Snapshot metadata SHALL co
 
 * The filename and version number of the Targets metadata file.
 
-The Snapshot metadata MAY also list the Root metadata filename and version number. This is not required, particularly for implementations of {{TAP-5}}, but MAY be included in all cases for backward compatibility.
+The Snapshot metadata MAY also list the Root metadata filename and version number for the purpose of backward compatibility. Historically, this was a requirement in TUF, but it is no longer required and does not provide a significant security benefit.
 
 ### Timestamp metadata {#timestamp_meta}
 
@@ -844,8 +830,6 @@ See {{DEPLOY}} for more discussion on this topic.
 Full verification of metadata means that the ECU checks that the Targets metadata about images from the Director repository matches the Targets metadata about the same images from the Image repository. This provides resilience to a key compromise in the system.
 
 Full verification MUST be performed by Primary ECUs and SHOULD be performed by Secondary ECUs. In the following instructions, whenever an ECU is directed to download metadata, it applies only to Primary ECUs.
-
-If {{TAP-5}} is supported and a Primary has an external connection to the Uptane repositories, a Primary ECU SHALL download metadata and images following the rules specified in that TAP.  If {{TAP-5}} is not supported, or if the Primary does not have an external connection to the Uptane repositories, the download SHOULD follow the {{TUF-spec}} and the metadata file renaming rules specified in {{metadata_filename_rules}}.
 
 Before starting full verification, the repository mapping metadata MUST be consulted to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to {{DEPLOY}} for guidance on how to determine where metadata should be downloaded from.
 
