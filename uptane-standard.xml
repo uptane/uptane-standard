@@ -28,7 +28,7 @@
       </address>
     </author>
 
-    <date year="2020" month="December" day="02"/>
+    <date year="2020" month="December" day="04"/>
 
     <area>TODO</area>
     <workgroup>TODO</workgroup>
@@ -983,7 +983,7 @@ If multiple such Primaries are included within a vehicle, each Secondary ECU SHA
 
 <t><list style="numbers">
   <t>Download up to the number of bytes specified in the Timestamp metadata file, constructing the metadata filename as defined in <xref target="metadata_filename_rules"/>.</t>
-  <t>The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)</t>
+  <t>The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in the Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)</t>
   <t>Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</t>
   <t>Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)</t>
   <t>Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)</t>
@@ -999,7 +999,7 @@ If multiple such Primaries are included within a vehicle, each Secondary ECU SHA
 <t><list style="numbers">
   <t>Download up to Z number of bytes, constructing the metadata filename as defined in <xref target="metadata_filename_rules"/>. The value for Z is set by the implementer. For example, Z may be tens of kilobytes.</t>
   <t>The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU; partial verification ECUs might not have Snapshot metadata.</t>
-  <t>Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack):
+  <t>Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file. (Checks for an arbitrary software attack.):
   <list style="numbers">
       <t>If checking top-level Targets metadata, the threshold of keys is specified in the Root metadata.</t>
       <t>If checking delegated Targets metadata, the threshold of keys is specified in the Targets metadata file that delegated authority to this role.</t>
@@ -1017,7 +1017,7 @@ If multiple such Primaries are included within a vehicle, each Secondary ECU SHA
 <t>To properly check Targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level Targets metadata, but it also may be delegated to another role or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level Targets metadata file.</t>
 
 <t><list style="numbers">
-  <t>Download the current metadata file, and check it following the procedure in <xref target="check_targets"/>. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.</t>
+  <t>Download and check the current metadata file, following the procedure in <xref target="check_targets"/>. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.</t>
   <t>If the current metadata file contains signed metadata about the image, end the delegation resolution and return the metadata to be checked.</t>
   <t>If the current metadata file was reached via a terminating delegation and does not contain signed metadata about the image, abort the delegation resolution for this image and return an error indicating that image metadata could not be found.</t>
   <t>Search the list of delegations, in listed order. For each delegation:
@@ -1038,8 +1038,8 @@ If multiple such Primaries are included within a vehicle, each Secondary ECU SHA
   <t>For each of the roles in the delegation, find and load the image metadata following the procedure in <xref target="resolve_delegations"/>.</t>
   <t>Inspect the non-custom part of the metadata loaded in step 1:
   <list style="numbers">
-      <t>Locate all sets of roles which have agreeing (i.e., identical) non-custom metadata and “MUST match” custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.</t>
-      <t>Check for a conflict. A conflict exists if there remains more than one agreeing set of roles, each set having different metadata. If a conflict is found, choose and return the metadata from the set of roles which includes the earliest role in the multi-delegation list.</t>
+      <t>Locate all sets of roles that have agreeing (i.e., identical) non-custom metadata and “MUST match” custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.</t>
+      <t>Check for a conflict. A conflict exists if there is more than one agreeing set of roles, yet each set has different metadata. If a conflict is found, choose and return the metadata from the set of roles which includes the earliest role in the multi-delegation list.</t>
       <t>If there is no conflict, check if there is any single set of roles with matching non-custom metadata. If there is, choose and return the metadata from this set.</t>
       <t>If no agreeing set can be found that meets the agreement threshold, return an error indicating that image metadata could not be found.</t>
     </list></t>
@@ -1349,7 +1349,7 @@ If multiple such Primaries are included within a vehicle, each Secondary ECU SHA
   </back>
 
 <!-- ##markdown-source:
-H4sIAOhax18AA+1923LbSJbgu74CUX4oSUPSlmy5bNfDrmzLU+r2bS25qms2
+H4sIAPHjyV8AA+1923LbSJbgu74CUX4oSUPSlmy5bNfDrmzLU+r2bS25qms2
 NtwgAUoYkwAbACWzHP73PdfMkwmAku3qnp2I7YdqiwDycvLkuV/G4/FOW7SL
 /EnyftWmZZ6cwX+ztM6SeVUnz/OmuCgT+CU5Xa4W+TIv27QtqnInnU7r/Aq+
 ent+/PpkJ6tmZbqEUdY0yriRUcYZjbAzS9v8oqo3T5KinFc7O8WqfpKU1fO8
@@ -1808,39 +1808,39 @@ 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
-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
+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
+ujidgtEhz6WUnccGhzp/Cn3/vyseRyHvNgEA
 
 -->
 

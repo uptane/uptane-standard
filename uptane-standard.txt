@@ -1724,7 +1724,7 @@ Table of Contents
        Section 5.2.7.
 
    2.  The hashes and version number of the new Snapshot metadata file
-       MUST match the hashes and version number listed in Timestamp
+       MUST match the hashes and version number listed in the Timestamp
        metadata.  If the hashes and version number do not match, discard
        the new Snapshot metadata, abort the update cycle, and report the
        failure.  (Checks for a mix-and-match attack.)
@@ -1778,8 +1778,8 @@ Table of Contents
        not have Snapshot metadata.
 
    3.  Check that the Targets metadata has been signed by the threshold
-       of keys specified in the relevant metadata file (Checks for an
-       arbitrary software attack):
+       of keys specified in the relevant metadata file.  (Checks for an
+       arbitrary software attack.):
 
        1.  If checking top-level Targets metadata, the threshold of keys
            is specified in the Root metadata.
@@ -1817,7 +1817,7 @@ Table of Contents
    the following recursive procedure, beginning with the top-level
    Targets metadata file.
 
-   1.  Download the current metadata file, and check it following the
+   1.  Download and check the current metadata file, following the
        procedure in Section 5.4.4.6.  If the file cannot be loaded, or
        if any verification step fails, abort the delegation resolution,
        and indicate that image metadata cannot be found because of a
@@ -1875,17 +1875,17 @@ Table of Contents
 
    2.  Inspect the non-custom part of the metadata loaded in step 1:
 
-       1.  Locate all sets of roles which have agreeing (i.e.,
-           identical) non-custom metadata and "MUST match" custom
-           metadata.  Discard any set of roles with a size smaller than
-           the threshold of roles that must be in agreement for this
+       1.  Locate all sets of roles that have agreeing (i.e., identical)
+           non-custom metadata and "MUST match" custom metadata.
+           Discard any set of roles with a size smaller than the
+           threshold of roles that must be in agreement for this
            delegation.
 
-       2.  Check for a conflict.  A conflict exists if there remains
-           more than one agreeing set of roles, each set having
-           different metadata.  If a conflict is found, choose and
-           return the metadata from the set of roles which includes the
-           earliest role in the multi-delegation list.
+       2.  Check for a conflict.  A conflict exists if there is more
+           than one agreeing set of roles, yet each set has different
+           metadata.  If a conflict is found, choose and return the
+           metadata from the set of roles which includes the earliest
+           role in the multi-delegation list.
 
        3.  If there is no conflict, check if there is any single set of
            roles with matching non-custom metadata.  If there is, choose
