@@ -899,7 +899,7 @@ To properly check Timestamp metadata, an ECU SHOULD:
 To properly check Snapshot metadata, an ECU SHOULD:
 
 1. Download up to the number of bytes specified in the Timestamp metadata file, constructing the metadata filename as defined in {{metadata_filename_rules}}.
-2. The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
+2. The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in the Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)
 3. Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)
 4. Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)
 5. Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)
@@ -912,7 +912,7 @@ To properly check Targets metadata, an ECU SHOULD:
 
 1. Download up to Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementer. For example, Z may be tens of kilobytes.
 1. The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU; partial verification ECUs might not have Snapshot metadata.
-1. Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file (Checks for an arbitrary software attack):
+1. Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file. (Checks for an arbitrary software attack.):
     1. If checking top-level Targets metadata, the threshold of keys is specified in the Root metadata.
     1. If checking delegated Targets metadata, the threshold of keys is specified in the Targets metadata file that delegated authority to this role.
 1. Check that the version number of the previous Targets metadata file, if any, is less than or equal to the version number of this Targets metadata file. (Checks for a rollback attack.)
@@ -925,7 +925,7 @@ To properly check Targets metadata, an ECU SHOULD:
 
 To properly check Targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level Targets metadata, but it also may be delegated to another role or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level Targets metadata file.
 
-1. Download the current metadata file, and check it following the procedure in {{check_targets}}. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.
+1. Download and check the current metadata file, following the procedure in {{check_targets}}. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.
 2. If the current metadata file contains signed metadata about the image, end the delegation resolution and return the metadata to be checked.
 3. If the current metadata file was reached via a terminating delegation and does not contain signed metadata about the image, abort the delegation resolution for this image and return an error indicating that image metadata could not be found.
 4. Search the list of delegations, in listed order. For each delegation:
@@ -940,7 +940,7 @@ It is possible to delegate signing authority to multiple delegated roles as desc
 
 1. For each of the roles in the delegation, find and load the image metadata following the procedure in {{resolve_delegations}}.
 2. Inspect the non-custom part of the metadata loaded in step 1:
-    1. Locate all sets of roles which have agreeing (i.e., identical) non-custom metadata and "MUST match" custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.
-    2. Check for a conflict. A conflict exists if there remains more than one agreeing set of roles, each set having different metadata. If a conflict is found, choose and return the metadata from the set of roles which includes the earliest role in the multi-delegation list.
+    1. Locate all sets of roles that have agreeing (i.e., identical) non-custom metadata and "MUST match" custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.
+    2. Check for a conflict. A conflict exists if there is more than one agreeing set of roles, yet each set has different metadata. If a conflict is found, choose and return the metadata from the set of roles which includes the earliest role in the multi-delegation list.
     3. If there is no conflict, check if there is any single set of roles with matching non-custom metadata. If there is, choose and return the metadata from this set.
     4. If no agreeing set can be found that meets the agreement threshold, return an error indicating that image metadata could not be found.
