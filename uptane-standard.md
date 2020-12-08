@@ -32,7 +32,7 @@ normative:
   RFC5198:
   # Unicode Normalization Form C
   NFC:
-    target: http://www.unicode.org/reports/tr15/
+    target: https://www.unicode.org/reports/tr15/
     title: "Unicode Standard Annex #15: Unicode Normalization Forms"
     author:
       - ins: M. Davis
@@ -145,7 +145,7 @@ informative:
       - ins: K. Barry
     date: 2018-04-20
   IN-TOTO:
-    target: https://in-toto.github.io/
+    target: https://in-toto.io/
     title: "in-toto: A framework to secure the integrity of software supply chains"
     date: 2018-10-29
 
