@@ -711,11 +711,6 @@ Table of Contents
    o  An attribute mapping each role to (1) its public key(s), and (2)
       the threshold of signatures required for that role.
 
-   Additionally, it MAY contain a mapping of roles to a list of valid
-   URLs from which the role metadata can be downloaded.  If this mapping
-   of URLs is used, the implementer SHOULD implement this functionality
-   following [TAP-5] to avoid adding unforeseen security risks.
-
 5.2.3.  Targets metadata
 
    The Targets metadata on a repository contains all of the information
@@ -853,9 +848,9 @@ Table of Contents
    o  The filename and version number of the Targets metadata file.
 
    The Snapshot metadata MAY also list the Root metadata filename and
-   version number.  This is not required, particularly for
-   implementations of [TAP-5], but MAY be included in all cases for
-   backward compatibility.
+   version number for the purpose of backward compatibility.
+   Historically, this was a requirement in TUF, but it is no longer
+   required and does not provide a significant security benefit.
 
 5.2.5.  Timestamp metadata
 
@@ -1535,13 +1530,6 @@ Table of Contents
    an ECU is directed to download metadata, it applies only to Primary
    ECUs.
 
-   If [TAP-5] is supported and a Primary has an external connection to
-   the Uptane repositories, a Primary ECU SHALL download metadata and
-   images following the rules specified in that TAP.  If [TAP-5] is not
-   supported, or if the Primary does not have an external connection to
-   the Uptane repositories, the download SHOULD follow the [TUF-spec]
-   and the metadata file renaming rules specified in Section 5.2.7.
-
    Before starting full verification, the repository mapping metadata
    MUST be consulted to determine where to download metadata from.  This
    procedure assumes the basic Uptane case: there are only two
@@ -1929,13 +1917,6 @@ Table of Contents
               repository consensus on entrusted targets", December 2017,
               <https://github.com/theupdateframework/taps/
               blob/2cb67d913ec19424d1e354b38f862886fbfd4105/tap4.md>.
-
-   [TAP-5]    Kuppusamy, T., Awwad, S., Cordell, E., Diaz, V., Moshenko,
-              J., and J. Cappos, "The Update Framework TAP 5 - Setting
-              URLs for roles in the root metadata file", January 2018,
-              <https://github.com/theupdateframework/taps/
-              blob/01726d203c9b9c029d26f6612069ce3180500d9a/
-              tap5.md#downloading-metadata-and-target-files>.
 
    [TUF-spec]
               Samuel, J., Mathewson, N., Condra, G., Diaz, V.,

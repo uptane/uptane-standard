@@ -894,7 +894,6 @@
 <li>A representation of the public keys for all four roles. Each key SHALL have a unique public key identifier.</li>
 <li>An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role.</li>
 </ul>
-<p id="rfc.section.5.2.2.p.3">Additionally, it MAY contain a mapping of roles to a list of valid URLs from which the role metadata can be downloaded.  If this mapping of URLs is used, the implementer SHOULD implement this functionality following <a href="#TAP-5" class="xref">[TAP-5]</a> to avoid adding unforeseen security risks.</p>
 <h1 id="rfc.section.5.2.3">
 <a href="#rfc.section.5.2.3">5.2.3.</a> <a href="#targets_meta" id="targets_meta">Targets metadata</a>
 </h1>
@@ -966,7 +965,7 @@
 <p></p>
 
 <ul><li>The filename and version number of the Targets metadata file.</li></ul>
-<p id="rfc.section.5.2.4.p.4">The Snapshot metadata MAY also list the Root metadata filename and version number. This is not required, particularly for implementations of <a href="#TAP-5" class="xref">[TAP-5]</a>, but MAY be included in all cases for backward compatibility.</p>
+<p id="rfc.section.5.2.4.p.4">The Snapshot metadata MAY also list the Root metadata filename and version number for the purpose of backward compatibility. Historically, this was a requirement in TUF, but it is no longer required and does not provide a significant security benefit.</p>
 <h1 id="rfc.section.5.2.5">
 <a href="#rfc.section.5.2.5">5.2.5.</a> <a href="#timestamp_meta" id="timestamp_meta">Timestamp metadata</a>
 </h1>
@@ -1301,9 +1300,8 @@
 </h1>
 <p id="rfc.section.5.4.4.2.p.1">Full verification of metadata means that the ECU checks that the Targets metadata about images from the Director repository matches the Targets metadata about the same images from the Image repository. This provides resilience to a key compromise in the system.</p>
 <p id="rfc.section.5.4.4.2.p.2">Full verification MUST be performed by Primary ECUs and SHOULD be performed by Secondary ECUs. In the following instructions, whenever an ECU is directed to download metadata, it applies only to Primary ECUs.</p>
-<p id="rfc.section.5.4.4.2.p.3">If <a href="#TAP-5" class="xref">[TAP-5]</a> is supported and a Primary has an external connection to the Uptane repositories, a Primary ECU SHALL download metadata and images following the rules specified in that TAP.  If <a href="#TAP-5" class="xref">[TAP-5]</a> is not supported, or if the Primary does not have an external connection to the Uptane repositories, the download SHOULD follow the <a href="#TUF-spec" class="xref">[TUF-spec]</a> and the metadata file renaming rules specified in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>.</p>
-<p id="rfc.section.5.4.4.2.p.4">Before starting full verification, the repository mapping metadata MUST be consulted to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to <a href="#DEPLOY" class="xref">[DEPLOY]</a> for guidance on how to determine where metadata should be downloaded from.</p>
-<p id="rfc.section.5.4.4.2.p.5">In order to perform full verification, an ECU SHALL perform the following steps:</p>
+<p id="rfc.section.5.4.4.2.p.3">Before starting full verification, the repository mapping metadata MUST be consulted to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to <a href="#DEPLOY" class="xref">[DEPLOY]</a> for guidance on how to determine where metadata should be downloaded from.</p>
+<p id="rfc.section.5.4.4.2.p.4">In order to perform full verification, an ECU SHALL perform the following steps:</p>
 <p></p>
 
 <ol>
@@ -1327,7 +1325,7 @@
 </ol>
 </li>
 </ol>
-<p id="rfc.section.5.4.4.2.p.7">If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (i.e., rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.</p>
+<p id="rfc.section.5.4.4.2.p.6">If any step fails, the ECU MUST return an error code indicating the failure. If a check for a specific type of security attack fails (i.e., rollback, freeze, arbitrary software, etc.), the ECU SHOULD return an error code that indicates the type of attack.</p>
 <h1 id="rfc.section.5.4.4.3">
 <a href="#rfc.section.5.4.4.3">5.4.4.3.</a> <a href="#check_root" id="check_root">How to check Root metadata</a>
 </h1>
@@ -1463,11 +1461,6 @@
 <td class="reference"><b id="TAP-4">[TAP-4]</b></td>
 <td class="top">
 <a>Kuppusamy, T.</a>, <a>Awwad, S.</a>, <a>Cordell, E.</a>, <a>Diaz, V.</a>, <a>Moshenko, J.</a> and <a>J. Cappos</a>, "<a href="https://github.com/theupdateframework/taps/blob/2cb67d913ec19424d1e354b38f862886fbfd4105/tap4.md">The Update Framework TAP 4 - Multiple repository consensus on entrusted targets</a>", December 2017.</td>
-</tr>
-<tr>
-<td class="reference"><b id="TAP-5">[TAP-5]</b></td>
-<td class="top">
-<a>Kuppusamy, T.</a>, <a>Awwad, S.</a>, <a>Cordell, E.</a>, <a>Diaz, V.</a>, <a>Moshenko, J.</a> and <a>J. Cappos</a>, "<a href="https://github.com/theupdateframework/taps/blob/01726d203c9b9c029d26f6612069ce3180500d9a/tap5.md#downloading-metadata-and-target-files">The Update Framework TAP 5 - Setting URLs for roles in the root metadata file</a>", January 2018.</td>
 </tr>
 <tr>
 <td class="reference"><b id="TUF-spec">[TUF-spec]</b></td>
