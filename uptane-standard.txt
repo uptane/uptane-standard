@@ -1901,7 +1901,7 @@ Table of Contents
 
    [NFC]      Davis, M. and M. Duerst, "Unicode Standard Annex #15:
               Unicode Normalization Forms", October 2018,
-              <http://www.unicode.org/reports/tr15/>.
+              <https://www.unicode.org/reports/tr15/>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1959,8 +1959,7 @@ Table of Contents
               deployment-considerations/index.html>.
 
    [IN-TOTO]  "in-toto: A framework to secure the integrity of software
-              supply chains", October 2018,
-              <https://in-toto.github.io/>.
+              supply chains", October 2018, <https://in-toto.io/>.
 
    [MERCURY]  Kuppusamy, T., Diaz, V., and J. Cappos, "Mercury:
               Bandwidth-Effective Prevention of Rollback Attacks Against
