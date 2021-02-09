@@ -734,9 +734,9 @@ Each Secondary SHALL store the latest copy of all metadata required for its own 
 
 #### Send images to Secondaries {#send_images_primary}
 
-The Primary SHALL send the latest image to each of its associated Secondaries that have storage to receive it.
+The Primary SHALL send the latest image to each of its associated Secondaries that have sufficient storage to receive it.
 
-For Secondaries without storage, the Primary SHOULD wait for a request from the Secondary to stream the new image file to it. The Secondary will send the request once it has verified the metadata sent in the previous step.
+For Secondaries without sufficient storage to store a copy of the image, the Primary SHOULD wait for a request from the Secondary to stream the new image file to it. The Secondary will send the request once it has verified the metadata sent in the previous step.
 
 ### Installing images on Primary or Secondary ECUs
 
@@ -759,7 +759,7 @@ The ECU SHALL verify the latest downloaded metadata ({{metadata_verification}}) 
 
 #### Download latest image {#download_image}
 
-If the ECU does not have secondary storage, i.e., buffer storage to temporarily store the latest image before installing it, it SHALL download the latest image from the Primary. (If the ECU has secondary storage, it will already have the latest image in its secondary storage as specified in {{send_images_primary}}, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the Primary).
+If the ECU has limited secondary storage, i.e., insufficient buffer storage to temporarily store the latest image before installing it, it SHALL download the latest image from the Primary. (If the ECU has sufficient secondary storage, it will already have the latest image in its secondary storage as specified in {{send_images_primary}}, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the Primary).
 
 The filename used to identify the latest known image (i.e., the file to request from the Primary) SHALL be determined as follows:
 
@@ -787,13 +787,13 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
     * If the ECU key is asymmetric and there is no symmetric key in the Targets metadata, the ECU SHALL use its ECU key for image decryption.
 7. Check that all hashes listed in the metadata match the corresponding hashes of the image.
 
-If the ECU has secondary storage, the checks SHOULD be performed on the image in secondary storage before it is installed.
+If the ECU has enough secondary storage capacity to store the image, the checks SHOULD be performed on the image in secondary storage before it is installed.
 
 When checking hashes, the ECU SHOULD additionally check that the length of the image matches the length listed in the metadata.
 
 NOTE: Verifying image size along with the hashes will become a requirement in a future version of the Uptane Standard.
 
-NOTE: See {{DEPLOY}} for guidance on how to deal with Secondary ECU failures for ECUs that do not have secondary storage.
+NOTE: See {{DEPLOY}} for guidance on how to deal with Secondary ECU failures for ECUs that have limited secondary storage.
 
 If any step fails, the ECU SHALL jump to the final step ({{create_version_report}}).
 
