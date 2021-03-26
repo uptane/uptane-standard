@@ -161,31 +161,7 @@ In order to be considered Uptane-compliant, an implementation MUST follow all of
 
 ## Terminology
 
-*Bundle*: A set of images released by the repository that is meant to be installed by one or more ECUs on a vehicle during the same update cycle.
-
-*Bus*: An internal communications network that interconnects components within a vehicle. A vehicle can have a number of buses that will vary in terms of power, speed, and resources.
-
-*ECU Identifier*: An attribute used to identify a specific ECU (e.g., a unique serial number).
-
-*ECU Version Manifest*: Metadata which details the software version currently installed on the ECU.
-
-*Hardware Identifier*: An attribute used to identify a model of an ECU.
-
-*Image*: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.
-
-*Metadata*:  Information describing the characteristics of data including, for example, structural
-metadata describing data structures (e.g., data format, syntax, and semantics) and
-descriptive metadata describing data contents (e.g., information security labels). As used in Uptane, metadata can be described as information associated with a role or an image that contains the characteristics or parameters thereof (e.g., cryptographic material parameters, filenames, and versions.)
-
-*Primary/Secondary ECUs*: Terms used to describe the control units within a ground vehicle. A Primary ECU downloads and verifies update images and metadata for itself and for Secondary ECUs, and distributes images and metadata to Secondaries. Thus, it requires extra storage space and a means to download images and metadata.  Secondary ECUs receive their update images and metadata from the Primary, and only need to verify and install their own metadata and images.
-
-*POUF*: A document that contains the protocol, operations, usage, and formats (POUF) of a specific Uptane implementation. The POUF contains decisions about SHOULDs and MAYs in an implementation, as well as descriptions of data binding formats. POUFs MAY be used to create compatible Uptane implementations.
-
-*Repository*: A server containing metadata about images. May also contain the images themselves. Other data may be stored on the repository to be accessed by ECUs during the update process.
-
-*Suppliers*: Independent companies to which vehicle manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that perform outsourced work for Tier-1 suppliers.
-
-*Vehicle Version Manifest*: A compilation of all ECU version reports on a vehicle. It serves as a master list of all images currently running on all ECUs in the vehicle.
+For definitions of terms used in this standard, please refer to the [glossary](https://uptane.github.io/deployment-considerations/glossary.html) in the Deployment Best Practices.
 
 ## Uptane role terminology
 
