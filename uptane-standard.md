@@ -161,7 +161,7 @@ In order to be considered Uptane-compliant, an implementation MUST follow all of
 
 ## Terminology
 
-For definitions of terms used in this standard, please refer to the [glossary](https://uptane.github.io/deployment-considerations/glossary.html) in the Deployment Best Practices.
+For definitions of terms used in this Standard, please refer to the [glossary](https://uptane.github.io/deployment-considerations/glossary.html) in the Deployment Best Practices.
 
 ## Uptane role terminology
 
