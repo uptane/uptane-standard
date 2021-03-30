@@ -429,7 +429,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2021-2-10" />
+  <meta name="dct.issued" scheme="ISO8601" content="2021-3-30" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -565,18 +565,7 @@
 <h1 id="rfc.section.2.2">
 <a href="#rfc.section.2.2">2.2.</a> <a href="#terminology-1" id="terminology-1">Terminology</a>
 </h1>
-<p><em>Bundle</em>: A set of images released by the repository that is meant to be installed by one or more ECUs on a vehicle during the same update cycle.</p>
-<p><em>Bus</em>: An internal communications network that interconnects components within a vehicle. A vehicle can have a number of buses that will vary in terms of power, speed, and resources.</p>
-<p><em>ECU Identifier</em>: An attribute used to identify a specific ECU (e.g., a unique serial number).</p>
-<p><em>ECU Version Manifest</em>: Metadata which details the software version currently installed on the ECU.</p>
-<p><em>Hardware Identifier</em>: An attribute used to identify a model of an ECU.</p>
-<p><em>Image</em>: File containing software for an ECU to install. May contain a binary image to flash, installation instructions, and other necessary information for the ECU to properly apply the update. Each ECU typically holds only one image, although this may vary in some cases.</p>
-<p><em>Metadata</em>:  Information describing the characteristics of data including, for example, structural metadata describing data structures (e.g., data format, syntax, and semantics) and descriptive metadata describing data contents (e.g., information security labels). As used in Uptane, metadata can be described as information associated with a role or an image that contains the characteristics or parameters thereof (e.g., cryptographic material parameters, filenames, and versions.)</p>
-<p><em>Primary/Secondary ECUs</em>: Terms used to describe the control units within a ground vehicle. A Primary ECU downloads and verifies update images and metadata for itself and for Secondary ECUs, and distributes images and metadata to Secondaries. Thus, it requires extra storage space and a means to download images and metadata.  Secondary ECUs receive their update images and metadata from the Primary, and only need to verify and install their own metadata and images.</p>
-<p><em>POUF</em>: A document that contains the protocol, operations, usage, and formats (POUF) of a specific Uptane implementation. The POUF contains decisions about SHOULDs and MAYs in an implementation, as well as descriptions of data binding formats. POUFs MAY be used to create compatible Uptane implementations.</p>
-<p><em>Repository</em>: A server containing metadata about images. May also contain the images themselves. Other data may be stored on the repository to be accessed by ECUs during the update process.</p>
-<p><em>Suppliers</em>: Independent companies to which vehicle manufacturers may outsource the production of ECUs. Tier-1 suppliers directly serve the manufacturers. Tier-2 suppliers are those that perform outsourced work for Tier-1 suppliers.</p>
-<p><em>Vehicle Version Manifest</em>: A compilation of all ECU version reports on a vehicle. It serves as a master list of all images currently running on all ECUs in the vehicle.</p>
+<p id="rfc.section.2.2.p.1">For definitions of terms used in this Standard, please refer to the <a href="https://uptane.github.io/deployment-considerations/glossary.html">glossary</a> in the Deployment Best Practices.</p>
 <h1 id="rfc.section.2.3">
 <a href="#rfc.section.2.3">2.3.</a> <a href="#uptane-role-terminology" id="uptane-role-terminology">Uptane role terminology</a>
 </h1>
