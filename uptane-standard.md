@@ -445,6 +445,8 @@ To be available to install on clients, all images on the repository MUST have th
 * The size of the image in bytes
 * One or more hashes of the image file, along with the hashing function used
 
+To avoid a replay attack, Targets metadata from the Director repository SHOULD include a vehicle identifier if there are no images included in the targets metadata.
+
 ##### Custom metadata about images
 
 In addition to the required metadata, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the *Deployment Best Practices* document ({{DEPLOY}}). However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the Targets metadata from the Director.
