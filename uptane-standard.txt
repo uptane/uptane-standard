@@ -685,6 +685,10 @@ Table of Contents
    o  One or more hashes of the image file, along with the hashing
       function used
 
+   To avoid a replay attack, Targets metadata from the Director
+   repository SHOULD include a vehicle identifier if there are no images
+   included in the targets metadata.
+
 5.2.3.1.1.  Custom metadata about images
 
    In addition to the required metadata, Targets metadata files MAY
