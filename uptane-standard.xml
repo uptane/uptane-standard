@@ -28,7 +28,7 @@
       </address>
     </author>
 
-    <date year="2021" month="April" day="13"/>
+    <date year="2021" month="May" day="11"/>
 
     <area>TODO</area>
     <workgroup>TODO</workgroup>
@@ -929,7 +929,7 @@ If multiple such Primaries are included within a vehicle, each Secondary ECU SHA
   <list style="numbers">
       <t>Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous Root metadata file).</t>
       <t>Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementer. For example, X may be tens of kilobytes. The filename used to download the Root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, the current Root metadata file is the latest; continue with step 3.</t>
-      <t>Version N+1 of the Root metadata file MUST have been signed by the following: (1) a threshold of keys specified in the latest Root metadata file (version N), and (2) a threshold of keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at version N of the Root metadata file. (Checks for an arbitrary software attack.)</t>
+      <t>Version N+1 of the Root metadata file MUST have been signed by the following: (1) a threshold of unique keys specified in the latest Root metadata file (version N), and (2) a threshold of unique keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at version N of the Root metadata file. (Checks for an arbitrary software attack.)</t>
       <t>The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 1 and version N of the Root metadata file. (Checks for a rollback attack.)</t>
       <t>Set the latest Root metadata file to the new Root metadata file.</t>
       <t>Repeat steps 2.1 to 2.6.</t>
@@ -945,7 +945,7 @@ If multiple such Primaries are included within a vehicle, each Secondary ECU SHA
 
 <t><list style="numbers">
   <t>Download up to Y number of bytes. The value for Y is set by the implementer. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).</t>
-  <t>Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</t>
+  <t>Check that it has been signed by the threshold of unique keys specified in the latest Root metadata file. If the new Timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</t>
   <t>Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)</t>
   <t>Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)</t>
 </list></t>
@@ -958,7 +958,7 @@ If multiple such Primaries are included within a vehicle, each Secondary ECU SHA
 <t><list style="numbers">
   <t>Download up to the number of bytes specified in the Timestamp metadata file, constructing the metadata filename as defined in <xref target="metadata_filename_rules"/>.</t>
   <t>The hashes and version number of the new Snapshot metadata file MUST match the hashes and version number listed in the Timestamp metadata. If the hashes and version number do not match, discard the new Snapshot metadata, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.)</t>
-  <t>Check that it has been signed by the threshold of keys specified in the latest Root metadata file. If the new Snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</t>
+  <t>Check that it has been signed by the threshold of unique keys specified in the latest Root metadata file. If the new Snapshot metadata file is not signed as required, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</t>
   <t>Check that the version number of the previous Snapshot metadata file, if any, is less than or equal to the version number of this Snapshot metadata file. If this Snapshot metadata file is older than the previous Snapshot metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)</t>
   <t>Check that the version number listed by the previous Snapshot metadata file for each Targets metadata file is less than or equal to its version number in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)</t>
   <t>Check that each Targets metadata filename listed in the previous Snapshot metadata file is also listed in this Snapshot metadata file. If this condition is not met, discard the new Snapshot metadata file, abort the update cycle, and report the failure. (Checks for a rollback attack.)</t>
@@ -973,7 +973,7 @@ If multiple such Primaries are included within a vehicle, each Secondary ECU SHA
 <t><list style="numbers">
   <t>Download up to Z number of bytes, constructing the metadata filename as defined in <xref target="metadata_filename_rules"/>. The value for Z is set by the implementer. For example, Z may be tens of kilobytes.</t>
   <t>The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU; partial verification ECUs might not have Snapshot metadata.</t>
-  <t>Check that the Targets metadata has been signed by the threshold of keys specified in the relevant metadata file. (Checks for an arbitrary software attack.):
+  <t>Check that the Targets metadata has been signed by the threshold of unique keys specified in the relevant metadata file. (Checks for an arbitrary software attack.):
   <list style="numbers">
       <t>If checking top-level Targets metadata, the threshold of keys is specified in the Root metadata.</t>
       <t>If checking delegated Targets metadata, the threshold of keys is specified in the Targets metadata file that delegated authority to this role.</t>
@@ -1299,7 +1299,7 @@ If multiple such Primaries are included within a vehicle, each Secondary ECU SHA
   </back>
 
 <!-- ##markdown-source:
-H4sIAP+odWAAA+19WXfbVprgu34FTvwQSU1SlrzEdh5mZFvuqNrbWHJS6T59
+H4sIAMqPmmAAA+19WXfbVprgu34FTvwQSU1SlrzEdh5mZFvuqNrbWHJS6T59
 XCABSmiTAAsAJTM+/u/z7XcBQMl2qnr6nMmDY4PAXb777dsdj8c7bdEu8ifJ
 +1WblnlyBn9maZ0l86pOnudNcVEm8CQ5Xa4W+TIv27QtqnInnU7r/Aq+ent+
 /PpkJ6tmZbqEUdY0yriRUcYZjbAzS9v8oqo3T5KinFc7O8WqfpKU1fO8Lq5g
@@ -1724,51 +1724,51 @@ UdqJHWxXZySv6nt2OJs6QlkKfe8qUwaKeg2md1lFYZDea8F7FNVdydnQ1l0z
 v+iY0FqybresfM946bknYF2PVV3T63851AV1BxklnG1Fzf3+GidcMQvhmkpE
 rL9Sz9K87TSIwHsdAp/rX7XurM25+Pxjsai8MTtpiEEiWA/ECu8yvk9cm7DU
 2xc/vH7/6unJu+CGP2Uq948miEF0jZyqvkVjY5Iho6rxKJDs/Ytw5/ozCdSi
-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
-1Bw2GOr8Kfz9/wK4SBXDsykBAA==
+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
+YHTIc+mz5rDBUOdP4e//F0Tr6uXWKQEA
 
 -->
 

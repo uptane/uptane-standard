@@ -1592,14 +1592,14 @@ Table of Contents
            is the latest; continue with step 3.
 
        3.  Version N+1 of the Root metadata file MUST have been signed
-           by the following: (1) a threshold of keys specified in the
-           latest Root metadata file (version N), and (2) a threshold of
-           keys specified in the new Root metadata file being validated
-           (version N+1).  If version N+1 is not signed as required,
-           discard it, abort the update cycle, and report the signature
-           failure.  On the next update cycle, begin at version N of the
-           Root metadata file.  (Checks for an arbitrary software
-           attack.)
+           by the following: (1) a threshold of unique keys specified in
+           the latest Root metadata file (version N), and (2) a
+           threshold of unique keys specified in the new Root metadata
+           file being validated (version N+1).  If version N+1 is not
+           signed as required, discard it, abort the update cycle, and
+           report the signature failure.  On the next update cycle,
+           begin at version N of the Root metadata file.  (Checks for an
+           arbitrary software attack.)
 
        4.  The version number of the latest Root metadata file (version
            N) must be less than or equal to the version number of the
@@ -1633,11 +1633,11 @@ Table of Contents
        filename used to download the Timestamp metadata file is of the
        fixed form FILENAME.EXT (e.g., timestamp.json).
 
-   2.  Check that it has been signed by the threshold of keys specified
-       in the latest Root metadata file.  If the new Timestamp metadata
-       file is not properly signed, discard it, abort the update cycle,
-       and report the signature failure.  (Checks for an arbitrary
-       software attack.)
+   2.  Check that it has been signed by the threshold of unique keys
+       specified in the latest Root metadata file.  If the new Timestamp
+       metadata file is not properly signed, discard it, abort the
+       update cycle, and report the signature failure.  (Checks for an
+       arbitrary software attack.)
 
    3.  Check that the version number of the previous Timestamp metadata
        file, if any, is less than or equal to the version number of this
@@ -1666,10 +1666,10 @@ Table of Contents
        the new Snapshot metadata, abort the update cycle, and report the
        failure.  (Checks for a mix-and-match attack.)
 
-   3.  Check that it has been signed by the threshold of keys specified
-       in the latest Root metadata file.  If the new Snapshot metadata
-       file is not signed as required, discard it, abort the update
-       cycle, and report the signature failure.  (Checks for an
+   3.  Check that it has been signed by the threshold of unique keys
+       specified in the latest Root metadata file.  If the new Snapshot
+       metadata file is not signed as required, discard it, abort the
+       update cycle, and report the signature failure.  (Checks for an
        arbitrary software attack.)
 
    4.  Check that the version number of the previous Snapshot metadata
@@ -1715,8 +1715,8 @@ Table of Contents
        not have Snapshot metadata.
 
    3.  Check that the Targets metadata has been signed by the threshold
-       of keys specified in the relevant metadata file.  (Checks for an
-       arbitrary software attack.):
+       of unique keys specified in the relevant metadata file.  (Checks
+       for an arbitrary software attack.):
 
        1.  If checking top-level Targets metadata, the threshold of keys
            is specified in the Root metadata.
