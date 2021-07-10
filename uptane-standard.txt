@@ -412,7 +412,7 @@ Table of Contents
 
    o  _Eavesdrop attack:_ Read sensitive or confidential information
       from an update intended to be encrypted for a specific ECU.
-      (Note: Not all implementations will have a need for protecting
+      (Note: Not all implementations will have a need to protect
       information in this way.)
 
 4.3.2.  Deny installation of updates
