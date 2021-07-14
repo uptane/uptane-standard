@@ -374,7 +374,7 @@ A repository's Targets role SHALL produce and sign metadata about images and del
 
 The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it MUST do so as specified in {{delegations_meta}}.
 
-Responsibility for signing images or a subset of images MAY be delegated to more than one role and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.
+As responsibility for signing images or a subset of images MAY be delegated to more than one role, it is possible that two different roles will be trusted to sign a particular image. For this reason, delegations MUST be prioritized.
 
 A particular delegation for a subset of images MAY be designated as **terminating**. For terminating delegations, the client SHALL NOT search any further if it does not find validly signed metadata about those images. Delegations SHOULD NOT be terminating by default; terminating delegations SHOULD only be used when there is a compelling technical reason to do so.
 
@@ -433,7 +433,7 @@ A repository's Root metadata distributes the public keys of the top-level Root, 
 
 ### Targets metadata {#targets_meta}
 
-The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filenames, hashes, file sizes, and MAY also include other useful information, such as what types of hardware are compatible with a particular image.
+The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filenames, hashes, and file sizes. It MAY also include other useful information, such as what types of hardware are compatible with a particular image.
 
 Targets metadata can also contain metadata about delegations, allowing one Targets role to delegate its authority to another. This means that an individual Targets metadata file might contain only metadata about delegations, only metadata about images, or some combination of the two. The details of how ECUs traverse the delegation tree to find valid metadata about images is specified in {{resolve_delegations}}.
 
@@ -445,11 +445,11 @@ To be available to install on clients, all images on the repository MUST have th
 * The size of the image in bytes
 * One or more hashes of the image file, along with the hashing function used
 
-To avoid a replay attack, Targets metadata from the Director repository SHOULD include a vehicle identifier if there are no images included in the targets metadata.
+If there are no images included in the Targets metadata from the Director repository, then the metadata SHOULD include a vehicle identifier in order to avoid a replay attack.
 
 ##### Custom metadata about images
 
-In addition to the required metadata, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the *Deployment Best Practices* document ({{DEPLOY}}). However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the Targets metadata from the Director.
+In addition to what is required, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the *Deployment Best Practices* document ({{DEPLOY}}). However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the Targets metadata from the Director.
 
 Custom metadata MAY also contain a demarcated field or section that MUST match whenever two pieces of metadata are checked against each other, such as when Targets metadata from the Director repository is checked against Targets metadata from the Image repository.
 
@@ -495,7 +495,7 @@ For each Targets metadata file on the repository, the Snapshot metadata SHALL co
 
 * The filename and version number of the Targets metadata file.
 
-The Snapshot metadata MAY also list the Root metadata filename and version number for the purpose of backward compatibility. Historically, this was a requirement in TUF, but it is no longer required and does not provide a significant security benefit.
+The Snapshot metadata MAY also list the Root metadata filename and version number for the purpose of backwards compatibility. Historically, this was a requirement in TUF, but it is no longer required and does not provide a significant security benefit.
 
 ### Timestamp metadata {#timestamp_meta}
 
@@ -584,7 +584,7 @@ A Director repository MUST conform to the following six-step process for directi
     * The signature of the manifest matches the ECU key of the Primary that sent it.
     * The signature of each Secondary's contribution to the manifest matches the ECU key of that Secondary.
 1. The Director SHOULD check that the nonce or counter in each ECU version report has not been used before to prevent a replay of the ECU version report. If the nonce or counter is reused the Director SHOULD drop the request.
-1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this Standard. However, the Director MUST take into account *dependencies* and *conflicts* between images and SHOULD consult well-established techniques for dependency resolution.
+1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope for this Standard. However, the Director MUST take into account *dependencies* and *conflicts* between images and SHOULD consult well-established techniques for dependency resolution.
 1. The Director MAY encrypt images for ECUs that require it.
 1. The Director generates new metadata representing the desired set of images to be installed on the vehicle, based on the dependency resolution in step 4. This includes Targets ({{targets_meta}}), Snapshot ({{snapshot_meta}}), and Timestamp ({{timestamp_meta}}) metadata. It then sends this metadata to the Primary as described in {{download_meta_primary}}.
 
@@ -611,7 +611,7 @@ An Uptane-compliant ECU SHALL be able to download and verify image metadata and 
 
 All ECUs SHOULD monitor the download speed of image metadata and image binaries to detect and respond to a slow retrieval attack. If the download is slower than a pre-defined threshold, the ECU SHOULD send an alert to the Director repository, for example as part of the next vehicle version manifest.
 
-Each ECU receiving over-the-air updates in a vehicle is either a Primary or a Secondary ECU. A Primary ECU collects and delivers vehicle manifests to the Director ({{vehicle_version_manifest}}) that contain information about which images have been installed on ECUs in the vehicle. It also verifies the time and downloads and verifies the latest metadata and images for itself and for its Secondaries. A Secondary ECU verifies the time, and downloads and verifies the latest metadata and images for itself from its associated Primary ECU. It also sends signed information about its installed images to its associated Primary.
+Each ECU receiving over-the-air updates in a vehicle is either a Primary or a Secondary ECU. A Primary ECU collects and delivers to the Director vehicle manifests ({{vehicle_version_manifest}}) that contain information about which images have been installed on ECUs in the vehicle. It also verifies the time, and downloads and verifies the latest metadata and images for itself and for its Secondaries. A Secondary ECU verifies the time, and downloads and verifies the latest metadata and images for itself from its associated Primary ECU. It also sends signed information about its installed images to its associated Primary.
 
 All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification ({{full_verification}}). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it MAY also perform some steps from the full verification process. See the *Uptane Deployment Best Practices* document ({{DEPLOY}}) for a discussion of how to choose between partial and full verification.
 
@@ -873,7 +873,7 @@ To properly check Snapshot metadata, an ECU SHOULD:
 To properly check Targets metadata, an ECU SHOULD:
 
 1. Download up to Z number of bytes, constructing the metadata filename as defined in {{metadata_filename_rules}}. The value for Z is set by the implementer. For example, Z may be tens of kilobytes.
-1. The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU; partial verification ECUs might not have Snapshot metadata.
+1. The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU, as these ECUs might not have Snapshot metadata.
 1. Check that the Targets metadata has been signed by the threshold of unique keys specified in the relevant metadata file. (Checks for an arbitrary software attack.):
     1. If checking top-level Targets metadata, the threshold of keys is specified in the Root metadata.
     1. If checking delegated Targets metadata, the threshold of keys is specified in the Targets metadata file that delegated authority to this role.
@@ -885,7 +885,7 @@ To properly check Targets metadata, an ECU SHOULD:
 
 #### How to resolve delegations {#resolve_delegations}
 
-To properly check Targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level Targets metadata, but it also may be delegated to another role or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level Targets metadata file.
+To properly check Targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level Targets metadata, but it may also be delegated to another role or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level Targets metadata file.
 
 1. Download and check the current metadata file, following the procedure in {{check_targets}}. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.
 2. If the current metadata file contains signed metadata about the image, end the delegation resolution and return the metadata to be checked.
