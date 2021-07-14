@@ -541,10 +541,10 @@ Table of Contents
    referred to as delegated targets.  If it does, it MUST do so as
    specified in Section 5.2.3.2.
 
-   Responsibility for signing images or a subset of images MAY be
-   delegated to more than one role and therefore it is possible for two
-   different roles to be trusted for signing a particular image.  For
-   this reason, delegations MUST be prioritized.
+   As responsibility for signing images or a subset of images MAY be
+   delegated to more than one role, it is possible that two different
+   roles will be trusted to sign a particular image.  For this reason,
+   delegations MUST be prioritized.
 
    A particular delegation for a subset of images MAY be designated as
    *terminating*. For terminating delegations, the client SHALL NOT
@@ -659,9 +659,9 @@ Table of Contents
 
    The Targets metadata on a repository contains all of the information
    about images to be installed on ECUs.  This includes filenames,
-   hashes, file sizes, and MAY also include other useful information,
-   such as what types of hardware are compatible with a particular
-   image.
+   hashes, and file sizes.  It MAY also include other useful
+   information, such as what types of hardware are compatible with a
+   particular image.
 
    Targets metadata can also contain metadata about delegations,
    allowing one Targets role to delegate its authority to another.  This
@@ -685,20 +685,20 @@ Table of Contents
    o  One or more hashes of the image file, along with the hashing
       function used
 
-   To avoid a replay attack, Targets metadata from the Director
-   repository SHOULD include a vehicle identifier if there are no images
-   included in the targets metadata.
+   If there are no images included in the Targets metadata from the
+   Director repository, then the metadata SHOULD include a vehicle
+   identifier in order to avoid a replay attack.
 
 5.2.3.1.1.  Custom metadata about images
 
-   In addition to the required metadata, Targets metadata files MAY
-   contain extra metadata for images on the repository.  This metadata
-   can be customized for a particular use case.  Examples of use cases
-   for different types of custom metadata can be found in the
-   _Deployment Best Practices_ document ([DEPLOY]).  However, there are
-   a few important pieces of custom metadata that SHOULD be present in
-   most implementations.  In addition, there is one element in the
-   custom metadata that MUST be present in the Targets metadata from the
+   In addition to what is required, Targets metadata files MAY contain
+   extra metadata for images on the repository.  This metadata can be
+   customized for a particular use case.  Examples of use cases for
+   different types of custom metadata can be found in the _Deployment
+   Best Practices_ document ([DEPLOY]).  However, there are a few
+   important pieces of custom metadata that SHOULD be present in most
+   implementations.  In addition, there is one element in the custom
+   metadata that MUST be present in the Targets metadata from the
    Director.
 
    Custom metadata MAY also contain a demarcated field or section that
@@ -796,7 +796,7 @@ Table of Contents
    o  The filename and version number of the Targets metadata file.
 
    The Snapshot metadata MAY also list the Root metadata filename and
-   version number for the purpose of backward compatibility.
+   version number for the purpose of backwards compatibility.
    Historically, this was a requirement in TUF, but it is no longer
    required and does not provide a significant security benefit.
 
@@ -1001,7 +1001,7 @@ Table of Contents
        information, it determines if the vehicle is already up-to-date,
        and if not, determines a set of images that should be installed.
        The exact process by which this determination takes place is out
-       of scope of this Standard.  However, the Director MUST take into
+       of scope for this Standard.  However, the Director MUST take into
        account _dependencies_ and _conflicts_ between images and SHOULD
        consult well-established techniques for dependency resolution.
 
@@ -1059,10 +1059,10 @@ Table of Contents
    next vehicle version manifest.
 
    Each ECU receiving over-the-air updates in a vehicle is either a
-   Primary or a Secondary ECU.  A Primary ECU collects and delivers
-   vehicle manifests to the Director (Section 5.4.2.1.1) that contain
+   Primary or a Secondary ECU.  A Primary ECU collects and delivers to
+   the Director vehicle manifests (Section 5.4.2.1.1) that contain
    information about which images have been installed on ECUs in the
-   vehicle.  It also verifies the time and downloads and verifies the
+   vehicle.  It also verifies the time, and downloads and verifies the
    latest metadata and images for itself and for its Secondaries.  A
    Secondary ECU verifies the time, and downloads and verifies the
    latest metadata and images for itself from its associated Primary
@@ -1711,8 +1711,8 @@ Table of Contents
        the version number does not match, discard it, abort the update
        cycle, and report the failure.  (Checks for a mix-and-match
        attack.)  This step MAY be skipped when checking Targets metadata
-       on a partial verification ECU; partial verification ECUs might
-       not have Snapshot metadata.
+       on a partial verification ECU, as these ECUs might not have
+       Snapshot metadata.
 
    3.  Check that the Targets metadata has been signed by the threshold
        of unique keys specified in the relevant metadata file.  (Checks
@@ -1749,7 +1749,7 @@ Table of Contents
    To properly check Targets metadata for an image, an ECU MUST locate
    the metadata file(s) for the role (or roles) that have the authority
    to sign the image.  This metadata might be located in the top-level
-   Targets metadata, but it also may be delegated to another role or to
+   Targets metadata, but it may also be delegated to another role or to
    multiple roles.  Therefore, all delegations MUST be resolved using
    the following recursive procedure, beginning with the top-level
    Targets metadata file.

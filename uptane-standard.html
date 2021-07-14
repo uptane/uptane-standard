@@ -429,7 +429,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2021-7-10" />
+  <meta name="dct.issued" scheme="ISO8601" content="2021-7-14" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -822,7 +822,7 @@
 <a href="#rfc.section.5.1.2.1">5.1.2.1.</a> <a href="#targets_role_delegations" id="targets_role_delegations">Delegations</a>
 </h1>
 <p id="rfc.section.5.1.2.1.p.1">The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it MUST do so as specified in <a href="#delegations_meta" class="xref">Section 5.2.3.2</a>.</p>
-<p id="rfc.section.5.1.2.1.p.2">Responsibility for signing images or a subset of images MAY be delegated to more than one role and therefore it is possible for two different roles to be trusted for signing a particular image. For this reason, delegations MUST be prioritized.</p>
+<p id="rfc.section.5.1.2.1.p.2">As responsibility for signing images or a subset of images MAY be delegated to more than one role, it is possible that two different roles will be trusted to sign a particular image. For this reason, delegations MUST be prioritized.</p>
 <p id="rfc.section.5.1.2.1.p.3">A particular delegation for a subset of images MAY be designated as <strong>terminating</strong>. For terminating delegations, the client SHALL NOT search any further if it does not find validly signed metadata about those images. Delegations SHOULD NOT be terminating by default; terminating delegations SHOULD only be used when there is a compelling technical reason to do so.</p>
 <p id="rfc.section.5.1.2.1.p.4">A delegation for a subset of images MAY be a multi-role delegation <a href="#TAP-3" class="xref">[TAP-3]</a>. A multi-role delegation indicates that multiple roles are needed to sign a particular image and each of the delegatee roles MUST sign the same metadata.</p>
 <p id="rfc.section.5.1.2.1.p.5">Delegations only apply to the Image repository. The Targets role on the Director repository MUST NOT delegate metadata signing responsibility.</p>
@@ -886,7 +886,7 @@
 <h1 id="rfc.section.5.2.3">
 <a href="#rfc.section.5.2.3">5.2.3.</a> <a href="#targets_meta" id="targets_meta">Targets metadata</a>
 </h1>
-<p id="rfc.section.5.2.3.p.1">The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filenames, hashes, file sizes, and MAY also include other useful information, such as what types of hardware are compatible with a particular image.</p>
+<p id="rfc.section.5.2.3.p.1">The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filenames, hashes, and file sizes. It MAY also include other useful information, such as what types of hardware are compatible with a particular image.</p>
 <p id="rfc.section.5.2.3.p.2">Targets metadata can also contain metadata about delegations, allowing one Targets role to delegate its authority to another. This means that an individual Targets metadata file might contain only metadata about delegations, only metadata about images, or some combination of the two. The details of how ECUs traverse the delegation tree to find valid metadata about images is specified in <a href="#resolve_delegations" class="xref">Section 5.4.4.7</a>.</p>
 <h1 id="rfc.section.5.2.3.1">
 <a href="#rfc.section.5.2.3.1">5.2.3.1.</a> <a href="#targets_images_meta" id="targets_images_meta">Metadata about images</a>
@@ -899,11 +899,11 @@
 <li>The size of the image in bytes</li>
 <li>One or more hashes of the image file, along with the hashing function used</li>
 </ul>
-<p id="rfc.section.5.2.3.1.p.3">To avoid a replay attack, Targets metadata from the Director repository SHOULD include a vehicle identifier if there are no images included in the targets metadata.</p>
+<p id="rfc.section.5.2.3.1.p.3">If there are no images included in the Targets metadata from the Director repository, then the metadata SHOULD include a vehicle identifier in order to avoid a replay attack.</p>
 <h1 id="rfc.section.5.2.3.1.1">
 <a href="#rfc.section.5.2.3.1.1">5.2.3.1.1.</a> <a href="#custom-metadata-about-images" id="custom-metadata-about-images">Custom metadata about images</a>
 </h1>
-<p id="rfc.section.5.2.3.1.1.p.1">In addition to the required metadata, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the <em>Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>). However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the Targets metadata from the Director.</p>
+<p id="rfc.section.5.2.3.1.1.p.1">In addition to what is required, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the <em>Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>). However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that MUST be present in the Targets metadata from the Director.</p>
 <p id="rfc.section.5.2.3.1.1.p.2">Custom metadata MAY also contain a demarcated field or section that MUST match whenever two pieces of metadata are checked against each other, such as when Targets metadata from the Director repository is checked against Targets metadata from the Image repository.</p>
 <p id="rfc.section.5.2.3.1.1.p.3">The information listed below SHOULD be provided for each image on both the Image repository and the Director repository. If a &#8220;MUST match section&#8221; is to be implemented, that is where this information SHOULD be placed.</p>
 <p></p>
@@ -955,7 +955,7 @@
 <p></p>
 
 <ul><li>The filename and version number of the Targets metadata file.</li></ul>
-<p id="rfc.section.5.2.4.p.4">The Snapshot metadata MAY also list the Root metadata filename and version number for the purpose of backward compatibility. Historically, this was a requirement in TUF, but it is no longer required and does not provide a significant security benefit.</p>
+<p id="rfc.section.5.2.4.p.4">The Snapshot metadata MAY also list the Root metadata filename and version number for the purpose of backwards compatibility. Historically, this was a requirement in TUF, but it is no longer required and does not provide a significant security benefit.</p>
 <h1 id="rfc.section.5.2.5">
 <a href="#rfc.section.5.2.5">5.2.5.</a> <a href="#timestamp_meta" id="timestamp_meta">Timestamp metadata</a>
 </h1>
@@ -1052,7 +1052,7 @@
 </ul>
 </li>
 <li>The Director SHOULD check that the nonce or counter in each ECU version report has not been used before to prevent a replay of the ECU version report. If the nonce or counter is reused the Director SHOULD drop the request.</li>
-<li>The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope of this Standard. However, the Director MUST take into account <em>dependencies</em> and <em>conflicts</em> between images and SHOULD consult well-established techniques for dependency resolution.</li>
+<li>The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope for this Standard. However, the Director MUST take into account <em>dependencies</em> and <em>conflicts</em> between images and SHOULD consult well-established techniques for dependency resolution.</li>
 <li>The Director MAY encrypt images for ECUs that require it.</li>
 <li>The Director generates new metadata representing the desired set of images to be installed on the vehicle, based on the dependency resolution in step 4. This includes Targets (<a href="#targets_meta" class="xref">Section 5.2.3</a>), Snapshot (<a href="#snapshot_meta" class="xref">Section 5.2.4</a>), and Timestamp (<a href="#timestamp_meta" class="xref">Section 5.2.5</a>) metadata. It then sends this metadata to the Primary as described in <a href="#download_meta_primary" class="xref">Section 5.4.2.3</a>.</li>
 </ol>
@@ -1081,7 +1081,7 @@
 </h1>
 <p id="rfc.section.5.4.p.1">An Uptane-compliant ECU SHALL be able to download and verify image metadata and image binaries before installing a new image and MUST have a secure way of verifying the current time, or a sufficiently recent attestation of the time.</p>
 <p id="rfc.section.5.4.p.2">All ECUs SHOULD monitor the download speed of image metadata and image binaries to detect and respond to a slow retrieval attack. If the download is slower than a pre-defined threshold, the ECU SHOULD send an alert to the Director repository, for example as part of the next vehicle version manifest.</p>
-<p id="rfc.section.5.4.p.3">Each ECU receiving over-the-air updates in a vehicle is either a Primary or a Secondary ECU. A Primary ECU collects and delivers vehicle manifests to the Director (<a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>) that contain information about which images have been installed on ECUs in the vehicle. It also verifies the time and downloads and verifies the latest metadata and images for itself and for its Secondaries. A Secondary ECU verifies the time, and downloads and verifies the latest metadata and images for itself from its associated Primary ECU. It also sends signed information about its installed images to its associated Primary.</p>
+<p id="rfc.section.5.4.p.3">Each ECU receiving over-the-air updates in a vehicle is either a Primary or a Secondary ECU. A Primary ECU collects and delivers to the Director vehicle manifests (<a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>) that contain information about which images have been installed on ECUs in the vehicle. It also verifies the time, and downloads and verifies the latest metadata and images for itself and for its Secondaries. A Secondary ECU verifies the time, and downloads and verifies the latest metadata and images for itself from its associated Primary ECU. It also sends signed information about its installed images to its associated Primary.</p>
 <p id="rfc.section.5.4.p.4">All ECUs MUST verify image metadata as specified in <a href="#metadata_verification" class="xref">Section 5.4.4</a> before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification (<a href="#full_verification" class="xref">Section 5.4.4.2</a>). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it MAY also perform some steps from the full verification process. See the <em>Uptane Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) for a discussion of how to choose between partial and full verification.</p>
 <p id="rfc.section.5.4.p.5">ECUs MUST have a secure source of time. An OEM/Uptane implementer MAY use any external source of time that is demonstrably secure. The <em>Uptane Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) describes one way to implement an external time server to cryptographically attest time, as well as the security properties required.</p>
 <h1 id="rfc.section.5.4.1">
@@ -1371,7 +1371,7 @@
 
 <ol>
 <li>Download up to Z number of bytes, constructing the metadata filename as defined in <a href="#metadata_filename_rules" class="xref">Section 5.2.7</a>. The value for Z is set by the implementer. For example, Z may be tens of kilobytes.</li>
-<li>The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU; partial verification ECUs might not have Snapshot metadata.</li>
+<li>The version number of the new Targets metadata file MUST match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU, as these ECUs might not have Snapshot metadata.</li>
 <li>Check that the Targets metadata has been signed by the threshold of unique keys specified in the relevant metadata file. (Checks for an arbitrary software attack.): <ol>
 <li>If checking top-level Targets metadata, the threshold of keys is specified in the Root metadata.</li>
 <li>If checking delegated Targets metadata, the threshold of keys is specified in the Targets metadata file that delegated authority to this role.</li>
@@ -1386,7 +1386,7 @@
 <h1 id="rfc.section.5.4.4.7">
 <a href="#rfc.section.5.4.4.7">5.4.4.7.</a> <a href="#resolve_delegations" id="resolve_delegations">How to resolve delegations</a>
 </h1>
-<p id="rfc.section.5.4.4.7.p.1">To properly check Targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level Targets metadata, but it also may be delegated to another role or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level Targets metadata file.</p>
+<p id="rfc.section.5.4.4.7.p.1">To properly check Targets metadata for an image, an ECU MUST locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level Targets metadata, but it may also be delegated to another role or to multiple roles. Therefore, all delegations MUST be resolved using the following recursive procedure, beginning with the top-level Targets metadata file.</p>
 <p></p>
 
 <ol>
