@@ -429,7 +429,7 @@ The following sections describe the role-specific metadata. All roles SHALL foll
 A repository's Root metadata distributes the public keys of the top-level Root, Targets, Snapshot, and Timestamp roles, as well as revocations of those keys. It SHALL contain two attributes:
 
 * A representation of the public keys for all four roles. Each key SHALL have a unique public key identifier.
-* An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role
+* An attribute mapping each role to (1) its public key(s), and (2) the threshold of signatures required for that role.
 
 ### Targets metadata {#targets_meta}
 
