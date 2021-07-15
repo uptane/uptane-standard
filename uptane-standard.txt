@@ -1,5 +1,5 @@
 
-          Uptane Standard for Design and Implementation v1.2.0
+             Uptane Standard for Design and Implementation
                          uptane-standard-design
 
 Abstract
