@@ -4,6 +4,8 @@
 
 This repository is the public home of all standardization work for Uptane.
 
+As the Standard is a living document, updates are made in real time as needed. However, these changes will not be considered formally adopted until the release of the next minor or major version.
+
 ## Existing documentation
 
 The Uptane Standards document should be considered the authoritative resource for the framework. Several other documents and materials are available or currently in development. The information in all of these other guidelines should be viewed as complementary to the official Uptane Standard, and as recommendations rather than mandatory instructions. 
