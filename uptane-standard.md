@@ -153,15 +153,21 @@ These instructions specify the components necessary for a compliant implementati
 
 # Terminology
 
+With the exception of the Conformance terminology and Uptane role terminology presented on this page, please refer to the [glossary](https://uptane.github.io/deployment-considerations/glossary.html) in the Deployment Best Practices volume for definitions of all terms used in this Standard.
+
 ## Conformance terminology
 
-The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in {{RFC2119}}.
+The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in {{RFC2119}}. Given the importance of interpreting these terms correctly, we present these definitions here. Note that when referring to actions in the Standard that mandate compliance, the word SHALL will be used, rather than the word MUST. Hence, MUST and MUST NOT are not included in these definitions.
 
-In order to be considered Uptane-compliant, an implementation MUST follow all of these rules as specified in the document.
+*SHALL* This word or the term "REQUIRED" mean that the definition is an absolute requirement of the specification.
+*SHALL NOT* This phrase means that the definition is an absolute prohibition of the specification.
+*SHOULD* This word or the adjective "RECOMMENDED" mean that, in particular circumstances, there may exist valid reasons to ignore a particular item, but the full implications must be understood and carefully weighed before choosing a different course.
+*SHOULD NOT* This phrase or the phrase "NOT RECOMMENDED" mean that there may exist valid reasons in particular circumstances when the particular behavior is acceptable or even useful, but the full implications should be understood and the case carefully weighed before implementing any behavior described with this label.
+*MAY* This word or the adjective "OPTIONAL," mean that an item is truly optional.  
 
-## Terminology
+In order to be considered Uptane-compliant, an implementation SHALL follow all of these rules as specified in the document.
 
-For definitions of terms used in this Standard, please refer to the [glossary](https://uptane.github.io/deployment-considerations/glossary.html) in the Deployment Best Practices.
+Note that, following the recommendations of {{RFC2119}} imperatives of the type defined here "must be used with care and sparingly.  In particular, they MUST only be used where it is actually required for interoperation or to limit behavior which has potential for causing harm (e.g., limiting retransmisssions)  
 
 ## Uptane role terminology
 
