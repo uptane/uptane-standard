@@ -1,6 +1,6 @@
 # Uptane Standard
 
-[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group under [IEEE-ISTO](https://ieee-isto.org/) began the process of describing the system's design, implementation, and deployment as a formal standard. On July 31, 2019 IEEE/ISTO released *IEEE-ISTO 6100.1.0.0: Uptane Standard for Design and Implementation* (see link below under documentation). Uptane is now a [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/) project, and released [version 1.1.0](https://uptane.github.io/papers/uptane-standard.1.1.0.html) of the Uptane Standard for Design and Implementation on January 8, 2021.
+[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group under [IEEE-ISTO](https://ieee-isto.org/) began the process of describing the system's design, implementation, and deployment as a formal standard. On July 31, 2019 IEEE/ISTO released *IEEE-ISTO 6100.1.0.0: Uptane Standard for Design and Implementation* (see link below under documentation). Uptane is now a [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/) project, and released [version 1.2.0](https://uptane.github.io/papers/uptane-standard.1.2.0.html) of the Uptane Standard for Design and Implementation on July 16, 2021.
 
 This repository is the public home of all standardization work for Uptane.
 
@@ -10,9 +10,9 @@ As the Standard is a living document, updates are made in real time as needed. H
 
 The Uptane Standards document should be considered the authoritative resource for the framework. Several other documents and materials are available or currently in development. The information in all of these other guidelines should be viewed as complementary to the official Uptane Standard, and as recommendations rather than mandatory instructions. 
 
-* [Uptane Standard v.1.1.0](https://uptane.github.io/papers/uptane-standard.1.1.0.html)
+* [Uptane Standard v.1.2.0](https://uptane.github.io/papers/uptane-standard.1.2.0.html)
 * [Reference Implementation and Demonstration Code](https://github.com/uptane/uptane)
-* [Deployment Best Practices](https://uptane.github.io/deployment-considerations/index.html)
+* [Deployment Best Practices](https://uptane.github.io/papers/V1.2.0_uptane_deploy.html)
 * [Uptane POUF (Protocols, Operations, Usage, and Formats) Guidelines](https://uptane.github.io/pouf.html)
 * [Example POUF](https://uptane.github.io/reference_pouf.html)
 
@@ -43,6 +43,8 @@ Use American English spellings (i.e. write "color" instead of "colour" and "arti
 Links to the Standard (from outside the Standard) should point to the latest rendered released version. It is preferred to link by section name, not number, as the numbers tend to change more than the names. Internal links within the Standard should use the standard cross-link syntax.
 
 Links to the Deployment Best Practices should point to the [deployed web pages](https://uptane.github.io/deployment-considerations/index.html).
+
+When referring to actions in the Standard that require compliance, the word SHALL will be used, rather than the word MUST. 
 
 ## Building/rendering the document
 
