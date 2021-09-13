@@ -377,9 +377,8 @@
 <link href="#rfc.section.1" rel="Chapter" title="1 Introduction">
 <link href="#rfc.section.2" rel="Chapter" title="2 Terminology">
 <link href="#rfc.section.2.1" rel="Chapter" title="2.1 Conformance terminology">
-<link href="#rfc.section.2.2" rel="Chapter" title="2.2 Terminology">
-<link href="#rfc.section.2.3" rel="Chapter" title="2.3 Uptane role terminology">
-<link href="#rfc.section.2.4" rel="Chapter" title="2.4 Acronyms and abbreviations">
+<link href="#rfc.section.2.2" rel="Chapter" title="2.2 Uptane role terminology">
+<link href="#rfc.section.2.3" rel="Chapter" title="2.3 Acronyms and abbreviations">
 <link href="#rfc.section.3" rel="Chapter" title="3 Rationale for and scope of the Uptane Standard">
 <link href="#rfc.section.3.1" rel="Chapter" title="3.1 Why Uptane requires a standards document">
 <link href="#rfc.section.3.2" rel="Chapter" title="3.2 Scope of Standard coverage">
@@ -429,7 +428,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2021-8-02" />
+  <meta name="dct.issued" scheme="ISO8601" content="2021-9-13" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -455,11 +454,9 @@
 </li>
 <ul><li>2.1.   <a href="#rfc.section.2.1">Conformance terminology</a>
 </li>
-<li>2.2.   <a href="#rfc.section.2.2">Terminology</a>
+<li>2.2.   <a href="#rfc.section.2.2">Uptane role terminology</a>
 </li>
-<li>2.3.   <a href="#rfc.section.2.3">Uptane role terminology</a>
-</li>
-<li>2.4.   <a href="#rfc.section.2.4">Acronyms and abbreviations</a>
+<li>2.3.   <a href="#rfc.section.2.3">Acronyms and abbreviations</a>
 </li>
 </ul><li>3.   <a href="#rfc.section.3">Rationale for and scope of the Uptane Standard</a>
 </li>
@@ -557,19 +554,18 @@
 <h1 id="rfc.section.2">
 <a href="#rfc.section.2">2.</a> <a href="#terminology" id="terminology">Terminology</a>
 </h1>
+<p id="rfc.section.2.p.1">With the exception of the Conformance terminology and Uptane role terminology presented on this page, please refer to the <a href="https://uptane.github.io/deployment-considerations/glossary.html">glossary</a> in the Deployment Best Practices volume for definitions of all terms used in this Standard.</p>
 <h1 id="rfc.section.2.1">
 <a href="#rfc.section.2.1">2.1.</a> <a href="#conformance-terminology" id="conformance-terminology">Conformance terminology</a>
 </h1>
-<p id="rfc.section.2.1.p.1">The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in <a href="#RFC2119" class="xref">[RFC2119]</a>.</p>
-<p id="rfc.section.2.1.p.2">In order to be considered Uptane-compliant, an implementation MUST follow all of these rules as specified in the document.</p>
+<p id="rfc.section.2.1.p.1">The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in <a href="#RFC2119" class="xref">[RFC2119]</a>. Given the importance of interpreting these terms correctly, we present these definitions here. Note that when referring to actions in the Standard that mandate compliance, the word SHALL will be used, rather than the word MUST. Hence, MUST and MUST NOT are not included in these definitions.</p>
+<p><em>SHALL</em> This word or the term &#8220;REQUIRED&#8221; mean that the definition is an absolute requirement of the specification.  <em>SHALL NOT</em> This phrase means that the definition is an absolute prohibition of the specification.  <em>SHOULD</em> This word or the adjective &#8220;RECOMMENDED&#8221; mean that, in particular circumstances, there may exist valid reasons to ignore a particular item, but the full implications must be understood and carefully weighed before choosing a different course.  <em>SHOULD NOT</em> This phrase or the phrase &#8220;NOT RECOMMENDED&#8221; mean that there may exist valid reasons in particular circumstances when the particular behavior is acceptable or even useful, but the full implications should be understood and the case carefully weighed before implementing any behavior described with this label.  <em>MAY</em> This word or the adjective &#8220;OPTIONAL,&#8221; mean that an item is truly optional.</p>
+<p id="rfc.section.2.1.p.3">In order to be considered Uptane-compliant, an implementation SHALL follow all of these rules as specified in the document.</p>
+<p id="rfc.section.2.1.p.4">Note that, following the recommendations of <a href="#RFC2119" class="xref">[RFC2119]</a> imperatives of the type defined here &#8220;must be used with care and sparingly.  In particular, they MUST only be used where it is actually required for interoperation or to limit behavior which has potential for causing harm (e.g., limiting retransmisssions)</p>
 <h1 id="rfc.section.2.2">
-<a href="#rfc.section.2.2">2.2.</a> <a href="#terminology-1" id="terminology-1">Terminology</a>
+<a href="#rfc.section.2.2">2.2.</a> <a href="#uptane-role-terminology" id="uptane-role-terminology">Uptane role terminology</a>
 </h1>
-<p id="rfc.section.2.2.p.1">For definitions of terms used in this Standard, please refer to the <a href="https://uptane.github.io/deployment-considerations/glossary.html">glossary</a> in the Deployment Best Practices.</p>
-<h1 id="rfc.section.2.3">
-<a href="#rfc.section.2.3">2.3.</a> <a href="#uptane-role-terminology" id="uptane-role-terminology">Uptane role terminology</a>
-</h1>
-<p id="rfc.section.2.3.p.1">These terms are defined in greater detail in <a href="#roles" class="xref">Section 5.1</a>.</p>
+<p id="rfc.section.2.2.p.1">These terms are defined in greater detail in <a href="#roles" class="xref">Section 5.1</a>.</p>
 <p><em>Delegation</em>: A process by which the responsibility of signing metadata about images is assigned to another party.  <em>Role</em>: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.</p>
 <p></p>
 
@@ -583,8 +579,8 @@
 <li>
 <em>Timestamp role</em>: Signs metadata that indicates if there are any new metadata or images on the repository.</li>
 </ul>
-<h1 id="rfc.section.2.4">
-<a href="#rfc.section.2.4">2.4.</a> <a href="#acronyms-and-abbreviations" id="acronyms-and-abbreviations">Acronyms and abbreviations</a>
+<h1 id="rfc.section.2.3">
+<a href="#rfc.section.2.3">2.3.</a> <a href="#acronyms-and-abbreviations" id="acronyms-and-abbreviations">Acronyms and abbreviations</a>
 </h1>
 <p><em>CDN</em>: Content Delivery Network</p>
 <p><em>ECUs</em>: Electronic Control Units, the computing units on a vehicle</p>
