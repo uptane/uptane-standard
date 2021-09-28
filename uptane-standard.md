@@ -631,7 +631,7 @@ For an ECU to be capable of receiving Uptane-secured updates, it MUST have the f
     * Partial verification Secondary ECUs MUST have the Root and Targets metadata from the Director repository (to reduce the scope of rollback and replay attacks). These ECUs MAY also have metadata from other roles or the Image repository if they will be used by the Secondary.
     * Full verification ECUs MUST have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories (to prevent rollback and replay attacks), as well as the repository mapping metadata ({{repo_mapping_meta}}). Delegations are not required.
 2. The current time, or a secure attestation of a sufficiently recent time.
-3. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version reports and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this Standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes.
+3. An **ECU key**. This is a private key, unique to the ECU, used to sign ECU version reports and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this Standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes. Note that while signing keys are required to be unique to the ECU to avoid replay attacks, the secret keys used to decrypt images need not be unique.
 
 ### What the Primary does
 
