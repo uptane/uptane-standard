@@ -1144,6 +1144,9 @@ Table of Contents
        signing.  For the purposes of this Standard, the set of private
        keys that an ECU uses is referred to as the ECU key (singular),
        even if it is actually multiple keys used for different purposes.
+       Note that while signing keys are required to be unique to the ECU
+       to avoid replay attacks, the secret keys used to decrypt images
+       need not be unique.
 
 5.4.2.  What the Primary does
 
