@@ -773,9 +773,7 @@ The ECU SHALL verify that the latest image matches the latest metadata as follow
 
 If the ECU has enough secondary storage capacity to store the image, the checks SHOULD be performed on the image in secondary storage before it is installed.
 
-When checking hashes, the ECU SHOULD additionally check that the length of the image matches the length listed in the metadata.
-
-NOTE: Verifying image size along with the hashes will become a requirement in a future version of the Uptane Standard.
+When checking hashes, the ECU SHALL additionally check that the length of the image matches the length listed in the metadata.
 
 NOTE: See {{DEPLOY}} for guidance on how to deal with Secondary ECU failures for ECUs that have limited secondary storage.
 
