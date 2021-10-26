@@ -646,7 +646,7 @@ A Primary downloads, verifies, and distributes the latest time, metadata, and im
 1. Send images to Secondaries ({{send_images_primary}})
 
 Note that the subsequent sections concerning requirements for a Primary do not prohibit implementing Primary capabilities on an ECU that does not communicate directly with the Uptane repositories. This allows for implementations to have multiple ECUs within the vehicle performing functions equivalent to a Primary.
-If multiple such Primaries are included within a vehicle, each Secondary ECU SHALL have a single Primary responsible for providing its updates.
+If multiple such Primaries are included within a vehicle, each Primary SHOULD have a designated set of Secondaries.
 
 #### Construct and send vehicle version manifest {#construct_manifest_primary}
 
