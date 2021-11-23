@@ -451,7 +451,7 @@ To be available to install on clients, all images on the repository MUST have th
 * The size of the image in bytes
 * One or more hashes of the image file, along with the hashing function used
 
-If there are no images included in the Targets metadata from the Director repository, then the metadata SHOULD include a vehicle identifier in order to avoid a replay attack.
+If there are no images included in the Targets metadata from the Director repository, then the metadata SHALL include a vehicle identifier in order to avoid a replay attack.
 
 ##### Custom metadata about images
 
