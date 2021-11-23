@@ -711,7 +711,7 @@ Table of Contents
       function used
 
    If there are no images included in the Targets metadata from the
-   Director repository, then the metadata SHOULD include a vehicle
+   Director repository, then the metadata SHALL include a vehicle
    identifier in order to avoid a replay attack.
 
 5.2.3.1.1.  Custom metadata about images
