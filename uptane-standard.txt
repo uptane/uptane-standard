@@ -916,6 +916,10 @@ Table of Contents
        to the repository using _n_ different filenames, one for each
        hash digest listed in its corresponding Targets metadata.
 
+   3.  Filenames of images SHOULD be encoded to prevent a path traversal
+       on the client system, either by using URL encoding or by limiting
+       the allowed character set in the filename.
+
    For example:
 
    o  The version number of the Snapshot metadata file is 61, and its
