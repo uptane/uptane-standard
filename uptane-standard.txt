@@ -1173,8 +1173,9 @@ Table of Contents
    that does not communicate directly with the Uptane repositories.
    This allows for implementations to have multiple ECUs within the
    vehicle performing functions equivalent to a Primary.  If multiple
-   such Primaries are included within a vehicle, each Secondary ECU
-   SHALL have a single Primary responsible for providing its updates.
+   such Primaries are included within a vehicle, each Primary SHOULD
+   have a designated set of Secondaries and each Secondary SHALL have at
+   least one Primary responsible for providing its updates
 
 5.4.2.1.  Construct and send vehicle version manifest
 

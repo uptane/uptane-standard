@@ -428,7 +428,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2021-9-28" />
+  <meta name="dct.issued" scheme="ISO8601" content="2021-11-23" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -1110,7 +1110,7 @@
 <li>Send metadata to Secondaries (<a href="#send_metadata_primary" class="xref">Section 5.4.2.6</a>)</li>
 <li>Send images to Secondaries (<a href="#send_images_primary" class="xref">Section 5.4.2.7</a>)</li>
 </ol>
-<p id="rfc.section.5.4.2.p.3">Note that the subsequent sections concerning requirements for a Primary do not prohibit implementing Primary capabilities on an ECU that does not communicate directly with the Uptane repositories. This allows for implementations to have multiple ECUs within the vehicle performing functions equivalent to a Primary.  If multiple such Primaries are included within a vehicle, each Secondary ECU SHALL have a single Primary responsible for providing its updates.</p>
+<p id="rfc.section.5.4.2.p.3">Note that the subsequent sections concerning requirements for a Primary do not prohibit implementing Primary capabilities on an ECU that does not communicate directly with the Uptane repositories. This allows for implementations to have multiple ECUs within the vehicle performing functions equivalent to a Primary.  If multiple such Primaries are included within a vehicle, each Primary SHOULD have a designated set of Secondaries and each Secondary SHALL have at least one Primary responsible for providing its updates</p>
 <h1 id="rfc.section.5.4.2.1">
 <a href="#rfc.section.5.4.2.1">5.4.2.1.</a> <a href="#construct_manifest_primary" id="construct_manifest_primary">Construct and send vehicle version manifest</a>
 </h1>
