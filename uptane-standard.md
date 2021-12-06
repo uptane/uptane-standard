@@ -642,7 +642,7 @@ A Primary downloads, verifies, and distributes the latest time, metadata, and im
 1. Download and check current time ({{check_time_primary}})
 1. Download and verify metadata ({{download_meta_primary}})
 1. Download and verify images ({{download_images_primary}})
-1. OPTIONAL: Send latest time to Secondaries ({{send_time_primary}})
+1. Send latest time to Secondaries ({{send_time_primary}})
 1. Send metadata to Secondaries ({{send_metadata_primary}})
 1. Send images to Secondaries ({{send_images_primary}})
 
@@ -707,7 +707,7 @@ There may be several different filenames that all refer to the same image binary
 
 #### Send latest time to Secondaries {#send_time_primary}
 
-Unless the Secondary ECU has its own way of verifying the time or does not have the capacity to verify a time message, the Primary is CONDITIONALLY REQUIRED to send the time to each ECU. The Secondary will verify the time message, then overwrite its current time with the received time.
+The Primary SHALL send the time to each ECU. The Secondary SHALL verify the time message, then overwrite its current time with the received time.
 
 #### Send metadata to Secondaries {#send_metadata_primary}
 
