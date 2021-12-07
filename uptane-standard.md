@@ -707,7 +707,7 @@ There may be several different filenames that all refer to the same image binary
 
 #### Send latest time to Secondaries {#send_time_primary}
 
-The Primary SHALL send the time to each ECU. The Secondary SHALL verify the time message, then overwrite its current time with the received time.
+The Primary SHOULD send the time to each ECU. 
 
 #### Send metadata to Secondaries {#send_metadata_primary}
 
