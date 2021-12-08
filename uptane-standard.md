@@ -622,7 +622,7 @@ Each ECU receiving over-the-air updates in a vehicle is either a Primary or a Se
 
 All ECUs MUST verify image metadata as specified in {{metadata_verification}} before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification ({{full_verification}}). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it MAY also perform some steps from the full verification process. See the *Uptane Deployment Best Practices* document ({{DEPLOY}}) for a discussion of how to choose between partial and full verification.
 
-ECUs MUST have a secure source of time. An OEM/Uptane implementer MAY use any external source of time that is demonstrably secure. The *Uptane Deployment Best Practices* document ({{DEPLOY}}) describes one way to implement an external time server to cryptographically attest time, as well as the security properties required.
+ECUs MUST have a secure source of time. An OEM/Uptane implementer MAY use any external source of time that is demonstrably secure. 
 
 ### Build-time prerequisite requirements for ECUs
 
@@ -689,7 +689,7 @@ An ECU version report is a metadata structure that MUST contain the following in
   * The filename, length, and hashes of its currently installed image (i.e., the non-custom Targets metadata for this particular image)
   * An indicator of any detected security attack
   * The latest time the ECU can verify at the time this version report was generated
-  * A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle. It MAY be a cryptographic nonce used with a time server as described in *Uptane Deployment Best Practices*  ({{DEPLOY}}).
+  * A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle. 
 
 #### Download and check current time {#check_time_primary}
 
@@ -736,7 +736,7 @@ An ECU SHALL perform the following steps when attempting to install a new image:
 
 #### Load and verify the latest attested time {#verify_time}
 
-IF the ECU has the capability to verify a time message, the ECU is CONDITIONALLY REQUIRED to load and verify the current time, or the most recent securely attested time.
+IF the ECU has the capability to verify a time message, the ECU SHOULD load and verify the current time, or the most recent securely attested time.
 
 #### Verify metadata {#verify_metadata}
 
