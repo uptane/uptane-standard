@@ -1109,10 +1109,7 @@ Table of Contents
    discussion of how to choose between partial and full verification.
 
    ECUs MUST have a secure source of time.  An OEM/Uptane implementer
-   MAY use any external source of time that is demonstrably secure.  The
-   _Uptane Deployment Best Practices_ document ([DEPLOY]) describes one
-   way to implement an external time server to cryptographically attest
-   time, as well as the security properties required.
+   MAY use any external source of time that is demonstrably secure.
 
 5.4.1.  Build-time prerequisite requirements for ECUs
 
@@ -1166,7 +1163,7 @@ Table of Contents
 
    4.  Download and verify images (Section 5.4.2.4)
 
-   5.  OPTIONAL: Send latest time to Secondaries (Section 5.4.2.5)
+   5.  Send latest time to Secondaries (Section 5.4.2.5)
 
    6.  Send metadata to Secondaries (Section 5.4.2.6)
 
@@ -1262,9 +1259,7 @@ Table of Contents
          report was generated
 
       *  A nonce or counter to prevent a replay of the ECU version
-         report.  This value MUST change each update cycle.  It MAY be a
-         cryptographic nonce used with a time server as described in
-         _Uptane Deployment Best Practices_ ([DEPLOY]).
+         report.  This value MUST change each update cycle.
 
 5.4.2.2.  Download and check current time
 
@@ -1291,11 +1286,7 @@ Table of Contents
 
 5.4.2.5.  Send latest time to Secondaries
 
-   Unless the Secondary ECU has its own way of verifying the time or
-   does not have the capacity to verify a time message, the Primary is
-   CONDITIONALLY REQUIRED to send the time to each ECU.  The Secondary
-   will verify the time message, then overwrite its current time with
-   the received time.
+   The Primary SHOULD send the time to each ECU.
 
 5.4.2.6.  Send metadata to Secondaries
 
@@ -1346,9 +1337,9 @@ Table of Contents
 
 5.4.3.1.  Load and verify the latest attested time
 
-   IF the ECU has the capability to verify a time message, the ECU is
-   CONDITIONALLY REQUIRED to load and verify the current time, or the
-   most recent securely attested time.
+   IF the ECU has the capability to verify a time message, the ECU
+   SHOULD load and verify the current time, or the most recent securely
+   attested time.
 
 5.4.3.2.  Verify metadata
 

@@ -428,7 +428,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2021-11-24" />
+  <meta name="dct.issued" scheme="ISO8601" content="2021-12-21" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -1080,7 +1080,7 @@
 <p id="rfc.section.5.4.p.2">All ECUs SHALL monitor the download speed of image metadata and image binaries to detect and respond to a slow retrieval attack. If the download is slower than a pre-defined threshold, the ECU SHOULD send an alert to the Director repository, for example as part of the next vehicle version manifest.</p>
 <p id="rfc.section.5.4.p.3">Each ECU receiving over-the-air updates in a vehicle is either a Primary or a Secondary ECU. A Primary ECU collects and delivers to the Director vehicle manifests (<a href="#vehicle_version_manifest" class="xref">Section 5.4.2.1.1</a>) that contain information about which images have been installed on ECUs in the vehicle. It also verifies the time, and downloads and verifies the latest metadata and images for itself and for its Secondaries. A Secondary ECU verifies the time, and downloads and verifies the latest metadata and images for itself from its associated Primary ECU. It also sends signed information about its installed images to its associated Primary.</p>
 <p id="rfc.section.5.4.p.4">All ECUs MUST verify image metadata as specified in <a href="#metadata_verification" class="xref">Section 5.4.4</a> before installing an image or making it available to other ECUs. A Primary ECU MUST perform full verification (<a href="#full_verification" class="xref">Section 5.4.4.2</a>). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it MAY also perform some steps from the full verification process. See the <em>Uptane Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) for a discussion of how to choose between partial and full verification.</p>
-<p id="rfc.section.5.4.p.5">ECUs MUST have a secure source of time. An OEM/Uptane implementer MAY use any external source of time that is demonstrably secure. The <em>Uptane Deployment Best Practices</em> document (<a href="#DEPLOY" class="xref">[DEPLOY]</a>) describes one way to implement an external time server to cryptographically attest time, as well as the security properties required.</p>
+<p id="rfc.section.5.4.p.5">ECUs MUST have a secure source of time. An OEM/Uptane implementer MAY use any external source of time that is demonstrably secure.</p>
 <h1 id="rfc.section.5.4.1">
 <a href="#rfc.section.5.4.1">5.4.1.</a> <a href="#build-time-prerequisite-requirements-for-ecus" id="build-time-prerequisite-requirements-for-ecus">Build-time prerequisite requirements for ECUs</a>
 </h1>
@@ -1107,7 +1107,7 @@
 <li>Download and check current time (<a href="#check_time_primary" class="xref">Section 5.4.2.2</a>)</li>
 <li>Download and verify metadata (<a href="#download_meta_primary" class="xref">Section 5.4.2.3</a>)</li>
 <li>Download and verify images (<a href="#download_images_primary" class="xref">Section 5.4.2.4</a>)</li>
-<li>OPTIONAL: Send latest time to Secondaries (<a href="#send_time_primary" class="xref">Section 5.4.2.5</a>)</li>
+<li>Send latest time to Secondaries (<a href="#send_time_primary" class="xref">Section 5.4.2.5</a>)</li>
 <li>Send metadata to Secondaries (<a href="#send_metadata_primary" class="xref">Section 5.4.2.6</a>)</li>
 <li>Send images to Secondaries (<a href="#send_images_primary" class="xref">Section 5.4.2.7</a>)</li>
 </ol>
@@ -1162,7 +1162,7 @@
 <li>The filename, length, and hashes of its currently installed image (i.e., the non-custom Targets metadata for this particular image)</li>
 <li>An indicator of any detected security attack</li>
 <li>The latest time the ECU can verify at the time this version report was generated</li>
-<li>A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle. It MAY be a cryptographic nonce used with a time server as described in <em>Uptane Deployment Best Practices</em>  (<a href="#DEPLOY" class="xref">[DEPLOY]</a>).</li>
+<li>A nonce or counter to prevent a replay of the ECU version report. This value MUST change each update cycle.</li>
 </ul>
 </li>
 </ul>
@@ -1182,7 +1182,7 @@
 <h1 id="rfc.section.5.4.2.5">
 <a href="#rfc.section.5.4.2.5">5.4.2.5.</a> <a href="#send_time_primary" id="send_time_primary">Send latest time to Secondaries</a>
 </h1>
-<p id="rfc.section.5.4.2.5.p.1">Unless the Secondary ECU has its own way of verifying the time or does not have the capacity to verify a time message, the Primary is CONDITIONALLY REQUIRED to send the time to each ECU. The Secondary will verify the time message, then overwrite its current time with the received time.</p>
+<p id="rfc.section.5.4.2.5.p.1">The Primary SHOULD send the time to each ECU.</p>
 <h1 id="rfc.section.5.4.2.6">
 <a href="#rfc.section.5.4.2.6">5.4.2.6.</a> <a href="#send_metadata_primary" id="send_metadata_primary">Send metadata to Secondaries</a>
 </h1>
@@ -1211,7 +1211,7 @@
 <h1 id="rfc.section.5.4.3.1">
 <a href="#rfc.section.5.4.3.1">5.4.3.1.</a> <a href="#verify_time" id="verify_time">Load and verify the latest attested time</a>
 </h1>
-<p id="rfc.section.5.4.3.1.p.1">IF the ECU has the capability to verify a time message, the ECU is CONDITIONALLY REQUIRED to load and verify the current time, or the most recent securely attested time.</p>
+<p id="rfc.section.5.4.3.1.p.1">IF the ECU has the capability to verify a time message, the ECU SHOULD load and verify the current time, or the most recent securely attested time.</p>
 <h1 id="rfc.section.5.4.3.2">
 <a href="#rfc.section.5.4.3.2">5.4.3.2.</a> <a href="#verify_metadata" id="verify_metadata">Verify metadata</a>
 </h1>
