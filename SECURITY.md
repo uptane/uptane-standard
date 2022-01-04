@@ -15,7 +15,7 @@ We release updates to the Uptane specification to address security vulnerabiliti
 
 ## Reporting a Vulnerability
 
-Please report (suspected) security vulnerabilities to `uptane-security` `[at]` `googlegroups` `[dot]` `com`. You will receive an acknowledgement from us within `TODO: XXX` hours. Keep in mind this project is a community based project of volunteers and response times could vary. If the issue is confirmed, we will provide a response within 90 days.
+Please report (suspected) security vulnerabilities to `uptane-security [AT] googlegroups [DOT] com`. You will receive an acknowledgement from us within `TODO: XXX` hours. Keep in mind this project is a community based project of volunteers and response times could vary. If the issue is confirmed, we will provide a response within 90 days.
 
 ## Guidelines
 
