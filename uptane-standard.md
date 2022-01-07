@@ -24,7 +24,7 @@ author:
     code: 11201
 
 normative:
-  # Keyword def (MUST, SHALL, MAY, etc.)
+  # Keyword def (SHALL, MAY, SHOULD, etc.)
   RFC2119:
   # X.509 PKI spec
   RFC3647:
@@ -160,7 +160,7 @@ With the exception of the Conformance terminology and Uptane role terminology pr
 
 ## Conformance terminology
 
-The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in {{RFC2119}}. Given the importance of interpreting these terms correctly, we present these definitions here. Note that when referring to actions in the Standard that mandate compliance, the word SHALL will be used, rather than the word MUST. Hence, MUST and MUST NOT are not included in these definitions.
+The keywords REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in {{RFC2119}}. Given the importance of interpreting these terms correctly, we present these definitions here. Note that when referring to actions in the Standard that mandate compliance, the word SHALL will be used, rather than the word MUST. 
 
 *SHALL* This word or the term "REQUIRED" mean that the definition is an absolute requirement of the specification.
 *SHALL NOT* This phrase means that the definition is an absolute prohibition of the specification.
@@ -382,15 +382,15 @@ A repository's Targets role SHALL produce and sign metadata about images and del
 
 #### Delegations {#targets_role_delegations}
 
-The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it MUST do so as specified in {{delegations_meta}}.
+The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it SHALL do so as specified in {{delegations_meta}}.
 
-As responsibility for signing images or a subset of images MAY be delegated to more than one role, it is possible that two different roles will be trusted to sign a particular image. For this reason, delegations MUST be prioritized.
+As responsibility for signing images or a subset of images MAY be delegated to more than one role, it is possible that two different roles will be trusted to sign a particular image. For this reason, delegations SHALL be prioritized.
 
 A particular delegation for a subset of images MAY be designated as **terminating**. For terminating delegations, the client SHALL NOT search any further if it does not find validly signed metadata about those images. Delegations SHOULD NOT be terminating by default; terminating delegations SHOULD only be used when there is a compelling technical reason to do so.
 
-A delegation for a subset of images MAY be a multi-role delegation {{TAP-3}}. A multi-role delegation indicates that multiple roles are needed to sign a particular image and each of the delegatee roles MUST sign the same metadata.
+A delegation for a subset of images MAY be a multi-role delegation {{TAP-3}}. A multi-role delegation indicates that multiple roles are needed to sign a particular image and each of the delegatee roles SHALL sign the same metadata.
 
-Delegations only apply to the Image repository. The Targets role on the Director repository MUST NOT delegate metadata signing responsibility.
+Delegations only apply to the Image repository. The Targets role on the Director repository SHALL NOT delegate metadata signing responsibility.
 
 ### The Snapshot role {#snapshot_role}
 
@@ -398,19 +398,19 @@ A repository's Snapshot role SHALL produce and sign metadata about all Targets m
 
 ### The Timestamp role {#timestamp_role}
 
-A repository's Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It MUST do so by signing the metadata about the Snapshot metadata file.
+A repository's Timestamp role SHALL produce and sign metadata indicating whether there are new metadata or images on the repository. It SHALL do so by signing the metadata about the Snapshot metadata file.
 
 ## Metadata structures {#meta_structures}
 
 Uptane's security guarantees all rely on properly created metadata that follows a designated structure. The Uptane Standard **does not** mandate any particular format or encoding for the metadata as a whole. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.
 
-However, string comparison is required as part of metadata verification. To ensure an accurate basis for comparing strings, all strings MUST be encoded in the Unicode Format for Network Interchange as defined in {{RFC5198}}, including normalization into Unicode Normalization Form C ({{NFC}}).
+However, string comparison is required as part of metadata verification. To ensure an accurate basis for comparing strings, all strings SHALL be encoded in the Unicode Format for Network Interchange as defined in {{RFC5198}}, including normalization into Unicode Normalization Form C ({{NFC}}).
 
 The *Deployment Best Practices* ({{DEPLOY}}), Joint Development Foundation Projects, LLC, Uptane Series provides some examples of compliant metadata structures in ASN.1 and JSON.
 
 ### Common metadata structures {#common_metadata}
 
-Every public key MUST be represented using a public key identifier.  A public key identifier is EITHER all of the following:
+Every public key SHALL be represented using a public key identifier.  A public key identifier is EITHER all of the following:
 
 * The value of the public key itself (which MAY be, for example, formatted as a PEM string)
 * The public key cryptographic algorithm used by the key (such as RSA or ECDSA)
