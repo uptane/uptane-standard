@@ -108,13 +108,16 @@ informative:
     date: 2016-10-16
   PEP-458:
     target: https://www.python.org/dev/peps/pep-0458/
-    title: "PEP 458 -- Surviving a Compromise of PyPI"
+    title: "Secure PyPI downloads with signed repository metadata"
     author:
       - ins: T.K. Kuppusamy
       - ins: V. Diaz
-      - ins: D. Stufft
+      - ins: M. Moore
+      - ins: L. Pühringer
+      - ins: J. Locke
+      - ins: L.A. DeLong
       - ins: J. Cappos
-    date: 2013-09-27
+    date: 2019-11-13
   DEPLOY:
     target: https://uptane.github.io/deployment-considerations/index.html
     title: "Uptane Deployment Best Practices"
@@ -153,7 +156,7 @@ These instructions specify the components necessary for a compliant implementati
 
 # Terminology
 
-With the exception of the Conformance terminology and Uptane role terminology presented on this page, please refer to the [glossary](https://uptane.github.io/deployment-considerations/glossary.html) in the Deployment Best Practices volume for definitions of all terms used in this Standard.
+With the exception of the Conformance terminology and Uptane role terminology presented below, please refer to the [glossary](https://uptane.github.io/deployment-considerations/glossary.html) in the Deployment Best Practices volume for definitions of all terms used in this Standard.
 
 ## Conformance terminology
 
@@ -174,7 +177,8 @@ Note that, following the recommendations of {{RFC2119}} imperatives of the type 
 These terms are defined in greater detail in {{roles}}.
 
 *Delegation*: A process by which the responsibility of signing metadata about images is assigned to another party.
-*Role*: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
+
+*Role*: A party (human or machine) responsible for signing a certain type of metadata. The role controls keys and is responsible for signing the metadata entrusted to it with these keys. The roles mechanism of Uptane allows the system to distribute signing responsibilities so that the compromise of one key does not necessarily impact the security of the entire system.
 
 * *Root role*: Signs metadata that distributes and revokes public keys used to verify the Root, Timestamp, Snapshot, and Targets role metadata.
 * *Snapshot role*: Signs metadata that indicates which images the repository has released at the same time.
@@ -242,7 +246,7 @@ An OEM plans to install Uptane on new vehicles. This entails the following compo
 
 1. all Primaries perform full verification;
 1. all Secondaries that are updated via OTA at least perform partial verification; and
-1. all other ECUs that do not perform any type of verification cannot be updated via OTA.
+1. any ECUs that do not perform any type of verification cannot be updated via OTA.
 
 #### Updating one ECU with a complete image
 
