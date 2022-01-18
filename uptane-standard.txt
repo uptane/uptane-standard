@@ -82,20 +82,18 @@ Table of Contents
 2.  Terminology
 
    With the exception of the Conformance terminology and Uptane role
-   terminology presented on this page, please refer to the glossary [1]
-   in the Deployment Best Practices volume for definitions of all terms
-   used in this Standard.
+   terminology presented below, please refer to the glossary [1] in the
+   Deployment Best Practices volume for definitions of all terms used in
+   this Standard.
 
 2.1.  Conformance terminology
 
-   The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD,
-   SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be
-   interpreted as described in [RFC2119].  Given the importance of
-   interpreting these terms correctly, we present these definitions
-   here.  Note that when referring to actions in the Standard that
-   mandate compliance, the word SHALL will be used, rather than the word
-   MUST.  Hence, MUST and MUST NOT are not included in these
-   definitions.
+   The keywords REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT,
+   RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted
+   as described in [RFC2119].  Given the importance of interpreting
+   these terms correctly, we present these definitions here.  Note that
+   when referring to actions in the Standard that mandate compliance,
+   the word SHALL will be used, rather than the word MUST.
 
    _SHALL_ This word or the term "REQUIRED" mean that the definition is
    an absolute requirement of the specification.  _SHALL NOT_ This
@@ -126,13 +124,14 @@ Table of Contents
    These terms are defined in greater detail in Section 5.1.
 
    _Delegation_: A process by which the responsibility of signing
-   metadata about images is assigned to another party.  _Role_: A party
-   (human or machine) responsible for signing a certain type of
-   metadata.  The role controls keys and is responsible for signing
-   metadata entrusted to it with these keys.  The roles mechanism of
-   Uptane allows the system to distribute signing responsibilities so
-   that the compromise of one key does not necessarily impact the
-   security of the entire system.
+   metadata about images is assigned to another party.
+
+   _Role_: A party (human or machine) responsible for signing a certain
+   type of metadata.  The role controls keys and is responsible for
+   signing the metadata entrusted to it with these keys.  The roles
+   mechanism of Uptane allows the system to distribute signing
+   responsibilities so that the compromise of one key does not
+   necessarily impact the security of the entire system.
 
    o  _Root role_: Signs metadata that distributes and revokes public
       keys used to verify the Root, Timestamp, Snapshot, and Targets
@@ -267,8 +266,8 @@ Table of Contents
    2.  all Secondaries that are updated via OTA at least perform partial
        verification; and
 
-   3.  all other ECUs that do not perform any type of verification
-       cannot be updated via OTA.
+   3.  any ECUs that do not perform any type of verification cannot be
+       updated via OTA.
 
 3.2.2.2.  Updating one ECU with a complete image
 
@@ -418,7 +417,7 @@ Table of Contents
          the vehicle and software repositories.
 
       *  Inside the vehicle, intercepting and modifying traffic on one
-         or more vehicle buses (e.g., via an OBD port or using a
+         or more vehicle buses (e.g., via an OBD port or by using a
          compromised ECU as a vector).
 
    o  Compromise and control either a Director repository or Image
@@ -459,8 +458,8 @@ Table of Contents
    o  _Partial bundle installation attack:_ Install a valid (signed)
       update bundle, and then block selected updates within the bundle.
 
-   o  Conduct a denial of service attack against the Uptane repositories
-      or infrastructure.
+   o  _Denial of service attack_ against the Uptane repositories or
+      infrastructure.
 
 4.3.3.  Interfere with ECU functionality
 
@@ -563,13 +562,13 @@ Table of Contents
 
    The Targets role on the Image repository MAY delegate the
    responsibility of signing metadata to other, custom-defined roles
-   referred to as delegated targets.  If it does, it MUST do so as
+   referred to as delegated targets.  If it does, it SHALL do so as
    specified in Section 5.2.3.2.
 
    As responsibility for signing images or a subset of images MAY be
    delegated to more than one role, it is possible that two different
    roles will be trusted to sign a particular image.  For this reason,
-   delegations MUST be prioritized.
+   delegations SHALL be prioritized.
 
    A particular delegation for a subset of images MAY be designated as
    *terminating*. For terminating delegations, the client SHALL NOT
@@ -581,10 +580,10 @@ Table of Contents
    A delegation for a subset of images MAY be a multi-role delegation
    [TAP-3].  A multi-role delegation indicates that multiple roles are
    needed to sign a particular image and each of the delegatee roles
-   MUST sign the same metadata.
+   SHALL sign the same metadata.
 
    Delegations only apply to the Image repository.  The Targets role on
-   the Director repository MUST NOT delegate metadata signing
+   the Director repository SHALL NOT delegate metadata signing
    responsibility.
 
 5.1.3.  The Snapshot role
@@ -599,8 +598,8 @@ Table of Contents
 
    A repository's Timestamp role SHALL produce and sign metadata
    indicating whether there are new metadata or images on the
-   repository.  It MUST do so by signing the metadata about the Snapshot
-   metadata file.
+   repository.  It SHALL do so by signing the metadata about the
+   Snapshot metadata file.
 
 5.2.  Metadata structures
 
@@ -613,17 +612,17 @@ Table of Contents
 
    However, string comparison is required as part of metadata
    verification.  To ensure an accurate basis for comparing strings, all
-   strings MUST be encoded in the Unicode Format for Network Interchange
-   as defined in [RFC5198], including normalization into Unicode
-   Normalization Form C ([NFC]).
+   strings SHALL be encoded in the Unicode Format for Network
+   Interchange as defined in [RFC5198], including normalization into
+   Unicode Normalization Form C ([NFC]).
 
-   In the _Deployment Best Practices_ ([DEPLOY]), Joint Development
+   The _Deployment Best Practices_ ([DEPLOY]), Joint Development
    Foundation Projects, LLC, Uptane Series provides some examples of
    compliant metadata structures in ASN.1 and JSON.
 
 5.2.1.  Common metadata structures
 
-   Every public key MUST be represented using a public key identifier.
+   Every public key SHALL be represented using a public key identifier.
    A public key identifier is EITHER all of the following:
 
    o  The value of the public key itself (which MAY be, for example,
@@ -699,9 +698,10 @@ Table of Contents
 5.2.3.1.  Metadata about images
 
    To be available to install on clients, all images on the repository
-   MUST have their metadata listed in a Targets role.  Each Targets role
-   MAY provide a list of some images on the repository.  This list MUST
-   provide, at a minimum, the following information about each image:
+   SHALL have their metadata listed in a Targets role.  Each Targets
+   role MAY provide a list of some images on the repository.  This list
+   SHALL provide, at a minimum, the following information about each
+   image:
 
    o  The image filename
 
@@ -723,16 +723,16 @@ Table of Contents
    Best Practices_ document ([DEPLOY]).  However, there are a few
    important pieces of custom metadata that SHOULD be present in most
    implementations.  In addition, there is one element in the custom
-   metadata that MUST be present in the Targets metadata from the
+   metadata that SHALL be present in the Targets metadata from the
    Director.
 
    Custom metadata MAY also contain a demarcated field or section that
-   MUST match whenever two pieces of metadata are checked against each
+   SHALL match whenever two pieces of metadata are checked against each
    other, such as when Targets metadata from the Director repository is
    checked against Targets metadata from the Image repository.
 
    The information listed below SHOULD be provided for each image on
-   both the Image repository and the Director repository.  If a "MUST
+   both the Image repository and the Director repository.  If a "SHALL
    match section" is to be implemented, that is where this information
    SHOULD be placed.
 
@@ -758,7 +758,7 @@ Table of Contents
       the ECU's asymmetric key could be included in the Director
       repository metadata.
 
-   The following information MUST be provided from the Director
+   The following information SHALL be provided from the Director
    repository for each image in the Targets metadata:
 
    o  An ECU identifier (such as a serial number), specifying the ECU
@@ -771,13 +771,13 @@ Table of Contents
 5.2.3.2.  Metadata about delegations
 
    A Targets metadata file on the Image repository (but not the Director
-   repository) MUST be able to delegate signing authority to other
+   repository) SHALL be able to delegate signing authority to other
    entities.  For example, it could delegate signing authority for a
    particular ECU's firmware to that ECU's supplier.  A metadata file
-   MAY contain any number of delegations and MUST keep the delegations
+   MAY contain any number of delegations and SHALL keep the delegations
    in prioritized order.
 
-   Any metadata file with delegations MUST provide the following
+   Any metadata file with delegations SHALL provide the following
    information:
 
    o  A list of public keys of all delegatees.  Each key should have a
@@ -848,11 +848,11 @@ Table of Contents
    to have more than the two required repositories.
 
    Repository mapping metadata, or the equivalent informational content,
-   MUST be present on all Primary ECUs, and MUST contain the following
+   SHALL be present on all Primary ECUs, and SHALL contain the following
    information:
 
    o  A list of repository names and one or more URLs at which the named
-      repository can be accessed.  At a minimum, this MUST include the
+      repository can be accessed.  At a minimum, this SHALL include the
       Director and Image repositories.
 
    o  A list of mappings of image paths to repositories, each of which
@@ -862,7 +862,7 @@ Table of Contents
          wildcards, or by enumerating a list, or a combination of the
          two.
 
-      *  A list of repositories that MUST provide signed Targets
+      *  A list of repositories that SHALL provide signed Targets
          metadata for images stored at those paths.
 
    For example, in the most basic Uptane case, the repository mapping
@@ -872,7 +872,7 @@ Table of Contents
 
    o  The name and URL of the Image repository.
 
-   o  A single mapping indicating that all images ("*") MUST be signed
+   o  A single mapping indicating that all images ("*") SHALL be signed
       by both the Director and Image repository.
 
    Note that the metadata need not be in the form of a metadata file.
@@ -905,9 +905,9 @@ Table of Contents
        file B, then it SHALL be written as VERSION.FILENAME.EXT, where
        VERSION is A's version number, as defined in Section 5.2.1, with
        one exception: If the version number of the Timestamp metadata
-       file might not be known in advance by a client, it MAY be read
-       from, and written to, a repository using a filename without a
-       version number qualification, i.e., FILENAME.EXT.
+       file is not be known in advance by a client, it MAY be read from,
+       and written to, a repository using a filename without a version
+       number qualification, i.e., FILENAME.EXT.
 
    2.  If an image is specified in a Targets metadata file as
        FILENAME.EXT, it SHALL be written to the repository as
@@ -963,7 +963,7 @@ Table of Contents
    specific image by checking the chain of delegations as described in
    Section 5.2.3.2.
 
-   The Image repository SHALL implement storage which permits authorized
+   The Image repository SHALL implement storage that permits authorized
    users to write an image file using a unique filename, and later read
    the same file using the same name.  It MAY use any filesystem, key-
    value store, or database that fulfills this requirement.
@@ -980,18 +980,20 @@ Table of Contents
 
    The Director repository SHALL expose an interface for Primaries to
    upload vehicle version manifests (Section 5.4.2.1.1) and download
-   metadata.  This interface SHOULD be public.  The Director MAY encrypt
-   images for ECUs that require them, either by encrypting on-the-fly or
-   by storing encrypted images on the repository.
+   metadata.  This interface SHOULD be public.
 
-   The Director repository SHALL implement storage which permits an
+   The Director MAY encrypt images for ECUs that require them, either by
+   encrypting on-the-fly or by storing encrypted images on the
+   repository.
+
+   The Director repository SHALL implement storage that permits an
    automated service to write generated metadata files.  It MAY use any
    filesystem, key-value store, or database that fulfills this
    requirement.
 
 5.3.2.1.  Directing installation of images on vehicles
 
-   A Director repository MUST conform to the following six-step process
+   A Director repository SHALL conform to the following six-step process
    for directing the installation of software images on a vehicle.
 
    1.  The Director SHOULD first identify the vehicle.  This MAY be done
@@ -1030,9 +1032,10 @@ Table of Contents
        information, it determines if the vehicle is already up-to-date,
        and if not, determines a set of images that should be installed.
        The exact process by which this determination takes place is out
-       of scope for this Standard.  However, the Director MUST take into
-       account _dependencies_ and _conflicts_ between images and SHOULD
-       consult well-established techniques for dependency resolution.
+       of scope for this Standard.  However, the Director SHALL take
+       into account _dependencies_ and _conflicts_ between images and
+       SHOULD consult well-established techniques for dependency
+       resolution.
 
    6.  The Director MAY encrypt images for ECUs that require it.
 
@@ -1049,7 +1052,7 @@ Table of Contents
    information about ECUs and vehicles.  An implementer MAY use any
    durable database for this purpose.
 
-   The inventory database MUST record the following pieces of
+   The inventory database SHALL record the following pieces of
    information:
 
    o  Per vehicle:
@@ -1098,9 +1101,9 @@ Table of Contents
    ECU.  It also sends signed information about its installed images to
    its associated Primary.
 
-   All ECUs MUST verify image metadata as specified in Section 5.4.4
+   All ECUs SHALL verify image metadata as specified in Section 5.4.4
    before installing an image or making it available to other ECUs.  A
-   Primary ECU MUST perform full verification (Section 5.4.4.2).  A
+   Primary ECU SHALL perform full verification (Section 5.4.4.2).  A
    Secondary ECU SHOULD perform full verification if possible.  If a
    Secondary cannot perform full verification, it SHALL, at the very
    least, perform partial verification.  In addition, it MAY also
@@ -1108,14 +1111,14 @@ Table of Contents
    _Uptane Deployment Best Practices_ document ([DEPLOY]) for a
    discussion of how to choose between partial and full verification.
 
-   ECUs MUST have a secure source of time.  An OEM/Uptane implementer
+   ECUs SHALL have a secure source of time.  An OEM/Uptane implementer
    MAY use any external source of time that is demonstrably secure.
 
 5.4.1.  Build-time prerequisite requirements for ECUs
 
-   For an ECU to be capable of receiving Uptane-secured updates, it MUST
-   have the following data provisioned at the time it is manufactured or
-   installed in the vehicle:
+   For an ECU to be capable of receiving Uptane-secured updates, it
+   SHALL have the following data provisioned at the time it is
+   manufactured or installed in the vehicle:
 
    1.  A sufficiently recent copy of required Uptane metadata at the
        time of manufacture or install.  This is necessary for the ECU to
@@ -1123,13 +1126,13 @@ Table of Contents
        first downloads metadata in the field.  See _Uptane Deployment
        Best Practices_ ([DEPLOY]) for more information.
 
-       *  Partial verification Secondary ECUs MUST have the Root and
+       *  Partial verification Secondary ECUs SHALL have the Root and
           Targets metadata from the Director repository (to reduce the
           scope of rollback and replay attacks).  These ECUs MAY also
           have metadata from other roles or the Image repository if they
           will be used by the Secondary.
 
-       *  Full verification ECUs MUST have a complete set of metadata
+       *  Full verification ECUs SHALL have a complete set of metadata
           (Root, Targets, Snapshot, and Timestamp) from both
           repositories (to prevent rollback and replay attacks), as well
           as the repository mapping metadata (Section 5.2.6).
@@ -1138,9 +1141,9 @@ Table of Contents
    2.  The current time, or a secure attestation of a sufficiently
        recent time.
 
-   3.  An *ECU key*. This is a private key, unique to the ECU, used to
-       sign ECU version reports and decrypt images.  An ECU key MAY be
-       either a symmetric key or an asymmetric key.  If it is an
+   3.  An *ECU signing key*. This is a private key, unique to the ECU,
+       used to sign ECU version reports and decrypt images.  An ECU key
+       MAY be either a symmetric key or an asymmetric key.  If it is an
        asymmetric key, there MAY be separate keys for encryption and
        signing.  For the purposes of this Standard, the set of private
        keys that an ECU uses is referred to as the ECU key (singular),
@@ -1197,7 +1200,7 @@ Table of Contents
 
 5.4.2.1.1.  Vehicle version manifest
 
-   The vehicle version manifest is a metadata structure that MUST
+   The vehicle version manifest is a metadata structure that SHALL
    contain the following information:
 
    o  An attribute containing the signature(s) of the payload, each
@@ -1228,7 +1231,7 @@ Table of Contents
 
 5.4.2.1.2.  ECU version report
 
-   An ECU version report is a metadata structure that MUST contain the
+   An ECU version report is a metadata structure that SHALL contain the
    following information:
 
    o  An attribute containing the signature(s) of the payload, each
@@ -1259,7 +1262,7 @@ Table of Contents
          report was generated
 
       *  A nonce or counter to prevent a replay of the ECU version
-         report.  This value MUST change each update cycle.
+         report.  This value SHALL change each update cycle.
 
 5.4.2.2.  Download and check current time
 
@@ -1291,8 +1294,8 @@ Table of Contents
 5.4.2.6.  Send metadata to Secondaries
 
    The Primary SHALL send its latest downloaded metadata to all of its
-   associated Secondaries.  The metadata it sends to each Secondary MUST
-   include all of the metadata required for verification on that
+   associated Secondaries.  The metadata it sends to each Secondary
+   SHALL include all of the metadata required for verification on that
    Secondary.  For full verification Secondaries, this includes the
    metadata for all four roles from both repositories, plus any
    delegated Targets metadata files the Secondary will recurse through
@@ -1454,7 +1457,7 @@ Table of Contents
 
 5.4.4.  Metadata verification procedures
 
-   A Primary ECU MUST perform full verification of metadata.  A
+   A Primary ECU SHALL perform full verification of metadata.  A
    Secondary ECU SHOULD perform full verification of metadata.  If a
    Secondary cannot perform full verification, it SHALL, at the very
    least, perform partial verification.
@@ -1495,14 +1498,14 @@ Table of Contents
    the Targets metadata about the same images from the Image repository.
    This provides resilience to a key compromise in the system.
 
-   Full verification MUST be performed by Primary ECUs and SHOULD be
+   Full verification SHALL be performed by Primary ECUs and SHOULD be
    performed by Secondary ECUs.  In the following instructions, whenever
    an ECU is directed to download metadata, it applies only to Primary
    ECUs.
 
    Before starting full verification, the repository mapping metadata
-   MUST be consulted to determine where to download metadata from.  This
-   procedure assumes the basic Uptane case: there are only two
+   SHALL be consulted to determine where to download metadata from.
+   This procedure assumes the basic Uptane case: there are only two
    repositories (Director and Image), and all image paths are required
    to be signed by both repositories.  If a more complex repository
    layout is being used, refer to [DEPLOY] for guidance on how to
@@ -1554,7 +1557,7 @@ Table of Contents
         Image repository, following the procedure in Section 5.4.4.6.
 
    10.  Verify that Targets metadata from the Director and Image
-        repositories match.  A Primary ECU MUST perform this check on
+        repositories match.  A Primary ECU SHALL perform this check on
         metadata for all images listed in the Targets metadata file from
         the Director repository downloaded in step 6.  A Secondary ECU
         MAY elect to perform this check only on the metadata for the
@@ -1579,15 +1582,15 @@ Table of Contents
                 Secondary) is responsible for validating the unencrypted
                 image and associated metadata.
 
-            2.  Check that all MUST match custom metadata (e.g.,
+            2.  Check that all SHALL match custom metadata (e.g.,
                 hardware identifier and release counter) are the same in
                 both sets of metadata.
 
-            3.  Check that the release counter in the previous Targets
-                metadata file is less than or equal to the release
-                counter in this Targets metadata file.
+            3.  Check that the release counter, if one is used, in the
+                previous Targets metadata file is less than or equal to
+                the release counter in this Targets metadata file.
 
-   If any step fails, the ECU MUST return an error code indicating the
+   If any step fails, the ECU SHALL return an error code indicating the
    failure.  If a check for a specific type of security attack fails
    (i.e., rollback, freeze, arbitrary software, etc.), the ECU SHOULD
    return an error code that indicates the type of attack.
@@ -1612,7 +1615,7 @@ Table of Contents
            If this file is not available, the current Root metadata file
            is the latest; continue with step 3.
 
-       3.  Version N+1 of the Root metadata file MUST have been signed
+       3.  Version N+1 of the Root metadata file SHALL have been signed
            by the following: (1) a threshold of unique keys specified in
            the latest Root metadata file (version N), and (2) a
            threshold of unique keys specified in the new Root metadata
@@ -1682,7 +1685,7 @@ Table of Contents
        Section 5.2.7.
 
    2.  The hashes and version number of the new Snapshot metadata file
-       MUST match the hashes and version number listed in the Timestamp
+       SHALL match the hashes and version number listed in the Timestamp
        metadata.  If the hashes and version number do not match, discard
        the new Snapshot metadata, abort the update cycle, and report the
        failure.  (Checks for a mix-and-match attack.)
@@ -1727,7 +1730,7 @@ Table of Contents
        filename as defined in Section 5.2.7.  The value for Z is set by
        the implementer.  For example, Z may be tens of kilobytes.
 
-   2.  The version number of the new Targets metadata file MUST match
+   2.  The version number of the new Targets metadata file SHALL match
        the version number listed in the latest Snapshot metadata.  If
        the version number does not match, discard it, abort the update
        cycle, and report the failure.  (Checks for a mix-and-match
@@ -1767,11 +1770,11 @@ Table of Contents
 
 5.4.4.7.  How to resolve delegations
 
-   To properly check Targets metadata for an image, an ECU MUST locate
+   To properly check Targets metadata for an image, an ECU SHALL locate
    the metadata file(s) for the role (or roles) that have the authority
    to sign the image.  This metadata might be located in the top-level
    Targets metadata, but it may also be delegated to another role or to
-   multiple roles.  Therefore, all delegations MUST be resolved using
+   multiple roles.  Therefore, all delegations SHALL be resolved using
    the following recursive procedure, beginning with the top-level
    Targets metadata file.
 
@@ -1794,8 +1797,8 @@ Table of Contents
        delegation:
 
        1.  Check if the delegation applies to the image being processed.
-           For the delegation to apply, it MUST include the hardware
-           identifier of the target, and the target name MUST match one
+           For the delegation to apply, it SHALL include the hardware
+           identifier of the target, and the target name SHALL match one
            of the delegation's image paths.  If either of these tests
            fail, move on to the next delegation in the list.
 
@@ -1824,7 +1827,7 @@ Table of Contents
    roles as described in [TAP-3].  Each multi-role delegation
    effectively contains a list of ordinary delegations, plus a threshold
    of those roles that must be in agreement about the non-custom
-   metadata for the image.  All multi-role delegations MUST be resolved
+   metadata for the image.  All multi-role delegations SHALL be resolved
    using the following procedure.  Note that there may be sub-
    delegations inside multi-role delegations.
 
@@ -1834,7 +1837,7 @@ Table of Contents
    2.  Inspect the non-custom part of the metadata loaded in step 1:
 
        1.  Locate all sets of roles that have agreeing (i.e., identical)
-           non-custom metadata and "MUST match" custom metadata.
+           non-custom metadata and "SHALL match" custom metadata.
            Discard any set of roles with a size smaller than the
            threshold of roles that must be in agreement for this
            delegation.
@@ -1842,8 +1845,8 @@ Table of Contents
        2.  Check for a conflict.  A conflict exists if there is more
            than one agreeing set of roles, yet each set has different
            metadata.  If a conflict is found, choose and return the
-           metadata from the set of roles which includes the earliest
-           role in the multi-delegation list.
+           metadata from the set of roles that include the earliest role
+           in the multi-delegation list.
 
        3.  If there is no conflict, check if there is any single set of
            roles with matching non-custom metadata.  If there is, choose
@@ -1919,8 +1922,9 @@ Table of Contents
               <https://www.usenix.org/system/files/conference/atc17/
               atc17-kuppusamy.pdf>.
 
-   [PEP-458]  Kuppusamy, T., Diaz, V., Stufft, D., and J. Cappos, "PEP
-              458 -- Surviving a Compromise of PyPI", September 2013,
+   [PEP-458]  Kuppusamy, T., Diaz, V., Moore, M., Puehringer, L., Locke,
+              J., DeLong, L., and J. Cappos, "Secure PyPI downloads with
+              signed repository metadata", November 2019,
               <https://www.python.org/dev/peps/pep-0458/>.
 
    [UPTANEESCAR]
