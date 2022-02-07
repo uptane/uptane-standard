@@ -6,7 +6,7 @@ This repository is the public home of all standardization work for Uptane.
 
 As the Standard is a living document, updates are made in real time as needed. However, these changes will not be considered formally adopted until the release of the next minor or major version.
 
-Major and minor release dates are set by the Uptane Standards committee. All final releases will be approved by the committee, either by voice vote at a designated bimonthly meeting of the Uptane Standard group or by responding "approve" in a designated mailing list or repository thread.
+Major and minor release dates are set by the Uptane Standards committee. All final releases will be approved by the committee, either by voice vote at a designated bimonthly meeting of the Uptane Standard group or by responding "approve" in a designated mailing list or repository thread. A release will be deemed approved if it receives a simple majority of active group members, with "active" defined as an individual who regularly appears at bimonthly meetings, participates in the preparation or review of pull requests, or engages in discussion of issues on the mailing list threads.
 
 ## Existing documentation
 
