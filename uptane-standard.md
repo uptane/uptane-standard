@@ -591,7 +591,7 @@ A Director repository SHALL conform to the following six-step process for direct
 
 1. The Director SHOULD first identify the vehicle. This could be done when the Director receives a vehicle version manifest sent by a Primary (as described in {{construct_manifest_primary}}), decodes the manifest, and determines the unique vehicle identifier. Additionally, the Director could utilize other mechanisms to uniquely identify a vehicle (e.g., 2-way TLS with unique client certificates).
 1. Using the vehicle identifier, the Director queries its inventory database (as described in {{inventory_db}}) for relevant information about each ECU in the vehicle.
-1. The Director SHALL check the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director SHALL drop the request. An implementer can make additional checks if desired. At a minimum, the Director SHALL check the following:
+1. The Director SHALL check the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director SHOULD drop the request. An implementer can make additional checks if desired. At a minimum, the Director SHOULD check the following:
     * Each ECU recorded in the inventory database is also represented in the manifest.
     * The signature of the manifest matches the ECU key of the Primary that sent it.
     * The signature of each Secondary's contribution to the manifest matches the ECU key of that Secondary.
