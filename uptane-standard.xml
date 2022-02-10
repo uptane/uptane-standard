@@ -28,7 +28,7 @@
       </address>
     </author>
 
-    <date year="2022" month="January" day="18"/>
+    <date year="2022" month="February" day="10"/>
 
     <area>TODO</area>
     <workgroup>TODO</workgroup>
@@ -51,9 +51,9 @@
 
 <section anchor="introduction" title="Introduction">
 
-<t>Uptane is a secure software update framework for ground vehicles. This document describes procedures to enable programmers for OEMs and suppliers to securely design and implement this framework in a manner that better protects connected units on ground vehicles. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to compromise critical systems. It also assures a faster and easier recovery process should a compromise occur.</t>
+<t>Uptane is a secure software update framework for ground vehicles. This document describes procedures to enable programmers for OEMs and suppliers to securely design and implement this framework in a manner that better protects connected units on ground vehicles. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to compromise critical systems. It also assures a faster and easier recovery process when a compromise occurs.</t>
 
-<t>These instructions specify the components necessary for a compliant implementation. Individual implementers can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementers wish to have compatible formats, they may use POUFs. POUFs contain a description of implementation choices as well as data binding formats. An implementer who adopts a POUF, as well as the Uptane Standard, will be able to interoperate with other implementations using that POUF.</t>
+<t>These instructions specify the components necessary for a compliant implementation. Individual implementers can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementers wish to have compatible formats, they can use POUFs. POUFs contain a description of implementation choices as well as data binding formats. An implementer who adopts a POUF, as well as the Uptane Standard, will be able to interoperate with other implementations using that POUF.</t>
 
 </section>
 <section anchor="terminology" title="Terminology">
@@ -66,13 +66,13 @@
 
 <t><spanx style="emph">SHALL</spanx> This word or the term “REQUIRED” mean that the definition is an absolute requirement of the specification.
 <spanx style="emph">SHALL NOT</spanx> This phrase means that the definition is an absolute prohibition of the specification.
-<spanx style="emph">SHOULD</spanx> This word or the adjective “RECOMMENDED” mean that, in particular circumstances, there may exist valid reasons to ignore a particular item, but the full implications must be understood and carefully weighed before choosing a different course.
-<spanx style="emph">SHOULD NOT</spanx> This phrase or the phrase “NOT RECOMMENDED” mean that there may exist valid reasons in particular circumstances when the particular behavior is acceptable or even useful, but the full implications should be understood and the case carefully weighed before implementing any behavior described with this label.
+<spanx style="emph">SHOULD</spanx> This word or the adjective “RECOMMENDED” mean that, in particular circumstances, there could exist valid reasons to ignore a particular item, but the full implications will be understood and carefully weighed before choosing a different course.
+<spanx style="emph">SHOULD NOT</spanx> This phrase or the phrase “NOT RECOMMENDED” mean that there could exist valid reasons in particular circumstances when the particular behavior is acceptable or even useful, but the full implications will be understood and the case carefully weighed before implementing any behavior described with this label.
 <spanx style="emph">MAY</spanx> This word or the adjective “OPTIONAL,” mean that an item is truly optional.</t>
 
 <t>In order to be considered Uptane-compliant, an implementation SHALL follow all of these rules as specified in the document.</t>
 
-<t>Note that, following the recommendations of <xref target="RFC2119"/> imperatives of the type defined here “must be used with care and sparingly.  In particular, they MUST only be used where it is actually required for interoperation or to limit behavior which has potential for causing harm (e.g., limiting retransmisssions)</t>
+<t>Note that, following the recommendations of <xref target="RFC2119"/>, imperatives of the type defined here will be used only when essential for security.</t>
 
 </section>
 <section anchor="uptane-role-terminology" title="Uptane role terminology">
@@ -113,7 +113,7 @@
 
 <t>This Standard document provides the essential components for the secure design, implementation, and deployment of Uptane by OEMs and suppliers. These guidelines contribute to compromise resilience, or the ability to minimize the extent of the threat posed by any given attack.</t>
 
-<t>However, this specification is intended as an implementation guide, and not as a detailed technical argument about the security properties that Uptane provides.  Readers interested in such documentation should refer to published papers that cover this topic.  <xref target="UPTANEESCAR"/></t>
+<t>However, this specification is intended as an implementation guide, and not as a detailed technical argument about the security properties that Uptane provides.  Readers interested in such documentation can refer to published papers that cover this topic.  <xref target="UPTANEESCAR"/></t>
 
 <section anchor="why-uptane-requires-a-standards-document" title="Why Uptane requires a standards document">
 
@@ -142,7 +142,7 @@
   <t>Vehicles have the ability to establish connectivity to required backend services. For example, this could be done through cellular, Wi-Fi, or hard-wired mechanisms.</t>
   <t>ECUs are either directly connected to the communication channel, or are indirectly connected via some sort of network gateway.</t>
   <t>ECUs are programmable and provide sufficient performance to be updated.</t>
-  <t>ECUs must be able to perform public key cryptography operations and calculate hashes of images and metadata files.</t>
+  <t>ECUs SHALL be able to perform public key cryptography operations and calculate hashes of images and metadata files.</t>
   <t>There are state-of-the-art secure servers in place, such as the Director and Image repository servers.</t>
 </list></t>
 
@@ -176,7 +176,7 @@
 </section>
 <section anchor="update-one-ecu-with-multiple-deltas" title="Update one ECU with multiple deltas">
 
-<t>The OEM wants to use delta updates to save over-the-air bytes. The delta images contain only the code and/or data that has changed from the previous image version. To do so, the OEM must first modify the Director repository, using the vehicle version manifest and dependency resolution to determine the differences between the previous and latest images. The OEM then adds the following to the custom Targets metadata used by the Director repository: (1) the algorithm used to apply a delta image, and (2) the Targets metadata about the delta image. The OEM will also check whether the delta images match the Targets metadata from the Director repository.</t>
+<t>The OEM wants to use delta updates to save over-the-air bytes. The delta images contain only the code and/or data that has changed from the previous image version. To do so, the OEM will first modify the Director repository, using the vehicle version manifest and dependency resolution to determine the differences between the previous and latest images. The OEM will then add the following to the custom Targets metadata used by the Director repository: (1) the algorithm used to apply a delta image, and (2) the Targets metadata about the delta image. The OEM will also check whether the delta images match the Targets metadata from the Director repository.</t>
 
 </section>
 </section>
@@ -186,13 +186,13 @@
 <t>There are a number of factors that could impede the completion of the above scenarios:</t>
 
 <t><list style="symbols">
-  <t>ECUs may be lacking the necessary resources to function as designated. These insufficient resources could include limited CPU or RAM inadequate for performance of public key cryptography; a lack of sufficient storage to undo installation of bad software; or a location on a low-speed network (e.g., LIN).</t>
-  <t>ECUs may reside on different network segments, and may not be able to directly reach each other, requiring a gateway to facilitate communication.</t>
-  <t>A user may replace OEM-installed ECUs with aftermarket ECUs.</t>
-  <t>A vehicle may be able to download only a limited amount of data via a cellular channel due to limits on a data plan.</t>
-  <t>A system may lack sufficient power to download or install software updates.</t>
-  <t>Vehicles may be offline for extended periods of time, thus missing required updates (e.g., key rotations).</t>
-  <t>OEMs may be unwilling to implement costly security or hardware requirements.</t>
+  <t>ECUs can be lacking the necessary resources to function as designated. These insufficient resources could include limited CPU or RAM inadequate for performance of public key cryptography; a lack of sufficient storage to undo installation of bad software; or a location on a low-speed network (e.g., LIN).</t>
+  <t>ECUs can reside on different network segments, and cannot directly reach each other, requiring a gateway to facilitate communication.</t>
+  <t>A user can replace OEM-installed ECUs with aftermarket ECUs.</t>
+  <t>A vehicle can download only a limited amount of data via a cellular channel (e.g. due to limits on a data plan).</t>
+  <t>A system can lack sufficient power to download or install software updates.</t>
+  <t>Vehicles can be offline for extended periods of time, thus missing required updates (e.g., key rotations).</t>
+  <t>OEMs can be unwilling to implement costly security or hardware requirements.</t>
 </list></t>
 
 </section>
@@ -205,7 +205,7 @@
   <t>Compromise of the packaged software, such as malware embedded in a trusted package.</t>
   <t>Compromise of the supply chain (e.g., build system, version control system, packaging process). A number of strategies (e.g., git signing, TPMs, in-toto <xref target="IN-TOTO"/>)  already exist to address this problem. Therefore, there is no need to duplicate those techniques here.</t>
   <t>Problems associated with OBD or UDS programming of ECUs, such as authentication of communications between ECUs.</t>
-  <t>Malicious mirrors of package repositories, which may substitute original packages with malicious packages with matching version numbers <xref target="MERCURY"/>.</t>
+  <t>Malicious mirrors of package repositories, which could substitute original packages with malicious packages with matching version numbers <xref target="MERCURY"/>.</t>
 </list></t>
 
 </section>
@@ -214,20 +214,20 @@
 <t>The design requirements for this document are governed by the following principal parameters:</t>
 
 <t><list style="symbols">
-  <t>to clearly mandate the design and implementation steps that are security critical and must be followed as is, while offering flexibility in the implementation of non-critical steps. In this manner, users can adapt to support different use models and deployment scenarios.</t>
+  <t>to clearly mandate the design and implementation steps that are security critical and will be followed as is, while offering flexibility in the implementation of non-critical steps. In this manner, users can adapt to support different use models and deployment scenarios.</t>
   <t>to ensure that, if Uptane is implemented, the security practices mandated or suggested in this document do not interfere with the functionality of ECUs, vehicles, or the systems that maintain them.</t>
-  <t>to delineate guidelines to ensure that, should any part of the SOTA mechanism of a vehicle be attacked, an attacker must compromise two or more modules to breach the SOTA mechanism.</t>
+  <t>to delineate guidelines to ensure that, when any part of the SOTA mechanism of a vehicle is attacked, an attacker has to compromise two or more modules to breach the SOTA mechanism.</t>
 </list></t>
 
 </section>
 </section>
 <section anchor="threat-model-and-attack-strategies" title="Threat model and attack strategies">
 
-<t>The overarching goal of Uptane is to provide a system that is resilient in the face of various types of compromise. In this section, we describe the goals an attacker may have (<xref target="attacker_goals"/>) and the capabilities they may have or could develop (<xref target="capabilities"/>). We then describe and classify types of attacks on the system according to the attacker’s goals (<xref target="threats"/>).</t>
+<t>The overarching goal of Uptane is to provide a system that is resilient in the face of various types of compromise. In this section, we describe the goals an attacker could have (<xref target="attacker_goals"/>) and the capabilities they could have or could develop (<xref target="capabilities"/>). We then describe and classify types of attacks on the system according to the attacker’s goals (<xref target="threats"/>).</t>
 
 <section anchor="attacker_goals" title="Attacker goals">
 
-<t>We assume that attackers may want to achieve one or more of the following goals, in increasing order of severity:</t>
+<t>We assume that attackers could want to achieve one or more of the following goals, in increasing order of severity:</t>
 
 <t><list style="symbols">
   <t>Read the contents of updates to discover confidential information, reverse-engineer firmware, or compare two firmware images to identify security fixes and hence determine the fixed security vulnerability.</t>
@@ -239,10 +239,10 @@
 </section>
 <section anchor="capabilities" title="Attacker capabilities">
 
-<t>Uptane is designed with resilience to compromise in mind. We assume that attackers may develop one or more of the following capabilities:</t>
+<t>Uptane is designed with resilience to compromise in mind. We assume that attackers could develop one or more of the following capabilities:</t>
 
 <t><list style="symbols">
-  <t>Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability may be developed in two domains:
+  <t>Intercept and modify network traffic (i.e., perform man-in-the-middle attacks). This capability could be developed in two domains:
   <list style="symbols">
       <t>Outside the vehicle, intercepting and modifying traffic between the vehicle and software repositories.</t>
       <t>Inside the vehicle, intercepting and modifying traffic on one or more vehicle buses (e.g., via an OBD port or by using a compromised ECU as a vector).</t>
@@ -265,7 +265,7 @@
 </section>
 <section anchor="deny_updates" title="Deny installation of updates">
 
-<t>An attacker seeking to deny the installation of updates may attempt one or more of the following strategies:</t>
+<t>An attacker seeking to deny the installation of updates could attempt one or more of the following strategies:</t>
 
 <t><list style="symbols">
   <t><spanx style="emph">Drop-request attack:</spanx> Block network traffic outside or inside the vehicle.</t>
@@ -278,12 +278,12 @@
 </section>
 <section anchor="change_functionality" title="Interfere with ECU functionality">
 
-<t>Attackers seeking to interfere with the functionality of vehicle ECUs in order to cause an operational failure or unexpected behavior may do so in one of the following ways:</t>
+<t>Attackers seeking to interfere with the functionality of vehicle ECUs in order to cause an operational failure or unexpected behavior could do so in one of the following ways:</t>
 
 <t><list style="symbols">
   <t><spanx style="emph">Rollback attack:</spanx> Cause an ECU to install a previously valid software revision that is older than the currently installed version.</t>
   <t><spanx style="emph">Endless data attack:</spanx> Send a large amount of data to an ECU until it runs out of storage, possibly causing the ECU to fail to operate.</t>
-  <t><spanx style="emph">Mix-and-match attack:</spanx> Install a malicious software bundle in which some of the updates do not interoperate properly. This may be accomplished even if all of the individual images being installed are valid, as long as valid versions exist that are mutually incompatible.</t>
+  <t><spanx style="emph">Mix-and-match attack:</spanx> Install a malicious software bundle in which some of the updates do not interoperate properly. This could be accomplished even if all of the individual images being installed are valid, as long as valid versions exist that are mutually incompatible.</t>
 </list></t>
 
 </section>
@@ -320,7 +320,7 @@
     </list></t>
   <t>A secure way for ECUs to know the time.</t>
   <t>An ECU capable of downloading images and associated metadata from the Uptane servers.</t>
-  <t>An in-vehicle client on a Primary ECU capable of verifying the signatures on all update metadata and downloading updates on behalf of its associated Secondary ECUs. The Primary ECU MAY be the same ECU that communicates with the server.</t>
+  <t>An in-vehicle client on a Primary ECU capable of verifying the signatures on all update metadata and downloading updates on behalf of its associated Secondary ECUs. The Primary ECU can be the same ECU that communicates with the server.</t>
   <t>A client or library on each Secondary ECU capable of performing either full or partial verification of metadata.</t>
 </list></t>
 
@@ -342,13 +342,13 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
 
 <section anchor="targets_role_delegations" title="Delegations">
 
-<t>The Targets role on the Image repository MAY delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it SHALL do so as specified in <xref target="delegations_meta"/>.</t>
+<t>The Targets role on the Image repository can delegate the responsibility of signing metadata to other, custom-defined roles referred to as delegated targets. If it does, it SHALL do so as specified in <xref target="delegations_meta"/>.</t>
 
-<t>As responsibility for signing images or a subset of images MAY be delegated to more than one role, it is possible that two different roles will be trusted to sign a particular image. For this reason, delegations SHALL be prioritized.</t>
+<t>As responsibility for signing images or a subset of images could be delegated to more than one role, it is possible that two different roles will be trusted to sign a particular image. For this reason, delegations SHALL be prioritized.</t>
 
-<t>A particular delegation for a subset of images MAY be designated as <spanx style="strong">terminating</spanx>. For terminating delegations, the client SHALL NOT search any further if it does not find validly signed metadata about those images. Delegations SHOULD NOT be terminating by default; terminating delegations SHOULD only be used when there is a compelling technical reason to do so.</t>
+<t>A particular delegation for a subset of images could be designated as <spanx style="strong">terminating</spanx>. For terminating delegations, the client SHALL NOT search any further if it does not find validly signed metadata about those images. Delegations SHOULD NOT be terminating by default; terminating delegations SHOULD only be used when there is a compelling technical reason to do so.</t>
 
-<t>A delegation for a subset of images MAY be a multi-role delegation <xref target="TAP-3"/>. A multi-role delegation indicates that multiple roles are needed to sign a particular image and each of the delegatee roles SHALL sign the same metadata.</t>
+<t>A delegation for a subset of images could be a multi-role delegation <xref target="TAP-3"/>. A multi-role delegation indicates that multiple roles are needed to sign a particular image and each of the delegatee roles SHALL sign the same metadata.</t>
 
 <t>Delegations only apply to the Image repository. The Targets role on the Director repository SHALL NOT delegate metadata signing responsibility.</t>
 
@@ -367,7 +367,7 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
 </section>
 <section anchor="meta_structures" title="Metadata structures">
 
-<t>Uptane’s security guarantees all rely on properly created metadata that follows a designated structure. The Uptane Standard <spanx style="strong">does not</spanx> mandate any particular format or encoding for the metadata as a whole. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure MAY be used.</t>
+<t>Uptane’s security guarantees all rely on properly created metadata that follows a designated structure. The Uptane Standard <spanx style="strong">does not</spanx> mandate any particular format or encoding for the metadata as a whole. ASN.1 (with any encoding scheme like BER, DER, XER, etc.), JSON, XML, or any other encoding format that is capable of providing the required structure can be used.</t>
 
 <t>However, string comparison is required as part of metadata verification. To ensure an accurate basis for comparing strings, all strings SHALL be encoded in the Unicode Format for Network Interchange as defined in <xref target="RFC5198"/>, including normalization into Unicode Normalization Form C (<xref target="NFC"/>).</t>
 
@@ -378,7 +378,7 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
 <t>Every public key SHALL be represented using a public key identifier.  A public key identifier is EITHER all of the following:</t>
 
 <t><list style="symbols">
-  <t>The value of the public key itself (which MAY be, for example, formatted as a PEM string)</t>
+  <t>The value of the public key itself (which could be, for example, formatted as a PEM string)</t>
   <t>The public key cryptographic algorithm used by the key (such as RSA or ECDSA)</t>
   <t>The particular scheme used to verify the signature (such as <spanx style="verb">rsassa-pss-sha256</spanx> or <spanx style="verb">ecdsa-sha2-nistp256</spanx>)</t>
 </list></t>
@@ -420,13 +420,13 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
 </section>
 <section anchor="targets_meta" title="Targets metadata">
 
-<t>The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filenames, hashes, and file sizes. It MAY also include other useful information, such as what types of hardware are compatible with a particular image.</t>
+<t>The Targets metadata on a repository contains all of the information about images to be installed on ECUs. This includes filenames, hashes, and file sizes. It can also include other useful information, such as what types of hardware are compatible with a particular image.</t>
 
 <t>Targets metadata can also contain metadata about delegations, allowing one Targets role to delegate its authority to another. This means that an individual Targets metadata file might contain only metadata about delegations, only metadata about images, or some combination of the two. The details of how ECUs traverse the delegation tree to find valid metadata about images is specified in <xref target="resolve_delegations"/>.</t>
 
 <section anchor="targets_images_meta" title="Metadata about images">
 
-<t>To be available to install on clients, all images on the repository SHALL have their metadata listed in a Targets role.  Each Targets role MAY provide a list of some images on the repository.  This list SHALL provide, at a minimum, the following information about each image:</t>
+<t>To be available to install on clients, all images on the repository SHALL have their metadata listed in a Targets role.  Each Targets role can provide a list of some images on the repository.  This list SHALL provide, at a minimum, the following information about each image:</t>
 
 <t><list style="symbols">
   <t>The image filename</t>
@@ -438,9 +438,9 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
 
 <section anchor="custom-metadata-about-images" title="Custom metadata about images">
 
-<t>In addition to what is required, Targets metadata files MAY contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the <spanx style="emph">Deployment Best Practices</spanx> document (<xref target="DEPLOY"/>). However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that SHALL be present in the Targets metadata from the Director.</t>
+<t>In addition to what is required, Targets metadata files can contain extra metadata for images on the repository. This metadata can be customized for a particular use case. Examples of use cases for different types of custom metadata can be found in the <spanx style="emph">Deployment Best Practices</spanx> document (<xref target="DEPLOY"/>). However, there are a few important pieces of custom metadata that SHOULD be present in most implementations. In addition, there is one element in the custom metadata that SHALL be present in the Targets metadata from the Director.</t>
 
-<t>Custom metadata MAY also contain a demarcated field or section that SHALL match whenever two pieces of metadata are checked against each other, such as when Targets metadata from the Director repository is checked against Targets metadata from the Image repository.</t>
+<t>Custom metadata can also contain a demarcated field or section that SHALL match whenever two pieces of metadata are checked against each other, such as when Targets metadata from the Director repository is checked against Targets metadata from the Image repository.</t>
 
 <t>The information listed below SHOULD be provided for each image on both the Image repository and the Director repository. If a “SHALL match section” is to be implemented, that is where this information SHOULD be placed.</t>
 
@@ -459,36 +459,36 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
 <t>The following information SHALL be provided from the Director repository for each image in the Targets metadata:</t>
 
 <t><list style="symbols">
-  <t>An ECU identifier (such as a serial number), specifying the ECU that should install the image.</t>
+  <t>An ECU identifier (such as a serial number), specifying the ECU that SHOULD install the image.</t>
 </list></t>
 
-<t>The Director repository MAY provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the Director wishes to provide a signed URL.</t>
+<t>The Director repository could provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the Director wishes to provide a signed URL.</t>
 
 </section>
 </section>
 <section anchor="delegations_meta" title="Metadata about delegations">
 
-<t>A Targets metadata file on the Image repository (but not the Director repository) SHALL be able to delegate signing authority to other entities. For example, it could delegate signing authority for a particular ECU’s firmware to that ECU’s supplier. A metadata file MAY contain any number of delegations and SHALL keep the delegations in prioritized order.</t>
+<t>A Targets metadata file on the Image repository (but not the Director repository) SHALL be able to delegate signing authority to other entities. For example, it could delegate signing authority for a particular ECU’s firmware to that ECU’s supplier. A metadata file can contain any number of delegations and SHALL keep the delegations in prioritized order.</t>
 
 <t>Any metadata file with delegations SHALL provide the following information:</t>
 
 <t><list style="symbols">
-  <t>A list of public keys of all delegatees. Each key should have a unique public key identifier and a key type.</t>
+  <t>A list of public keys of all delegatees. Each key SHOULD have a unique public key identifier and a key type.</t>
   <t>A list of delegations, each of which contains:
   <list style="symbols">
-      <t>A list of the filenames to which this role applies. This MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.</t>
+      <t>A list of the filenames to which this role applies. This could be expressed using wildcards, or by enumerating a list, or a combination of the two.</t>
       <t>An optional list of the hardware identifiers to which this role applies.  If this is omitted, any hardware identifier will match.</t>
       <t>An indicator of whether or not this is a terminating delegation. (See <xref target="targets_role_delegations"/>.)</t>
       <t>A list of the roles to which this delegation applies. Each role needs to specify:
       <list style="symbols">
           <t>A name for the role (e.g., “supplier1-qa”)</t>
           <t>The key identifiers for each key this role uses</t>
-          <t>A threshold of keys that must sign for this role</t>
+          <t>A threshold of keys that SHALL sign for this role</t>
         </list></t>
     </list></t>
 </list></t>
 
-<t>Note that <spanx style="strong">any</spanx> Targets metadata file stored on the Image repository may contain delegations, and these delegations can be in chains of arbitrary length.</t>
+<t>Note that <spanx style="strong">any</spanx> Targets metadata file stored on the Image repository can contain delegations, and these delegations can be in chains of arbitrary length.</t>
 
 </section>
 </section>
@@ -502,7 +502,7 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
   <t>The filename and version number of the Targets metadata file.</t>
 </list></t>
 
-<t>The Snapshot metadata MAY also list the Root metadata filename and version number for the purpose of backwards compatibility. Historically, this was a requirement in TUF, but it is no longer required and does not provide a significant security benefit.</t>
+<t>The Snapshot metadata could also list the Root metadata filename and version number for the purpose of backwards compatibility. Historically, this was a requirement in TUF, but it is no longer required and does not provide a significant security benefit.</t>
 
 </section>
 <section anchor="timestamp_meta" title="Timestamp metadata">
@@ -527,7 +527,7 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
   <t>A list of repository names and one or more URLs at which the named repository can be accessed. At a minimum, this SHALL include the Director and Image repositories.</t>
   <t>A list of mappings of image paths to repositories, each of which contains:
   <list style="symbols">
-      <t>A list of image paths. Image paths MAY be expressed using wildcards, or by enumerating a list, or a combination of the two.</t>
+      <t>A list of image paths. Image paths could be expressed using wildcards, or by enumerating a list, or a combination of the two.</t>
       <t>A list of repositories that SHALL provide signed Targets metadata for images stored at those paths.</t>
     </list></t>
 </list></t>
@@ -547,13 +547,13 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
 </section>
 <section anchor="metadata_filename_rules" title="Rules for filenames in repositories and metadata">
 
-<t>There is a difference between the filename in a metadata file or an ECU, and the filename on a repository. This difference exists in order to avoid race conditions, where metadata and images are read from, and written to, at the same time. For more details, the reader should read the TUF specification <xref target="TUF-spec"/> and PEP 458 <xref target="PEP-458"/>.</t>
+<t>There is a difference between the filename in a metadata file or an ECU, and the filename on a repository. This difference exists in order to avoid race conditions, where metadata and images are read from, and written to, at the same time. For more details, the reader can read the TUF specification <xref target="TUF-spec"/> and PEP 458 <xref target="PEP-458"/>.</t>
 
 <t>Unless stated otherwise, all files SHALL be written to repositories in accordance with the following two rules:</t>
 
 <t><list style="numbers">
-  <t>Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT, where VERSION is A’s version number, as defined in <xref target="common_metadata"/>, with one exception: If the version number of the Timestamp metadata file is not be known in advance by a client, it MAY be read from, and written to, a repository using a filename without a version number qualification, i.e., FILENAME.EXT.</t>
-  <t>If an image is specified in a Targets metadata file as FILENAME.EXT, it SHALL be written to the repository as HASH.FILENAME.EXT, where HASH is one of the hash digests of the file, as specified in <xref target="targets_images_meta"/>. The file MUST be written to the repository using <spanx style="emph">n</spanx> different filenames, one for each hash digest listed in its corresponding Targets metadata.</t>
+  <t>Metadata filenames SHALL be qualified with version numbers. If a metadata file A is specified as FILENAME.EXT in another metadata file B, then it SHALL be written as VERSION.FILENAME.EXT, where VERSION is A’s version number, as defined in <xref target="common_metadata"/>, with one exception: If the version number of the Timestamp metadata file is not be known in advance by a client, it could be read from, and written to, a repository using a filename without a version number qualification, i.e., FILENAME.EXT.</t>
+  <t>If an image is specified in a Targets metadata file as FILENAME.EXT, it SHALL be written to the repository as HASH.FILENAME.EXT, where HASH is one of the hash digests of the file, as specified in <xref target="targets_images_meta"/>. The file SHALL be written to the repository using <spanx style="emph">n</spanx> different filenames, one for each hash digest listed in its corresponding Targets metadata.</t>
   <t>Filenames of images SHOULD be encoded to prevent a path traversal on the client system, either by using URL encoding or by limiting the allowed character set in the filename.</t>
 </list></t>
 
@@ -587,44 +587,44 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
 
 <t>The Image repository SHALL provide a method for authorized users to upload images and their associated metadata. It SHALL check that a user writing metadata and images is authorized to do so for that specific image by checking the chain of delegations as described in <xref target="delegations_meta"/>.</t>
 
-<t>The Image repository SHALL implement storage that permits authorized users to write an image file using a unique filename, and later read the same file using the same name. It MAY use any filesystem, key-value store, or database that fulfills this requirement.</t>
+<t>The Image repository SHALL implement storage that permits authorized users to write an image file using a unique filename, and later read the same file using the same name. It could use any filesystem, key-value store, or database that fulfills this requirement.</t>
 
-<t>The Image repository MAY require authentication for read access.</t>
+<t>The Image repository could require authentication for read access.</t>
 
 </section>
 <section anchor="director_repository" title="Director repository">
 
-<t>The Director repository instructs ECUs as to which images should be installed by producing signed metadata on demand. Unlike the Image repository, it is mostly controlled by automated, online processes. It also consults a private inventory database containing information on vehicles, ECUs, and software revisions.</t>
+<t>The Director repository instructs ECUs as to which images will be installed by producing signed metadata on demand. Unlike the Image repository, it is mostly controlled by automated, online processes. It also consults a private inventory database containing information on vehicles, ECUs, and software revisions.</t>
 
 <t>The Director repository SHALL expose an interface for Primaries to upload vehicle version manifests (<xref target="vehicle_version_manifest"/>) and download metadata. This interface SHOULD be public.</t>
 
-<t>The Director MAY encrypt images for ECUs that require them, either by encrypting on-the-fly or by storing encrypted images on the repository.</t>
+<t>The Director could encrypt images for ECUs that require them, either by encrypting on-the-fly or by storing encrypted images on the repository.</t>
 
-<t>The Director repository SHALL implement storage that permits an automated service to write generated metadata files. It MAY use any filesystem, key-value store, or database that fulfills this requirement.</t>
+<t>The Director repository SHALL implement storage that permits an automated service to write generated metadata files. It could use any filesystem, key-value store, or database that fulfills this requirement.</t>
 
 <section anchor="directing-installation-of-images-on-vehicles" title="Directing installation of images on vehicles">
 
 <t>A Director repository SHALL conform to the following six-step process for directing the installation of software images on a vehicle.</t>
 
 <t><list style="numbers">
-  <t>The Director SHOULD first identify the vehicle. This MAY be done when the Director receives a vehicle version manifest sent by a Primary (as described in <xref target="construct_manifest_primary"/>), decodes the manifest, and determines the unique vehicle identifier. Additionally, the Director MAY utilize other mechanisms to uniquely identify a vehicle (e.g., 2-way TLS with unique client certificates).</t>
+  <t>The Director SHOULD first identify the vehicle. This could be done when the Director receives a vehicle version manifest sent by a Primary (as described in <xref target="construct_manifest_primary"/>), decodes the manifest, and determines the unique vehicle identifier. Additionally, the Director could utilize other mechanisms to uniquely identify a vehicle (e.g., 2-way TLS with unique client certificates).</t>
   <t>Using the vehicle identifier, the Director queries its inventory database (as described in <xref target="inventory_db"/>) for relevant information about each ECU in the vehicle.</t>
-  <t>The Director SHALL check the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director MAY drop the request. An implementer MAY make additional checks if desired. At a minimum, the Director SHALL check the following:
+  <t>The Director SHALL check the manifest for accuracy compared to the information in the inventory database. If any of the required checks fail, the Director SHOULD drop the request. An implementer can make additional checks if desired. At a minimum, the Director SHOULD check the following:
   <list style="symbols">
       <t>Each ECU recorded in the inventory database is also represented in the manifest.</t>
       <t>The signature of the manifest matches the ECU key of the Primary that sent it.</t>
       <t>The signature of each Secondary’s contribution to the manifest matches the ECU key of that Secondary.</t>
     </list></t>
   <t>The Director SHOULD check that the nonce or counter in each ECU version report has not been used before to prevent a replay of the ECU version report. If the nonce or counter is reused the Director SHOULD drop the request.</t>
-  <t>The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that should be installed. The exact process by which this determination takes place is out of scope for this Standard. However, the Director SHALL take into account <spanx style="emph">dependencies</spanx> and <spanx style="emph">conflicts</spanx> between images and SHOULD consult well-established techniques for dependency resolution.</t>
-  <t>The Director MAY encrypt images for ECUs that require it.</t>
+  <t>The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that could be installed. The exact process by which this determination takes place is out of scope for this Standard. However, the Director SHALL take into account <spanx style="emph">dependencies</spanx> and <spanx style="emph">conflicts</spanx> between images and SHOULD consult well-established techniques for dependency resolution.</t>
+  <t>The Director could encrypt images for ECUs that require it.</t>
   <t>The Director generates new metadata representing the desired set of images to be installed on the vehicle, based on the dependency resolution in step 4. This includes Targets (<xref target="targets_meta"/>), Snapshot (<xref target="snapshot_meta"/>), and Timestamp (<xref target="timestamp_meta"/>) metadata. It then sends this metadata to the Primary as described in <xref target="download_meta_primary"/>.</t>
 </list></t>
 
 </section>
 <section anchor="inventory_db" title="Inventory Database">
 
-<t>The Director SHALL use a private inventory database to store information about ECUs and vehicles. An implementer MAY use any durable database for this purpose.</t>
+<t>The Director SHALL use a private inventory database to store information about ECUs and vehicles. An implementer could use any durable database for this purpose.</t>
 
 <t>The inventory database SHALL record the following pieces of information:</t>
 
@@ -643,22 +643,22 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
     </list></t>
 </list></t>
 
-<t>The inventory database MAY record other information about ECUs and vehicles. It SHOULD record a hardware identifier for each ECU to protect against the possibility of directing the ECU to install incompatible firmware.</t>
+<t>The inventory database can record other information about ECUs and vehicles. It SHOULD record a hardware identifier for each ECU to protect against the possibility of directing the ECU to install incompatible firmware.</t>
 
 </section>
 </section>
 </section>
 <section anchor="in-vehicle-implementation-requirements" title="In-vehicle implementation requirements">
 
-<t>An Uptane-compliant ECU SHALL be able to download and verify image metadata and image binaries before installing a new image and MUST have a secure way of verifying the current time, or a sufficiently recent attestation of the time.</t>
+<t>An Uptane-compliant ECU SHALL be able to download and verify image metadata and image binaries before installing a new image and SHALL have a secure way of verifying the current time, or a sufficiently recent attestation of the time.</t>
 
 <t>All ECUs SHALL monitor the download speed of image metadata and image binaries to detect and respond to a slow retrieval attack. If the download is slower than a pre-defined threshold, the ECU SHOULD send an alert to the Director repository, for example as part of the next vehicle version manifest.</t>
 
 <t>Each ECU receiving over-the-air updates in a vehicle is either a Primary or a Secondary ECU. A Primary ECU collects and delivers to the Director vehicle manifests (<xref target="vehicle_version_manifest"/>) that contain information about which images have been installed on ECUs in the vehicle. It also verifies the time, and downloads and verifies the latest metadata and images for itself and for its Secondaries. A Secondary ECU verifies the time, and downloads and verifies the latest metadata and images for itself from its associated Primary ECU. It also sends signed information about its installed images to its associated Primary.</t>
 
-<t>All ECUs SHALL verify image metadata as specified in <xref target="metadata_verification"/> before installing an image or making it available to other ECUs. A Primary ECU SHALL perform full verification (<xref target="full_verification"/>). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it MAY also perform some steps from the full verification process. See the <spanx style="emph">Uptane Deployment Best Practices</spanx> document (<xref target="DEPLOY"/>) for a discussion of how to choose between partial and full verification.</t>
+<t>All ECUs SHALL verify image metadata as specified in <xref target="metadata_verification"/> before installing an image or making it available to other ECUs. A Primary ECU SHALL perform full verification (<xref target="full_verification"/>). A Secondary ECU SHOULD perform full verification if possible. If a Secondary cannot perform full verification, it SHALL, at the very least, perform partial verification. In addition, it can also perform some steps from the full verification process. See the <spanx style="emph">Uptane Deployment Best Practices</spanx> document (<xref target="DEPLOY"/>) for a discussion of how to choose between partial and full verification.</t>
 
-<t>ECUs SHALL have a secure source of time. An OEM/Uptane implementer MAY use any external source of time that is demonstrably secure.</t>
+<t>ECUs SHALL have a secure source of time. An OEM/Uptane implementer can use any external source of time that is demonstrably secure.</t>
 
 <section anchor="build-time-prerequisite-requirements-for-ecus" title="Build-time prerequisite requirements for ECUs">
 
@@ -667,11 +667,11 @@ A repository’s Root role SHALL revoke keys for the other roles if they are com
 <t><list style="numbers">
   <t>A sufficiently recent copy of required Uptane metadata at the time of manufacture or install. This is necessary for the ECU to authenticate that the remote repository is legitimate when it first downloads metadata in the field. See <spanx style="emph">Uptane Deployment Best Practices</spanx> (<xref target="DEPLOY"/>) for more information.
   <list style="symbols">
-      <t>Partial verification Secondary ECUs SHALL have the Root and Targets metadata from the Director repository (to reduce the scope of rollback and replay attacks). These ECUs MAY also have metadata from other roles or the Image repository if they will be used by the Secondary.</t>
+      <t>Partial verification Secondary ECUs SHALL have the Root and Targets metadata from the Director repository (to reduce the scope of rollback and replay attacks). These ECUs can also have metadata from other roles or the Image repository if they will be used by the Secondary.</t>
       <t>Full verification ECUs SHALL have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories (to prevent rollback and replay attacks), as well as the repository mapping metadata (<xref target="repo_mapping_meta"/>). Delegations are not required.</t>
     </list></t>
   <t>The current time, or a secure attestation of a sufficiently recent time.</t>
-  <t>An <spanx style="strong">ECU signing key</spanx>. This is a private key, unique to the ECU, used to sign ECU version reports and decrypt images. An ECU key MAY be either a symmetric key or an asymmetric key. If it is an asymmetric key, there MAY be separate keys for encryption and signing. For the purposes of this Standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes. Note that while signing keys are required to be unique to the ECU to avoid replay attacks, the secret keys used to decrypt images need not be unique.</t>
+  <t>An <spanx style="strong">ECU signing key</spanx>. This is a private key, unique to the ECU, used to sign ECU version reports and decrypt images. An ECU key can be either a symmetric key or an asymmetric key. If it is an asymmetric key, there SHOULD be separate keys for encryption and signing. For the purposes of this Standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes. Note that while signing keys are required to be unique to the ECU to avoid replay attacks, the secret keys used to decrypt images need not be unique.</t>
 </list></t>
 
 </section>
@@ -696,9 +696,9 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
 
 <t>The Primary SHALL build a <spanx style="emph">vehicle version manifest</spanx> as described in <xref target="vehicle_version_manifest"/>.</t>
 
-<t>Once the complete manifest is built, the Primary MAY send the manifest to the Director repository. However, it is not strictly required that the Primary send the manifest until step three. If permitted by the implementation, a Primary MAY send only a diff of the manifest to save bandwidth. If an implementation permits diffs, the Director SHOULD have a way to request a full manifest.</t>
+<t>Once the complete manifest is built, the Primary can send the manifest to the Director repository. However, it is not strictly required that the Primary send the manifest until step three. If permitted by the implementation, a Primary could send only a diff of the manifest to save bandwidth. If an implementation permits diffs, the Director SHOULD have a way to request a full manifest.</t>
 
-<t>Secondaries MAY send their version report at any time so that it is already stored on the Primary when it wishes to check for updates. Alternatively, the Primary MAY request a version report from each Secondary at the time of the update check.</t>
+<t>Secondaries can send their version reports at any time so that they are already stored on the Primary when it wishes to check for updates. Alternatively, the Primary can request a version report from each Secondary at the time of the update check.</t>
 
 <section anchor="vehicle_version_manifest" title="Vehicle version manifest">
 
@@ -721,7 +721,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
     </list></t>
 </list></t>
 
-<t>Note that one of the ECU version reports should be the version report for the Primary itself.</t>
+<t>Note that one of the ECU version reports SHOULD be the version report for the Primary itself.</t>
 
 </section>
 <section anchor="version_report" title="ECU version report">
@@ -763,7 +763,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
 
 <t>The Primary SHALL download and verify images for itself and for all of its associated Secondaries. Images SHALL be verified by checking that the hash of the image file matches the hash specified in the Director’s Targets metadata for that image.</t>
 
-<t>There may be several different filenames that all refer to the same image binary, as described in <xref target="metadata_filename_rules"/>. If the Primary has received multiple hashes for a given image binary via the Targets role (see <xref target="targets_images_meta"/>) then it SHALL verify every hash for this image even though the image is identified by a single hash as part of its filename.</t>
+<t>There could be several different filenames that all refer to the same image binary, as described in <xref target="metadata_filename_rules"/>. If the Primary has received multiple hashes for a given image binary via the Targets role (see <xref target="targets_images_meta"/>) then it SHALL verify every hash for this image even though the image is identified by a single hash as part of its filename.</t>
 
 </section>
 <section anchor="send_time_primary" title="Send latest time to Secondaries">
@@ -773,7 +773,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
 </section>
 <section anchor="send_metadata_primary" title="Send metadata to Secondaries">
 
-<t>The Primary SHALL send its latest downloaded metadata to all of its associated Secondaries. The metadata it sends to each Secondary SHALL include all of the metadata required for verification on that Secondary. For full verification Secondaries, this includes the metadata for all four roles from both repositories, plus any delegated Targets metadata files the Secondary will recurse through to find the proper delegation. For partial verification Secondaries, this MAY include fewer metadata files; at a minimum, it includes only the Targets metadata file from the Director repository.</t>
+<t>The Primary SHALL send its latest downloaded metadata to all of its associated Secondaries. The metadata it sends to each Secondary SHALL include all of the metadata required for verification on that Secondary. For full verification Secondaries, this includes the metadata for all four roles from both repositories, plus any delegated Targets metadata files the Secondary will recurse through to find the proper delegation. For partial verification Secondaries, this could include fewer metadata files; at a minimum, it includes only the Targets metadata file from the Director repository.</t>
 
 <t>The Primary SHOULD determine the minimal set of metadata files to send to each Secondary by performing delegation resolution as described in <xref target="full_verification"/>.</t>
 
@@ -813,7 +813,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
 </section>
 <section anchor="download_image" title="Download latest image">
 
-<t>If the ECU has limited secondary storage, i.e., insufficient buffer storage to temporarily store the latest image before installing it, it SHALL download the latest image from the Primary. (If the ECU has sufficient secondary storage, it will already have the latest image in its secondary storage as specified in <xref target="send_images_primary"/>, and should skip to the next step.) The ECU MAY first create a backup of its previous working image and store it elsewhere (e.g., the Primary).</t>
+<t>If the ECU has limited secondary storage, i.e., insufficient buffer storage to temporarily store the latest image before installing it, it SHALL download the latest image from the Primary. (If the ECU has sufficient secondary storage, it will already have the latest image in its secondary storage as specified in <xref target="send_images_primary"/>, and SHALL skip to the next step.) The ECU SHOULD first create a backup of its previous working image and store it elsewhere (e.g., the Primary).</t>
 
 <t>The filename used to identify the latest known image (i.e., the file to request from the Primary) SHALL be determined as follows:</t>
 
@@ -837,7 +837,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
   <t>Load the latest Targets metadata file from the Director.</t>
   <t>Find the Targets metadata associated with this ECU identifier.</t>
   <t>Check that the hardware identifier in the metadata matches the ECU’s hardware identifier.</t>
-  <t>Check that the image filename is valid for this ECU. This MAY be a comparison against a wildcard path, which restricts the ECUs to which a delegation will apply.</t>
+  <t>Check that the image filename is valid for this ECU. This could be a comparison against a wildcard path, which restricts the ECUs to which a delegation will apply.</t>
   <t>Check that the release counter of the image in the previous metadata, if it exists, is less than or equal to the release counter in the latest metadata.</t>
   <t>If the image is encrypted, decrypt the image with a decryption key to be chosen as follows:
   <list style="symbols">
@@ -859,7 +859,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
 </section>
 <section anchor="install_image" title="Install image">
 
-<t>The ECU SHALL attempt to install the update. This installation SHOULD occur at a time when all pre-conditions are met. These pre-conditions MAY include ensuring the vehicle is in a safe environment for install (e.g., the vehicle is parked when updating a specific ECU). Another pre-condition MAY include ensuring the ECU has a backup of its current image and metadata in case the current installation fails.</t>
+<t>The ECU SHALL attempt to install the update. This installation SHOULD occur at a time when all pre-conditions are met. These pre-conditions could include ensuring the vehicle is in a safe environment for an installation (e.g., the vehicle is parked when updating a specific ECU). Other pre-conditions could include ensuring the ECU has a backup of its current image and metadata in case the current installation fails.</t>
 
 </section>
 <section anchor="create_version_report" title="Create and send version report">
@@ -883,9 +883,9 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
   <t>Download and check the Targets metadata file from the Director repository, following the procedure in <xref target="check_targets"/>.</t>
 </list></t>
 
-<t>Note that this verification procedure is the smallest set of Uptane checks permissible for an Uptane Secondary ECU. An ECU MAY additionally implement more metadata checks.</t>
+<t>Note that this verification procedure is the smallest set of Uptane checks permissible for an Uptane Secondary ECU. An ECU can additionally implement more metadata checks.</t>
 
-<t>For example, an ECU MAY also fetch and verify Root metadata from the Director (following the procedure in <xref target="check_root"/>) before checking Targets metadata. Performing this additional check would provide the ECU with a secure way to receive and validate a rotation of the Director’s Targets key.</t>
+<t>For example, an ECU could also fetch and verify Root metadata from the Director (following the procedure in <xref target="check_root"/>) before checking Targets metadata. Performing this additional check would provide the ECU with a secure way to receive and validate a rotation of the Director’s Targets key.</t>
 
 <t>See <xref target="DEPLOY"/> for more discussion on this topic.</t>
 
@@ -896,7 +896,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
 
 <t>Full verification SHALL be performed by Primary ECUs and SHOULD be performed by Secondary ECUs. In the following instructions, whenever an ECU is directed to download metadata, it applies only to Primary ECUs.</t>
 
-<t>Before starting full verification, the repository mapping metadata SHALL be consulted to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to <xref target="DEPLOY"/> for guidance on how to determine where metadata should be downloaded from.</t>
+<t>Before starting full verification, the repository mapping metadata SHALL be consulted to determine where to download metadata from. This procedure assumes the basic Uptane case: there are only two repositories (Director and Image), and all image paths are required to be signed by both repositories. If a more complex repository layout is being used, refer to <xref target="DEPLOY"/> for guidance on how to determine where metadata could be downloaded from.</t>
 
 <t>In order to perform full verification, an ECU SHALL perform the following steps:</t>
 
@@ -904,13 +904,13 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
   <t>Load and verify the current time or the most recent securely attested time.</t>
   <t>Download and check the Root metadata file from the Director repository, following the procedure in <xref target="check_root"/>.</t>
   <t>Download and check the Timestamp metadata file from the Director repository, following the procedure in <xref target="check_timestamp"/>.</t>
-  <t>Check the previously downloaded Snapshot metadata file from the Directory repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, there are no new updates and the verification process MAY be stopped and considered complete. Otherwise, download and check the Snapshot metadata file from the Director repository, following the procedure in <xref target="check_snapshot"/>.</t>
+  <t>Check the previously downloaded Snapshot metadata file from the Directory repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, there are no new updates and the verification process SHALL be stopped and considered complete. Otherwise, download and check the Snapshot metadata file from the Director repository, following the procedure in <xref target="check_snapshot"/>.</t>
   <t>Download and check the Targets metadata file from the Director repository, following the procedure in <xref target="check_targets"/>.</t>
-  <t>If the Targets metadata from the Directory repository indicates that there are no new targets that are not already currently installed, the verification process MAY be stopped and considered complete. Otherwise, download and check the Root metadata file from the Image repository, following the procedure in <xref target="check_root"/>.</t>
+  <t>If the Targets metadata from the Directory repository indicates that there are no new targets that are not already currently installed, the verification process SHALL be stopped and considered complete. Otherwise, download and check the Root metadata file from the Image repository, following the procedure in <xref target="check_root"/>.</t>
   <t>Download and check the Timestamp metadata file from the Image repository, following the procedure in <xref target="check_timestamp"/>.</t>
-  <t>Check the previously downloaded Snapshot metadata file from the Image repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, the ECU MAY skip to the last step. Otherwise, download and check the Snapshot metadata file from the Image repository, following the procedure in <xref target="check_snapshot"/>.</t>
+  <t>Check the previously downloaded Snapshot metadata file from the Image repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, the ECU SHALL skip to the last step. Otherwise, download and check the Snapshot metadata file from the Image repository, following the procedure in <xref target="check_snapshot"/>.</t>
   <t>Download and check the top-level Targets metadata file from the Image repository, following the procedure in <xref target="check_targets"/>.</t>
-  <t>Verify that Targets metadata from the Director and Image repositories match. A Primary ECU SHALL perform this check on metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. A Secondary ECU MAY elect to perform this check only on the metadata for the image it will install. (That is, the image metadata from the Director that contains the ECU identifier of the current ECU.) To check that the metadata for an image matches, complete the following procedure:
+  <t>Verify that Targets metadata from the Director and Image repositories match. A Primary ECU SHALL perform this check on metadata for all images listed in the Targets metadata file from the Director repository downloaded in step 6. A Secondary ECU can elect to perform this check only on the metadata for the image it will install. (That is, the image metadata from the Director that contains the ECU identifier of the current ECU.) To check that the metadata for an image matches, complete the following procedure:
   <list style="numbers">
       <t>Locate and download a Targets metadata file from the Image repository that contains an image with exactly the same filename listed in the Director metadata, following the procedure in <xref target="resolve_delegations"/>.</t>
       <t>Check that the Targets metadata from the Image repository matches the Targets metadata from the Director repository:
@@ -934,9 +934,9 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
   <t>Update to the latest Root metadata file.
   <list style="numbers">
       <t>Let N denote the version number of the latest Root metadata file (which at first could be the same as the previous Root metadata file).</t>
-      <t>Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementer. For example, X may be tens of kilobytes. The filename used to download the Root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, the current Root metadata file is the latest; continue with step 3.</t>
+      <t>Try downloading a new version N+1 of the Root metadata file, up to some X number of bytes. The value for X is set by the implementer. For example, X could be tens of kilobytes. The filename used to download the Root metadata file is of the fixed form VERSION_NUMBER.FILENAME.EXT (e.g., 42.root.json). If this file is not available, the current Root metadata file is the latest; continue with step 3.</t>
       <t>Version N+1 of the Root metadata file SHALL have been signed by the following: (1) a threshold of unique keys specified in the latest Root metadata file (version N), and (2) a threshold of unique keys specified in the new Root metadata file being validated (version N+1). If version N+1 is not signed as required, discard it, abort the update cycle, and report the signature failure. On the next update cycle, begin at version N of the Root metadata file. (Checks for an arbitrary software attack.)</t>
-      <t>The version number of the latest Root metadata file (version N) must be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 1 and version N of the Root metadata file. (Checks for a rollback attack.)</t>
+      <t>The version number of the latest Root metadata file (version N) SHALL be less than or equal to the version number of the new Root metadata file (version N+1). Effectively, this means checking that the version number signed in the new Root metadata file is indeed N+1. If the version of the new Root metadata file is less than the latest metadata file, discard it, abort the update cycle, and report the rollback attack. On the next update cycle, begin at step 1 and version N of the Root metadata file. (Checks for a rollback attack.)</t>
       <t>Set the latest Root metadata file to the new Root metadata file.</t>
       <t>Repeat steps 2.1 to 2.6.</t>
     </list></t>
@@ -950,7 +950,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
 <t>To properly check Timestamp metadata, an ECU SHOULD:</t>
 
 <t><list style="numbers">
-  <t>Download up to Y number of bytes. The value for Y is set by the implementer. For example, Y may be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).</t>
+  <t>Download up to Y number of bytes. The value for Y is set by the implementer. For example, Y could be tens of kilobytes. The filename used to download the Timestamp metadata file is of the fixed form FILENAME.EXT (e.g., timestamp.json).</t>
   <t>Check that it has been signed by the threshold of unique keys specified in the latest Root metadata file. If the new Timestamp metadata file is not properly signed, discard it, abort the update cycle, and report the signature failure. (Checks for an arbitrary software attack.)</t>
   <t>Check that the version number of the previous Timestamp metadata file, if any, is less than or equal to the version number of this Timestamp metadata file. If the new Timestamp metadata file is older than the trusted Timestamp metadata file, discard it, abort the update cycle, and report the potential rollback attack. (Checks for a rollback attack.)</t>
   <t>Check that the current (or latest securely attested) time is lower than the expiration timestamp in this Timestamp metadata file. If the new Timestamp metadata file has expired, discard it, abort the update cycle, and report the potential freeze attack. (Checks for a freeze attack.)</t>
@@ -977,8 +977,8 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
 <t>To properly check Targets metadata, an ECU SHOULD:</t>
 
 <t><list style="numbers">
-  <t>Download up to Z number of bytes, constructing the metadata filename as defined in <xref target="metadata_filename_rules"/>. The value for Z is set by the implementer. For example, Z may be tens of kilobytes.</t>
-  <t>The version number of the new Targets metadata file SHALL match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step MAY be skipped when checking Targets metadata on a partial verification ECU, as these ECUs might not have Snapshot metadata.</t>
+  <t>Download up to Z number of bytes, constructing the metadata filename as defined in <xref target="metadata_filename_rules"/>. The value for Z is set by the implementer. For example, Z could be tens of kilobytes.</t>
+  <t>The version number of the new Targets metadata file SHALL match the version number listed in the latest Snapshot metadata. If the version number does not match, discard it, abort the update cycle, and report the failure. (Checks for a mix-and-match attack.) This step can be skipped when checking Targets metadata on a partial verification ECU, as these ECUs might not have Snapshot metadata.</t>
   <t>Check that the Targets metadata has been signed by the threshold of unique keys specified in the relevant metadata file. (Checks for an arbitrary software attack.):
   <list style="numbers">
       <t>If checking top-level Targets metadata, the threshold of keys is specified in the Root metadata.</t>
@@ -994,7 +994,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
 </section>
 <section anchor="resolve_delegations" title="How to resolve delegations">
 
-<t>To properly check Targets metadata for an image, an ECU SHALL locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level Targets metadata, but it may also be delegated to another role or to multiple roles. Therefore, all delegations SHALL be resolved using the following recursive procedure, beginning with the top-level Targets metadata file.</t>
+<t>To properly check Targets metadata for an image, an ECU SHALL locate the metadata file(s) for the role (or roles) that have the authority to sign the image. This metadata might be located in the top-level Targets metadata, but it could also be delegated to another role or to multiple roles. Therefore, all delegations SHALL be resolved using the following recursive procedure, beginning with the top-level Targets metadata file.</t>
 
 <t><list style="numbers">
   <t>Download and check the current metadata file, following the procedure in <xref target="check_targets"/>. If the file cannot be loaded, or if any verification step fails, abort the delegation resolution, and indicate that image metadata cannot be found because of a missing or invalid role.</t>
@@ -1004,7 +1004,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
   <list style="numbers">
       <t>Check if the delegation applies to the image being processed. For the delegation to apply, it SHALL include the hardware identifier of the target, and the target name SHALL match one of the delegation’s image paths. If either of these tests fail, move on to the next delegation in the list.</t>
       <t>If the delegation is a multi-role delegation, follow the procedure described in <xref target="multirole_delegations"/>. If the multi-role delegation is terminating and no valid image metadata is found, abort the delegation resolution and return an error indicating that image metadata could not be found.</t>
-      <t>If the delegation is a normal delegation, perform delegation resolution, starting at step 1. Note that this may recurse an arbitrary number of levels deep. If a delegation that applies to the image is found but no image metadata is found in the delegated roles or any of its sub-delegations, simply continue on with the next delegation in the list. The search is only completed or aborted if image metadata or a terminating delegation that applies to the image is found.</t>
+      <t>If the delegation is a normal delegation, perform delegation resolution, starting at step 1. Note that this could recurse an arbitrary number of levels deep. If a delegation that applies to the image is found but no image metadata is found in the delegated roles or any of its sub-delegations, simply continue on with the next delegation in the list. The search is only completed or aborted if image metadata or a terminating delegation that applies to the image is found.</t>
     </list></t>
   <t>If the end of the list of delegations in the top-level metadata is reached without finding valid image metadata, return an error indicating that image metadata could not be found.</t>
 </list></t>
@@ -1012,13 +1012,13 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
 </section>
 <section anchor="multirole_delegations" title="Multi-role delegations">
 
-<t>It is possible to delegate signing authority to multiple delegated roles as described in <xref target="TAP-3"/>. Each multi-role delegation effectively contains a list of ordinary delegations, plus a threshold of those roles that must be in agreement about the non-custom metadata for the image. All multi-role delegations SHALL be resolved using the following procedure. Note that there may be sub-delegations inside multi-role delegations.</t>
+<t>It is possible to delegate signing authority to multiple delegated roles as described in <xref target="TAP-3"/>. Each multi-role delegation effectively contains a list of ordinary delegations, plus a threshold of those roles that SHALL be in agreement about the non-custom metadata for the image. All multi-role delegations SHALL be resolved using the following procedure. Note that there could be sub-delegations inside multi-role delegations.</t>
 
 <t><list style="numbers">
   <t>For each of the roles in the delegation, find and load the image metadata following the procedure in <xref target="resolve_delegations"/>.</t>
   <t>Inspect the non-custom part of the metadata loaded in step 1:
   <list style="numbers">
-      <t>Locate all sets of roles that have agreeing (i.e., identical) non-custom metadata and “SHALL match” custom metadata. Discard any set of roles with a size smaller than the threshold of roles that must be in agreement for this delegation.</t>
+      <t>Locate all sets of roles that have agreeing (i.e., identical) non-custom metadata and “SHALL match” custom metadata. Discard any set of roles with a size smaller than the threshold of roles that SHALL be in agreement for this delegation.</t>
       <t>Check for a conflict. A conflict exists if there is more than one agreeing set of roles, yet each set has different metadata. If a conflict is found, choose and return the metadata from the set of roles that include the earliest role in the multi-delegation list.</t>
       <t>If there is no conflict, check if there is any single set of roles with matching non-custom metadata. If there is, choose and return the metadata from this set.</t>
       <t>If no agreeing set can be found that meets the agreement threshold, return an error indicating that image metadata could not be found.</t>
@@ -1314,486 +1314,484 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
   </back>
 
 <!-- ##markdown-source:
-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
-1NyAChbD3QckJi+gTb3N1pmssgYecISfHU8e9YUjKkHDqACZtmOLPZBykXAE
-oZIxfpx9WufSktpsFzfSmDY0WKwIsHgQjFc2pjTyM5WfaE8gjOTo4pA9U6WC
-wOZHGbAa1PGixJm8ZSVikdbNGB5fI2JJITXQal6evn36/u1voMkc9AksPSYi
-n1POdp4+0aXPYNIjv5hpgnn0bzex599uzZ5/+0PseUer3S6P7mPKBh1hy3ux
-jigpZj0M8U/gf6FtSa/lKpIM7Nh4FX8Wa/oKltK9zf20v+cqtMhmThrHDVG1
-fYPng4PeFpRwXp6kNNWGTA2DS/0GKK9BEi8ohKND628izN0Q678TwfyDgKTg
-UBz8GxExgCgmxzfQ6j7C16WwSvfMuNpH9jqf3YbqEVhuzNIYQiWrG6c6c/R7
-IZpW1JZiMBXHirjeYEznYxywXXvLyNfY2bs7vIVtXyol0mwBZwZXeGtU6qdk
-ySr/NIY3x7y7ARr2jyPuw02w/76ax1eQ9y7tuYG89+/pj1H3/jGDrjwMxxZh
-v3GV/1jC3k1L6b9hgn43rD40fflK8yDGHbcmVnZwE+RDpLMgLbx3i3ss0P5j
-l7kLz0cRPIdB0eNOuAm22snPf/VfDj4//AMFiZ2QuYn8/WdIET3aUxt3THcS
-52iv5tRJ6LlZgvjXtvzwJ4sFLS3sX2+thf3rsBam3e2G5Yt+KtQWL3bKFIKS
-HUTp2G1MnJDg8pZA8RXo81WSA4f9kSFGQ0k+5hRKch0lJXVAQd16e+v5UOl7
-tq1rP4RVfnHZhLIeXWjsdV1KnRn/sEhjHWW/2fxoXmQ4vGDMGwxjGHUXSCvL
-exYXCVqTvnmGazR9zTz9OM01u20CaWTPiXDcVbqU/rpfqSr3zfYHFeVed9+N
-nKO79L+jCnqbJbbJd+u0v8oTP2pneYd4MxctMPmDc7iIDBi4FcZBXu/QI3jF
-yZN4rMUs+6Mza0Ajzrn2Ef+tqDhxHrnonGjV6DYX8hyvvnZZpIh+IX+Rbr/2
-npDttfucxZxXwjQ84IHt9gVv3Ib5RuEurRDiZSn9e1q8FWvTahAPVxkspRCc
-tHqzUinRPbeis1Jk4jzqbsokHF0mNKvRk13Ub0qtzYgDk+g5zRyNwVD/IjTD
-oXDmMpRTpPUSg64oOH5Ep+eBahHvAtu5K1kRAmm4Sh2mdVg4jXggqJCuJc/d
-EIw22dsRyKaUpEXlvipITeUBIseS5UbQxhgvqlDCRDNGeB/cEMSD3vJy0hNE
-IgaSUF/TZfzYtJSYbrlr1CuHkoywtyHqVlwPgZnCsa29Fw4hTEr4dk/aiGC3
-FkMbKI9HYg6FQkQor4UDAJ6YTX3/huVckzkCNCss7p2n6JbVHtBxZT4OEbM2
-Flw6+sY93HAK7ZqdblMW3xGFoPScEgUy+IOiGhbvsrQSiVRrfbvbQhE4Qvso
-V0HkZNQww2sm3zCrlDxWDxPJYxEWrSWgLNSurrHttjYMch/ibcdKFq40lGYV
-s32tG6mkLUnpigQeIAFYpEB4UdyVJQ/zfl/7XBPCDKn1xa9iMjJ1yMQ7NAKu
-dcUV3V2NJ7cJlelzbXofUN+/RYXIkY6NibCFn5QktOhBuxAtfopftiL9rABZ
-39DE+hweI7SASfM9bSFQKDxxE7L+Sdgp4RoDoCqw+voyApOGqg4QMsuTMh+y
-b/bEDvd0awVKI5k+SJNE7VEDxUBpCu/y+ErMvw/bFXrE3QDEA8BVZAkMz1q+
-IRWXZPl6Mx1Ht1RSyi3shcrACIvahY5ce51JQC55ZhoTS8GUmo+cdxr2kjQ6
-QANvBgOVppGTpYYmiyES1JUYPNCUJGvpTiwla8EurSWP/gykZKHtZd9lokT4
-3lu4t3dG2WXadJRTxviErTh/JFWZQNNGhG79gfOTN+P7eNGpwGv/Nc9CaImL
-PzZwU50sauDkkYrL/MYKYoOFdmQpBDINicHQjAvQTSgjOLC3voDeKFIcu7Ys
-+1d9W1nNSGJ8nX3t7/i+YFQ6pvX2z8oym7E5wUzecnw7mTZjjSqkeK1SZm67
-Xx+dfUz1QNfZrANF32LapmiF9B91wtapZizH5bqz4/Y+eGq4Ogk5ZVY6S5cH
-vYeHO/3OMdDv2lHEIO6K8YnCaDn3nCfV9On8d81O975nj2Y3IZiJQ65UdBzS
-ztoy4Ppimc8azHHQv0sVKxFTOF/e650OJH71o2SbiW0dH6NZKZSSj+xzYVrH
-M6Wb7pA0aopsBDCJ1g0CD1BqpKkN6z5akofQ2N32IGkY+7RiTLo01XA9FOjA
-uMh799zotBEoPVgRzXLbvbItdqKxeTACLC8CPfa1MK2CkSHLpABawAXXx/1P
-oO//F2fP5SjpLgEA
+H4sIAMgvBWIAA+1923bbRrbgu74CK36IpENSlnyJ4zzMyLbcUbdvY8lJ55x1
+lhskQAltEmADoGTGy382b/Njs69VuwoAJdvpPnPWmjzENgjUZdeufb+Mx+Od
+tmgX+ePk3apNyzw5g/9naZ0l86pOnuVNcVEm8CQ5Xa4W+TIv27QtqnInnU7r
+/Aq+enN+/OpkJ6tmZbqEUdY0yriRUcYZjbAzS9v8oqo3j5OinFc7O8WqfpyU
+1bO8Lq5gwKu8Oa/XTXt09+6Pd4920jpPHyfnr5+93rmu6g8XdbVeyb8/5Bt4
+lD1OTss2r8u8HT+r03m7s0Mzvk8XVQmr2OTNzqp4nPxHW81GSVPVbZ3PG/jb
+Zol/+c+dnXTdXlb1450kGcOSmsfJy3w5zesmqeZJe5krNJ5Wy+W6LNoNvJgk
+vMXen6r6Ii2L3wk4j5M/V0XZAvSu8kW1QqAlz6s1AAR/Td7U1d/zWQvLefHi
+6cjBHUCRN8nu7KDCN+aT5M8AkKJMnqarVdXs0Sz5Mi0WHSA3//Oiqi4WOcGp
+mcyqJb3cwKbz9nHyEPbW1tV5Pruk5zNYSotH8e7smB7U+QWt+tVv/Dvs6XHy
+pK6qD4tNKZ9ksPHDw6O7hzs7ZVUv6cwQeneSv/CJJFk+T3bPfj5+8WKUvDz+
+bZSc/fz63YtnoyRvZxNc/tvnT48OD3/kr/46eXD3x+TNX06TZpXP+Nd7D+//
+wL++yls8+ORdWeDUhIuwrVVaF+UFbgz+aPijB4c/PuKP9OVXuL6FnAUAvl4m
+T+GFV8+fPqbNtGl9gXC5bNtV8/jg4Pr6erLmbydwjAd1vgKEaQ7a+vDBAX/B
+N+Q7ncHdkeOyzD8mdw4fPN4ye/MdDeIxDv9TrJskz9Krouk+XQMytvQY0AYm
+B9A/Gh/epZ2eH79J7iVpCyd3lWR3Hx0+yh/AD/B4fK9/jxdFe7meImocAHav
+VzjmvAZ0RjAftOmqOZguqumBDPbo7uze0dGjwwfp/R/uPTi6Oz/KH81mD+YP
+8umjbH7/xx/xk3uTZWbBc07XBkdOnuvQstRx8nK9aItxXS1yQBRAVQJPMwyY
+88lfJslf1qvVukmXm/C3s0lyfH2dZuHTkwlcyRoGX4TPfwFgFunv4cM/T5KX
+VXOZlx+qzg984WLQ3z0cHz5y0L+v0D+aTR/+kP0o0L//bdCXwQ7v5bPDH+8f
+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
+cpcuAQA=
 
 -->
 
