@@ -1,5 +1,5 @@
 ---
-title: Uptane Standard for Design and Implementation
+title: Uptane Standard for Design and Implementation 2.0.0
 abbrev: UPTANE
 docname: uptane-standard-design
 category: info
