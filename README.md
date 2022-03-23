@@ -1,6 +1,6 @@
 # Uptane Standard
 
-[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group under [IEEE-ISTO](https://ieee-isto.org/) began the process of describing the system's design, implementation, and deployment as a formal standard. On July 31, 2019 IEEE/ISTO released *IEEE-ISTO 6100.1.0.0: Uptane Standard for Design and Implementation* (see link below under documentation). Uptane is now a [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/) project, and released [version 1.2.0](https://uptane.github.io/papers/uptane-standard.1.2.0.html) of the Uptane Standard for Design and Implementation on July 16, 2021.
+[Uptane](https://uptane.github.io) is the first compromise-resilient software update security system for the automotive industry. In 2018, a working group under [IEEE-ISTO](https://ieee-isto.org/) began the process of describing the system's design, implementation, and deployment as a formal standard. On July 31, 2019 IEEE/ISTO released *IEEE-ISTO 6100.1.0.0: Uptane Standard for Design and Implementation* (see link below under documentation). Uptane is now a [Linux Foundation Joint Development Foundation](http://www.jointdevelopment.org/) project, and released [version 1.2.0](https://uptane.github.io/papers/uptane-standard.1.2.0.html) of the Uptane Standard for Design and Implementation on July 16, 2021. The most recent version,[version 2.0.0](https://uptane.github.io/papers/uptane-standard.2.0.0.html) was released on March 18, 2022.
 
 This repository is the public home of all standardization work for Uptane.
 
@@ -12,7 +12,7 @@ Major and minor release dates are set by the Uptane Standards committee. All fin
 
 The Uptane Standards document should be considered the authoritative resource for the framework. Several other documents and materials are available or currently in development. The information in all of these other guidelines should be viewed as complementary to the official Uptane Standard, and as recommendations rather than mandatory instructions.
 
-* [Uptane Standard v.1.2.0](https://uptane.github.io/papers/uptane-standard.1.2.0.html)
+* [Uptane Standard v.2.0.0](https://uptane.github.io/papers/uptane-standard.2.0.0.html)
 * [Reference Implementation and Demonstration Code](https://github.com/uptane/uptane)
 * [Deployment Best Practices](https://uptane.github.io/papers/V1.2.0_uptane_deploy.html)
 * [Uptane POUF (Protocols, Operations, Usage, and Formats) Guidelines](https://uptane.github.io/pouf.html)
