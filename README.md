@@ -13,8 +13,7 @@ Major and minor release dates are set by the Uptane Standards committee. All fin
 The Uptane Standards document should be considered the authoritative resource for the framework. Several other documents and materials are available or currently in development. The information in all of these other guidelines should be viewed as complementary to the official Uptane Standard, and as recommendations rather than mandatory instructions.
 
 * [Uptane Standard v.2.0.0](https://uptane.github.io/papers/uptane-standard.2.0.0.html)
-* [Reference Implementation and Demonstration Code](https://github.com/uptane/uptane)
-* [Deployment Best Practices](https://uptane.github.io/papers/V1.2.0_uptane_deploy.html)
+* [Deployment Best Practices](https://uptane.github.io/papers/V2.0.0_uptane_deploy.html)
 * [Uptane POUF (Protocols, Operations, Usage, and Formats) Guidelines](https://uptane.github.io/pouf.html)
 * [Example POUF](https://uptane.github.io/reference_pouf.html)
 
