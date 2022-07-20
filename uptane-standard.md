@@ -152,7 +152,7 @@ This document describes a framework for securing ground vehicle software update 
 
 Uptane is a secure software update framework for ground vehicles. This document describes procedures to enable programmers for OEMs and suppliers to securely design and implement this framework in a manner that better protects connected units on ground vehicles. Integrating Uptane as outlined in the sections that follow can reduce the ability of attackers to compromise critical systems. It also assures a faster and easier recovery process when a compromise occurs.
 
-These instructions specify the components necessary for a compliant implementation. Individual implementers can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementers wish to have compatible formats, they can use POUFs. POUFs contain a description of implementation choices as well as data binding formats. An implementer who adopts a POUF, as well as the Uptane Standard, will be able to interoperate with other implementations using that POUF.
+These instructions specify the components necessary for a conformant implementation. Individual implementers can make their own technological choices within those requirements. This flexibility makes Uptane adaptable to the many customized update solutions used by manufacturers. If implementers wish to have compatible formats, they can use POUFs. POUFs contain a description of implementation choices as well as data binding formats. An implementer who adopts a POUF, as well as the Uptane Standard, will be able to interoperate with other implementations using that POUF.
 
 # Terminology
 
@@ -160,7 +160,7 @@ With the exception of the Conformance terminology and Uptane role terminology pr
 
 ## Conformance terminology
 
-The keywords REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in {{RFC2119}}. Given the importance of interpreting these terms correctly, we present these definitions here. Note that when referring to actions in the Standard that mandate compliance, the word SHALL will be used, rather than the word MUST. 
+The keywords REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in {{RFC2119}}. Given the importance of interpreting these terms correctly, we present these definitions here. Note that when referring to actions in the Standard that mandate conformance, the word SHALL will be used, rather than the word MUST. 
 
 *SHALL* This word or the term "REQUIRED" mean that the definition is an absolute requirement of the specification.
 *SHALL NOT* This phrase means that the definition is an absolute prohibition of the specification.
@@ -168,7 +168,7 @@ The keywords REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, a
 *SHOULD NOT* This phrase or the phrase "NOT RECOMMENDED" mean that there could exist valid reasons in particular circumstances when the particular behavior is acceptable or even useful, but the full implications will be understood and the case carefully weighed before implementing any behavior described with this label.
 *MAY* This word or the adjective "OPTIONAL," mean that an item is truly optional.  
 
-In order to be considered Uptane-compliant, an implementation SHALL follow all of these rules as specified in the document.
+In order to be considered conformant to the Uptane Standard, an implementation SHALL follow all of these rules as specified in the document.
 
 Note that, following the recommendations of {{RFC2119}}, imperatives of the type defined here will be used only when essential for security. 
 
@@ -242,7 +242,7 @@ The following use cases provide a number of scenarios illustrating the manner in
 
 #### OEMs initializing Uptane at the factory using SOTA
 
-An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and an accurate attestation of the latest time. The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers' assembly lines or can choose to add the materials later at the OEM's assembly lines. The OEM's in-vehicle implementation is Uptane-compliant if:
+An OEM plans to install Uptane on new vehicles. This entails the following components: code to perform full and partial verification, the latest copy of the relevant metadata, the public keys, and an accurate attestation of the latest time. The OEM then either requires its tier-1 suppliers to provide these materials to the suppliers' assembly lines or can choose to add the materials later at the OEM's assembly lines. The OEM's in-vehicle implementation is Uptane-conformant if:
 
 1. all Primaries perform full verification;
 1. all Secondaries that are updated via OTA at least perform partial verification; and
@@ -347,7 +347,7 @@ Full control of a vehicle, or one or more ECUs within a vehicle, is the most sev
 
 # Detailed design of Uptane {#design}
 
-Uptane does not specify implementation details. Instead, this Standard describes the components necessary for a compliant implementation and leaves it up to individual implementers to make their own technological choices within those requirements.
+Uptane does not specify implementation details. Instead, this Standard describes the components necessary for a conformant implementation and leaves it up to individual implementers to make their own technology choices within those requirements.
 
 At a high level, Uptane requires:
 
@@ -406,7 +406,7 @@ Uptane's security guarantees all rely on properly created metadata that follows 
 
 However, string comparison is required as part of metadata verification. To ensure an accurate basis for comparing strings, all strings SHALL be encoded in the Unicode Format for Network Interchange as defined in {{RFC5198}}, including normalization into Unicode Normalization Form C ({{NFC}}).
 
-The *Deployment Best Practices* ({{DEPLOY}}), Joint Development Foundation Projects, LLC, Uptane Series provides some examples of compliant metadata structures in ASN.1 and JSON.
+The *Deployment Best Practices* ({{DEPLOY}}), Joint Development Foundation Projects, LLC, Uptane Series provides some examples of metadata structures in ASN.1 and JSON that conform to the Standard.
 
 ### Common metadata structures {#common_metadata}
 
@@ -516,7 +516,7 @@ The Timestamp metadata SHALL contain the following information:
 
 ### Repository mapping metadata {#repo_mapping_meta}
 
-As described in the introduction to {{design}}, Uptane requires a Director repository and an Image repository. However, it is possible to have an Uptane-compliant implementation that has more than two repositories.
+As described in the introduction to {{design}}, Uptane requires a Director repository and an Image repository. However, it is possible to have an Uptane-conformant implementation that has more than two repositories.
 
 Repository mapping metadata informs a Primary ECU about which repositories to trust for images or image paths. {{TAP-4}} describes how to make use of more complex repository mapping metadata in order to have more than the two required repositories.
 
@@ -619,7 +619,7 @@ The inventory database can record other information about ECUs and vehicles. It 
 
 ## In-vehicle implementation requirements
 
-An Uptane-compliant ECU SHALL be able to download and verify image metadata and image binaries before installing a new image and SHALL have a secure way of verifying the current time, or a sufficiently recent attestation of the time.
+An Uptane-conformant ECU SHALL be able to download and verify image metadata and image binaries before installing a new image and SHALL have a secure way of verifying the current time, or a sufficiently recent attestation of the time.
 
 All ECUs SHALL monitor the download speed of image metadata and image binaries to detect and respond to a slow retrieval attack. If the download is slower than a pre-defined threshold, the ECU SHOULD send an alert to the Director repository, for example as part of the next vehicle version manifest.
 
