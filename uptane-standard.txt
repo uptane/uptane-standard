@@ -69,7 +69,7 @@ Table of Contents
    of attackers to compromise critical systems.  It also assures a
    faster and easier recovery process when a compromise occurs.
 
-   These instructions specify the components necessary for a compliant
+   These instructions specify the components necessary for a conformant
    implementation.  Individual implementers can make their own
    technological choices within those requirements.  This flexibility
    makes Uptane adaptable to the many customized update solutions used
@@ -92,7 +92,7 @@ Table of Contents
    RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted
    as described in [RFC2119].  Given the importance of interpreting
    these terms correctly, we present these definitions here.  Note that
-   when referring to actions in the Standard that mandate compliance,
+   when referring to actions in the Standard that mandate conformance,
    the word SHALL will be used, rather than the word MUST.
 
    _SHALL_ This word or the term "REQUIRED" mean that the definition is
@@ -110,8 +110,9 @@ Table of Contents
    This word or the adjective "OPTIONAL," mean that an item is truly
    optional.
 
-   In order to be considered Uptane-compliant, an implementation SHALL
-   follow all of these rules as specified in the document.
+   In order to be considered conformant to the Uptane Standard, an
+   implementation SHALL follow all of these rules as specified in the
+   document.
 
    Note that, following the recommendations of [RFC2119], imperatives of
    the type defined here will be used only when essential for security.
@@ -256,7 +257,7 @@ Table of Contents
    requires its tier-1 suppliers to provide these materials to the
    suppliers' assembly lines or can choose to add the materials later at
    the OEM's assembly lines.  The OEM's in-vehicle implementation is
-   Uptane-compliant if:
+   Uptane-conformant if:
 
    1.  all Primaries perform full verification;
 
@@ -490,9 +491,9 @@ Table of Contents
 5.  Detailed design of Uptane
 
    Uptane does not specify implementation details.  Instead, this
-   Standard describes the components necessary for a compliant
+   Standard describes the components necessary for a conformant
    implementation and leaves it up to individual implementers to make
-   their own technological choices within those requirements.
+   their own technology choices within those requirements.
 
    At a high level, Uptane requires:
 
@@ -616,7 +617,7 @@ Table of Contents
 
    The _Deployment Best Practices_ ([DEPLOY]), Joint Development
    Foundation Projects, LLC, Uptane Series provides some examples of
-   compliant metadata structures in ASN.1 and JSON.
+   metadata structures in ASN.1 and JSON that conform to the Standard.
 
 5.2.1.  Common metadata structures
 
@@ -837,7 +838,7 @@ Table of Contents
 
    As described in the introduction to Section 5, Uptane requires a
    Director repository and an Image repository.  However, it is possible
-   to have an Uptane-compliant implementation that has more than two
+   to have an Uptane-conformant implementation that has more than two
    repositories.
 
    Repository mapping metadata informs a Primary ECU about which
@@ -1078,7 +1079,7 @@ Table of Contents
 
 5.4.  In-vehicle implementation requirements
 
-   An Uptane-compliant ECU SHALL be able to download and verify image
+   An Uptane-conformant ECU SHALL be able to download and verify image
    metadata and image binaries before installing a new image and SHALL
    have a secure way of verifying the current time, or a sufficiently
    recent attestation of the time.
