@@ -1,10 +1,10 @@
 # Security Policy
 
-Think you've found a vulnerability in the Uptane Standard? Please review the following details for responsible disclosure.
+Think you've found an errata in the Uptane Standard? Please review the following details for responsible disclosure.
 
 ## Supported Versions
 
-We release updates to the Uptane specification to address security vulnerabilities. Which versions are eligible to receive updates are listed below:
+We release updates to the Uptane specification to address errata. Which versions are eligible to receive updates are listed below:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -13,18 +13,19 @@ We release updates to the Uptane specification to address security vulnerabiliti
 | 1.0.1   | :white_check_mark: |
 | 1.0.0   | :white_check_mark: |
 
-## Reporting a Vulnerability
+## Reporting an Errata
 
-Please report (suspected) security vulnerabilities to `uptane-security [AT] googlegroups [DOT] com`. You will receive an acknowledgement from us within 72 hours. Keep in mind this project is a community based project of volunteers and response times could vary. If the issue is confirmed, we will provide a response within 90 days.
+Please report (suspected) errata in the specification to `uptane-security [AT] googlegroups [DOT] com`. You will receive an acknowledgement from us within 72 hours. Keep in mind this project is a community based project of volunteers and response times could vary. If the issue is confirmed, we will provide a response within 90 days.
 
 ## Guidelines
 
-We're committed to working with security researchers to resolve the vulnerabilities they discover. You can help us by following these guidelines:
+We're committed to working with security researchers to resolve the erratas they discover. You can help us by following these guidelines:
 
-*   Report vulnerabilities to our dedicated security email (see [Reporting a Vulnerability](#reporting-a-vulnerability))
-*   Please give as much detail as possible for a suspected vulnerability in Uptane including:
+*   Report errata to our dedicated security email (see [Reporting an Errata](#reporting-an-errata))
+*   Please give as much detail as possible for a suspected errata in Uptane including:
      *  Version found
-     *  Description of vulnerability
+     *  Description of errata
      *  Examples (if applicable)
-*   Be patient - Give us a reasonable time to correct the issue before you disclose the vulnerability. We care deeply about security, but we're an open-source project and our team is mostly comprised of volunteers.
+*   Be patient - Give us a reasonable time to correct the issue before you disclose the errata. We care deeply about security, however we're an open-source project and our team is mostly comprised of volunteers.
 *   We are committed to acknowledging the contributions of security researchers (if desired)
+*   If you have found a vulnerability related to a certain vendor's implementaiton of the Uptane standard, please report directly to that solution provider
