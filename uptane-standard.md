@@ -719,7 +719,7 @@ The Primary SHOULD send the time to each ECU.
 
 #### Send metadata to Secondaries {#send_metadata_primary}
 
-The Primary SHALL send its latest downloaded metadata to all of its associated Secondaries. The metadata it sends to each Secondary SHALL include all of the metadata required for verification on that Secondary. For full verification Secondaries, this includes the metadata for all four roles from both repositories, plus any delegated Targets metadata files the Secondary will recurse through to find the proper delegation. For partial verification Secondaries, this could include fewer metadata files; at a minimum, it includes only the Targets metadata file from the Director repository.
+The Primary SHALL make available to each of its associated Secondaries all of the metadata required for verification on that Secondary. For full verification Secondaries, this includes the metadata for all four roles from both repositories, plus any delegated Targets metadata files the Secondary will recurse through to find the proper delegation. For partial verification Secondaries, this could include fewer metadata files; at a minimum, it includes only the Targets metadata file from the Director repository.
 
 The Primary SHOULD determine the minimal set of metadata files to send to each Secondary by performing delegation resolution as described in {{full_verification}}.
 
