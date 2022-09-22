@@ -1,10 +1,10 @@
 # Security Policy
 
-Think you've found an errata in the Uptane Standard? Please review the following details for responsible disclosure.
+The Uptane community is committed to maintaining a reliable and consistent Standard. If you believe you have identified an errata in the Uptane Standard, please follow these guidelines for responsible disclosure.
 
 ## Supported Versions
 
-We release updates to the Uptane specification to address errata. Which versions are eligible to receive updates are listed below:
+We release updates to the Uptane specification to address errata. The versions eligible to receive updates are listed below:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -14,9 +14,10 @@ We release updates to the Uptane specification to address errata. Which versions
 | 1.0.1   | :white_check_mark: |
 | 1.0.0   | :white_check_mark: |
 
-## Reporting an Errata
+## Reporting Errata
 
-Please report (suspected) errata in the specification to `uptane-security [AT] googlegroups [DOT] com`. You will receive an acknowledgement from us within 72 hours. Keep in mind this project is a community based project of volunteers and response times could vary. If the issue is confirmed, we will provide a response within 90 days.
+
+Please report (suspected) errata in the specification to `uptane-security [AT] googlegroups [DOT] com`. You will receive an acknowledgement from us within 72 hours. Keep in mind that Uptane is a community based project of volunteers and, therefore, response times could vary. If the issue is confirmed, we will provide a response within 90 days.
 
 ## Guidelines
 
