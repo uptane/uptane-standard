@@ -21,9 +21,9 @@ Please report (suspected) errata in the specification to `uptane-security [AT] g
 
 ## Guidelines
 
-We're committed to working with security researchers to resolve the erratas they discover. You can help us by following these guidelines:
+We're committed to working with security researchers to resolve erratas they discover. You can help us by following these guidelines:
 
-*   Report errata to our dedicated security email (see [Reporting an Errata](#reporting-an-errata))
+*   Report errata to our dedicated security email (see [Reporting Errata](#reporting-errata))
 *   Please give as much detail as possible for a suspected errata in Uptane including:
      *  Version found
      *  Description of errata
