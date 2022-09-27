@@ -69,20 +69,27 @@ Table of Contents
    of attackers to compromise critical systems.  It also assures a
    faster and easier recovery process when a compromise occurs.
 
-   These instructions specify the components necessary for a conformant
-   implementation.  Individual implementers can make their own
-   technological choices within those requirements.  This flexibility
-   makes Uptane adaptable to the many customized update solutions used
-   by manufacturers.  If implementers wish to have compatible formats,
-   they can use POUFs.  POUFs contain a description of implementation
-   choices as well as data binding formats.  An implementer who adopts a
-   POUF, as well as the Uptane Standard, will be able to interoperate
-   with other implementations using that POUF.
+   These instructions delineate the set of requirements necessary for
+   specific ECU implementations to satisfy all conformance stipulations
+   of the Uptane Standard.  ISO/IEC 13210:1999 Information Technology,
+   as cited in the ISO Online Browsing Platform [1] defines a
+   "conformance requirement" as "a requirement stated in a _base
+   standard_ that identifies a specific requirement in a finite,
+   measurable, and unambiguous manner.  A _conformance requirement_ by
+   itself or in conjunction with other conformance requirements
+   corresponds to an _assertion._" Individual implementers can make
+   their own technological choices within those requirements.  This
+   flexibility makes Uptane adaptable to the many customized update
+   solutions used by manufacturers.  If implementers wish to have
+   compatible formats, they can use POUFs.  POUFs contain a description
+   of implementation choices as well as data binding formats.  An
+   implementer who adopts a POUF, as well as the Uptane Standard, will
+   be able to interoperate with other implementations using that POUF.
 
 2.  Terminology
 
    With the exception of the Conformance terminology and Uptane role
-   terminology presented below, please refer to the glossary [1] in the
+   terminology presented below, please refer to the glossary [2] in the
    Deployment Best Practices volume for definitions of all terms used in
    this Standard.
 
@@ -1943,7 +1950,9 @@ Table of Contents
 
 6.3.  URIs
 
-   [1] https://uptane.github.io/deployment-considerations/glossary.html
+   [1] https://www.iso.org/obp/ui
+
+   [2] https://uptane.github.io/deployment-considerations/glossary.html
 
 Author's Address
 
