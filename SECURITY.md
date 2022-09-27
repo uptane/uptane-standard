@@ -4,7 +4,7 @@ The Uptane community is committed to maintaining a reliable and consistent Stand
 
 ## Supported Versions
 
-We release updates to the Uptane specification to address errata. Submitted errata must pertain to the latest release of the Uptane Standard.
+We release updates to the Uptane specification to address errata. You may report errata for the most recent version of the Uptane Standard. We will not retroactively make changes to older versions.
 
 ## Reporting Errata
 
