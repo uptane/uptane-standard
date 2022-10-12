@@ -15,8 +15,8 @@ Please report (suspected) errata in the specification. You can create an issue i
 We're committed to working with security researchers to resolve errata they discover. You can help us by following these guidelines:
 
 *   Please give as much detail as possible for a suspected errata in Uptane including:
-     *  Version found
+     *  Version in which it was found
      *  Description of errata
      *  Examples (if applicable)
 *   We are committed to acknowledging the contributions of security researchers (if desired)
-*   If you have found a vulnerability related to a certain vendor's implementaiton of the Uptane standard, please report directly to that solution provider
+*   If you have found a vulnerability related to a certain vendor's implementation of the Uptane standard, please report it directly to that solution provider
