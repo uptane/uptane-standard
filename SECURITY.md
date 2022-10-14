@@ -1,6 +1,6 @@
 # Security Policy
 
-The Uptane community is committed to maintaining a reliable and consistent Standard. If you believe you have identified errata in the Uptane Standard, please follow these guidelines for responsible disclosure.
+The Uptane community is committed to maintaining a reliable and consistent Standard. If you believe you have identified errata—including security issues—in the Uptane Standard, please follow these guidelines for responsible disclosure.
 
 ## Supported Versions
 
