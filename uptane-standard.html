@@ -428,7 +428,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2022-10-14" />
+  <meta name="dct.issued" scheme="ISO8601" content="2022-11-16" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -1097,7 +1097,7 @@
 </ul>
 </li>
 <li>The current time, or a secure attestation of a sufficiently recent time.</li>
-<li>An <strong>ECU signing key</strong>. This is a private key, unique to the ECU, used to sign ECU version reports and decrypt images. An ECU key can be either a symmetric key or an asymmetric key. If it is an asymmetric key, there SHOULD be separate keys for encryption and signing. For the purposes of this Standard, the set of private keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes. Note that while signing keys are required to be unique to the ECU to avoid replay attacks, the secret keys used to decrypt images need not be unique.</li>
+<li>An <strong>ECU signing key</strong>. This key, which is unique to the ECU, is used to sign ECU version reports and decrypt images. An ECU key can be either a symmetric key or an asymmetric key. If it is an asymmetric key, there SHOULD be separate keys for encryption and signing. For the purposes of this Standard, the set of keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes. Note that while signing keys are required to be unique to the ECU to avoid replay attacks, the secret keys used to decrypt images need not be unique.</li>
 </ol>
 <h1 id="rfc.section.5.4.2">
 <a href="#rfc.section.5.4.2">5.4.2.</a> <a href="#what-the-primary-does" id="what-the-primary-does">What the Primary does</a>
@@ -1429,17 +1429,17 @@
 <tr>
 <td class="reference"><b id="RFC2119">[RFC2119]</b></td>
 <td class="top">
-<a>Bradner, S.</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
+<a>Bradner, S.</a> and <a>RFC Publisher</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC3647">[RFC3647]</b></td>
 <td class="top">
-<a>Chokhani, S.</a>, <a>Ford, W.</a>, <a>Sabett, R.</a>, <a>Merrill, C.</a> and <a>S. Wu</a>, "<a href="https://tools.ietf.org/html/rfc3647">Internet X.509 Public Key Infrastructure Certificate Policy and Certification Practices Framework</a>", RFC 3647, DOI 10.17487/RFC3647, November 2003.</td>
+<a>Chokhani, S.</a>, <a>Ford, W.</a>, <a>Sabett, R.</a>, <a>Merrill, C.</a>, <a>Wu, S.</a> and <a>RFC Publisher</a>, "<a href="https://tools.ietf.org/html/rfc3647">Internet X.509 Public Key Infrastructure Certificate Policy and Certification Practices Framework</a>", RFC 3647, DOI 10.17487/RFC3647, November 2003.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC5198">[RFC5198]</b></td>
 <td class="top">
-<a>Klensin, J.</a> and <a>M. Padlipsky</a>, "<a href="https://tools.ietf.org/html/rfc5198">Unicode Format for Network Interchange</a>", RFC 5198, DOI 10.17487/RFC5198, March 2008.</td>
+<a>Klensin, J.</a>, <a>Padlipsky, M.</a> and <a>RFC Publisher</a>, "<a href="https://tools.ietf.org/html/rfc5198">Unicode Format for Network Interchange</a>", RFC 5198, DOI 10.17487/RFC5198, March 2008.</td>
 </tr>
 <tr>
 <td class="reference"><b id="TAP-3">[TAP-3]</b></td>

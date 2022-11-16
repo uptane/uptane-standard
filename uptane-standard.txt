@@ -1148,16 +1148,16 @@ Table of Contents
    2.  The current time, or a secure attestation of a sufficiently
        recent time.
 
-   3.  An *ECU signing key*. This is a private key, unique to the ECU,
+   3.  An *ECU signing key*. This key, which is unique to the ECU, is
        used to sign ECU version reports and decrypt images.  An ECU key
        can be either a symmetric key or an asymmetric key.  If it is an
        asymmetric key, there SHOULD be separate keys for encryption and
-       signing.  For the purposes of this Standard, the set of private
-       keys that an ECU uses is referred to as the ECU key (singular),
-       even if it is actually multiple keys used for different purposes.
-       Note that while signing keys are required to be unique to the ECU
-       to avoid replay attacks, the secret keys used to decrypt images
-       need not be unique.
+       signing.  For the purposes of this Standard, the set of keys that
+       an ECU uses is referred to as the ECU key (singular), even if it
+       is actually multiple keys used for different purposes.  Note that
+       while signing keys are required to be unique to the ECU to avoid
+       replay attacks, the secret keys used to decrypt images need not
+       be unique.
 
 5.4.2.  What the Primary does
 
@@ -1870,19 +1870,20 @@ Table of Contents
               Unicode Normalization Forms", October 2018,
               <https://www.unicode.org/reports/tr15/>.
 
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
+   [RFC2119]  Bradner, S. and RFC Publisher, "Key words for use in RFCs
+              to Indicate Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-   [RFC3647]  Chokhani, S., Ford, W., Sabett, R., Merrill, C., and S.
-              Wu, "Internet X.509 Public Key Infrastructure Certificate
-              Policy and Certification Practices Framework", RFC 3647,
-              DOI 10.17487/RFC3647, November 2003,
-              <https://www.rfc-editor.org/info/rfc3647>.
+   [RFC3647]  Chokhani, S., Ford, W., Sabett, R., Merrill, C., Wu, S.,
+              and RFC Publisher, "Internet X.509 Public Key
+              Infrastructure Certificate Policy and Certification
+              Practices Framework", RFC 3647, DOI 10.17487/RFC3647,
+              November 2003, <https://www.rfc-editor.org/info/rfc3647>.
 
-   [RFC5198]  Klensin, J. and M. Padlipsky, "Unicode Format for Network
-              Interchange", RFC 5198, DOI 10.17487/RFC5198, March 2008,
+   [RFC5198]  Klensin, J., Padlipsky, M., and RFC Publisher, "Unicode
+              Format for Network Interchange", RFC 5198,
+              DOI 10.17487/RFC5198, March 2008,
               <https://www.rfc-editor.org/info/rfc5198>.
 
    [TAP-3]    Kuppusamy, T., Awwad, S., Cordell, E., Diaz, V., Moshenko,
