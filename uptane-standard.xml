@@ -28,7 +28,7 @@
       </address>
     </author>
 
-    <date year="2022" month="December" day="02"/>
+    <date year="2023" month="January" day="03"/>
 
     <area>TODO</area>
     <workgroup>TODO</workgroup>
@@ -909,7 +909,7 @@ If multiple such Primaries are included within a vehicle, each Primary SHOULD ha
   <t>Download and check the Timestamp metadata file from the Director repository, following the procedure in <xref target="check_timestamp"/>.</t>
   <t>Check the previously downloaded Snapshot metadata file from the Directory repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, there are no new updates and the verification process SHALL be stopped and considered complete. Otherwise, download and check the Snapshot metadata file from the Director repository, following the procedure in <xref target="check_snapshot"/>.</t>
   <t>Download and check the Targets metadata file from the Director repository, following the procedure in <xref target="check_targets"/>.</t>
-  <t>If the Targets metadata from the Directory repository indicates that there are no new targets that are not already currently installed, the verification process SHALL be stopped and considered complete. Otherwise, download and check the Root metadata file from the Image repository, following the procedure in <xref target="check_root"/>.</t>
+  <t>If the Targets metadata from the Directory repository indicates that there are no new targets that are not already currently installed, the verification process SHOULD be stopped and considered complete. Optionally, implementors can order vehicles to check image repo root metadata when desirable, even in the absence of an update. Otherwise, download and check the Root metadata file from the Image repository, following the procedure in <xref target="check_root"/>.</t>
   <t>Download and check the Timestamp metadata file from the Image repository, following the procedure in <xref target="check_timestamp"/>.</t>
   <t>Check the previously downloaded Snapshot metadata file from the Image repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, the ECU SHALL skip to the last step. Otherwise, download and check the Snapshot metadata file from the Image repository, following the procedure in <xref target="check_snapshot"/>.</t>
   <t>Download and check the top-level Targets metadata file from the Image repository, following the procedure in <xref target="check_targets"/>.</t>
@@ -1062,6 +1062,9 @@ limitations under the License.
   <front>
     <title>Key words for use in RFCs to Indicate Requirement Levels</title>
     <author fullname="S. Bradner" initials="S." surname="Bradner"/>
+    <author>
+      <organization>RFC Publisher</organization>
+    </author>
     <date month="March" year="1997"/>
     <abstract>
       <t>In many standards track documents several words are used to signify the requirements in the specification.  These words are often capitalized.  This document defines these words as they should be interpreted in IETF documents.  This document specifies an Internet Best Current Practices for the Internet Community, and requests discussion and suggestions for improvements.</t>
@@ -1081,6 +1084,9 @@ limitations under the License.
     <author fullname="R. Sabett" initials="R." surname="Sabett"/>
     <author fullname="C. Merrill" initials="C." surname="Merrill"/>
     <author fullname="S. Wu" initials="S." surname="Wu"/>
+    <author>
+      <organization>RFC Publisher</organization>
+    </author>
     <date month="November" year="2003"/>
     <abstract>
       <t>This document presents a framework to assist the writers of certificate policies or certification practice statements for participants within public key infrastructures, such as certification authorities, policy authorities, and communities of interest that wish to rely on certificates.  In particular, the framework provides a comprehensive list of topics that potentially (at the writer's discretion) need to be covered in a certificate policy or a certification practice statement.  This document supersedes RFC 2527.</t>
@@ -1096,6 +1102,9 @@ limitations under the License.
     <title>Unicode Format for Network Interchange</title>
     <author fullname="J. Klensin" initials="J." surname="Klensin"/>
     <author fullname="M. Padlipsky" initials="M." surname="Padlipsky"/>
+    <author>
+      <organization>RFC Publisher</organization>
+    </author>
     <date month="March" year="2008"/>
     <abstract>
       <t>The Internet today is in need of a standardized form for the transmission of internationalized "text" information, paralleling the specifications for the use of ASCII that date from the early days of the ARPANET.  This document specifies that format, using UTF-8 with normalization and specific line-ending sequences. [STANDARDS-TRACK]</t>
@@ -1336,7 +1345,7 @@ limitations under the License.
   </back>
 
 <!-- ##markdown-source:
-H4sIAJg6imMAA+1923LbSJbgu74Caz+UpCEpS76U7drYXVmSp9RtS15Lruqa
+H4sIAIRGtGMAA+1923LbSJbgu74Caz+UpCEpS76U7drYXVmSp9RtS15Lruqa
 iQ03SIIS2iTABkDJLIf/bN/2x/ZcM08mAEququ7Zidh+6JJBIC8nT577ZTgc
 bjV5M89eJh+WTVpkyQX8/zStpsmsrJLjrM6vigSeJKeL5TxbZEWTNnlZbKXj
 cZXdwFfvLg/PTram5aRIFzDKikYZ1jLKcEojbE3SJrsqq/XLJC9m5dZWvqxe
@@ -1759,73 +1768,74 @@ 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
-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
-Za5EWOEseqt/GpjY5Q+SdSZWdnyM5iVfIz6w0/lpDeeURrl9MqlTaAOISfCu
-F3uAWiNdbVgD0po9hMfmxnt5wzFRV61Jl6aaroUCnRhXb28fHB03AqUDLYJZ
-7rtXtsqONFAPRoDlBaAXEyMzR4LFIsukQprHBdOi/Y+g8f/1vwyHw62jcrmu
-SIc9eHRwkPypzGGmY2RB5ZJmfY2vM7jfVeXfsHP6IHnz5mjgiytgKtDW1pt8
-khUYtQPvZ0z7DpfIuBL5ZeCiUw9Gj5JtfOGB/PRg54etdbkC2K9pmVzTSyNm
-s8+TbEnmBWLbOeUpO9YvQ4y2fpEByjEpJGGVa3kLBKMtPIjrplm+3Nu7vb0d
-pbTIUVld7c35pXrvzenRydnFyRAWurX1oSBjnEvMxuL/yPYnVBxknt6SmIDH
-xOVIC6pkA2cxcJbSLd930sJHF0V58/4Fbgb44PAiOb14kLw6vDi9GGz9fHr5
-4/mHy+Tnw/fvD88uT08ukvP3ydH52fHp5en5GfzrdXJ49kvy59Oz44HK8tln
-tM2QZIXCU45qoHbJ1smVUbn4/XlaXK0Qf64wVI3YtpbWoEJOxXSLSloJk2lt
-Z7Q1HP63rf8L59O32K4yAQA=
+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
 
 -->
 

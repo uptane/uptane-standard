@@ -428,7 +428,7 @@
 
   <meta name="dct.creator" content="Members of the Uptane Community, ." />
   <meta name="dct.identifier" content="urn:ietf:id:uptane-standard-design" />
-  <meta name="dct.issued" scheme="ISO8601" content="2022-12-02" />
+  <meta name="dct.issued" scheme="ISO8601" content="2023-1-03" />
   <meta name="dct.abstract" content="This document describes a framework for securing ground vehicle software update systems." />
   <meta name="description" content="This document describes a framework for securing ground vehicle software update systems." />
 
@@ -1299,7 +1299,7 @@
 <li>Download and check the Timestamp metadata file from the Director repository, following the procedure in <a href="#check_timestamp" class="xref">Section 5.4.4.4</a>.</li>
 <li>Check the previously downloaded Snapshot metadata file from the Directory repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, there are no new updates and the verification process SHALL be stopped and considered complete. Otherwise, download and check the Snapshot metadata file from the Director repository, following the procedure in <a href="#check_snapshot" class="xref">Section 5.4.4.5</a>.</li>
 <li>Download and check the Targets metadata file from the Director repository, following the procedure in <a href="#check_targets" class="xref">Section 5.4.4.6</a>.</li>
-<li>If the Targets metadata from the Directory repository indicates that there are no new targets that are not already currently installed, the verification process SHALL be stopped and considered complete. Otherwise, download and check the Root metadata file from the Image repository, following the procedure in <a href="#check_root" class="xref">Section 5.4.4.3</a>.</li>
+<li>If the Targets metadata from the Directory repository indicates that there are no new targets that are not already currently installed, the verification process SHOULD be stopped and considered complete. Optionally, implementors can order vehicles to check image repo root metadata when desirable, even in the absence of an update. Otherwise, download and check the Root metadata file from the Image repository, following the procedure in <a href="#check_root" class="xref">Section 5.4.4.3</a>.</li>
 <li>Download and check the Timestamp metadata file from the Image repository, following the procedure in <a href="#check_timestamp" class="xref">Section 5.4.4.4</a>.</li>
 <li>Check the previously downloaded Snapshot metadata file from the Image repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, the ECU SHALL skip to the last step. Otherwise, download and check the Snapshot metadata file from the Image repository, following the procedure in <a href="#check_snapshot" class="xref">Section 5.4.4.5</a>.</li>
 <li>Download and check the top-level Targets metadata file from the Image repository, following the procedure in <a href="#check_targets" class="xref">Section 5.4.4.6</a>.</li>
@@ -1429,17 +1429,17 @@
 <tr>
 <td class="reference"><b id="RFC2119">[RFC2119]</b></td>
 <td class="top">
-<a>Bradner, S.</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
+<a>Bradner, S.</a> and <a>RFC Publisher</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC3647">[RFC3647]</b></td>
 <td class="top">
-<a>Chokhani, S.</a>, <a>Ford, W.</a>, <a>Sabett, R.</a>, <a>Merrill, C.</a> and <a>S. Wu</a>, "<a href="https://tools.ietf.org/html/rfc3647">Internet X.509 Public Key Infrastructure Certificate Policy and Certification Practices Framework</a>", RFC 3647, DOI 10.17487/RFC3647, November 2003.</td>
+<a>Chokhani, S.</a>, <a>Ford, W.</a>, <a>Sabett, R.</a>, <a>Merrill, C.</a>, <a>Wu, S.</a> and <a>RFC Publisher</a>, "<a href="https://tools.ietf.org/html/rfc3647">Internet X.509 Public Key Infrastructure Certificate Policy and Certification Practices Framework</a>", RFC 3647, DOI 10.17487/RFC3647, November 2003.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC5198">[RFC5198]</b></td>
 <td class="top">
-<a>Klensin, J.</a> and <a>M. Padlipsky</a>, "<a href="https://tools.ietf.org/html/rfc5198">Unicode Format for Network Interchange</a>", RFC 5198, DOI 10.17487/RFC5198, March 2008.</td>
+<a>Klensin, J.</a>, <a>Padlipsky, M.</a> and <a>RFC Publisher</a>, "<a href="https://tools.ietf.org/html/rfc5198">Unicode Format for Network Interchange</a>", RFC 5198, DOI 10.17487/RFC5198, March 2008.</td>
 </tr>
 <tr>
 <td class="reference"><b id="TAP-3">[TAP-3]</b></td>
