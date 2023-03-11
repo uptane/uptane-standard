@@ -598,6 +598,7 @@ A Director repository SHALL conform to the following six-step process for direct
     * Each ECU recorded in the inventory database is also represented in the manifest.
     * The signature of the manifest matches the ECU key of the Primary that sent it.
     * The signature of each Secondary's contribution to the manifest matches the ECU key of that Secondary.
+    * The time sent in the ECU version report.
 1. The Director SHOULD check that the nonce or counter in each ECU version report has not been used before to prevent a replay of the ECU version report. If the nonce or counter is reused the Director SHOULD drop the request.
 1. The Director extracts information about currently installed images from the vehicle version manifest. Using this information, it determines if the vehicle is already up-to-date, and if not, determines a set of images that could be installed. The exact process by which this determination takes place is out of scope for this Standard. However, the Director SHALL take into account *dependencies* and *conflicts* between images and SHOULD consult well-established techniques for dependency resolution.
 1. The Director could encrypt images for ECUs that require it.
