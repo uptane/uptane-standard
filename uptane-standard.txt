@@ -1029,6 +1029,8 @@ Table of Contents
        *  The signature of each Secondary's contribution to the manifest
           matches the ECU key of that Secondary.
 
+       *  The time sent in the ECU version report.
+
    4.  The Director SHOULD check that the nonce or counter in each ECU
        version report has not been used before to prevent a replay of
        the ECU version report.  If the nonce or counter is reused the
@@ -1872,20 +1874,19 @@ Table of Contents
               Unicode Normalization Forms", October 2018,
               <https://www.unicode.org/reports/tr15/>.
 
-   [RFC2119]  Bradner, S. and RFC Publisher, "Key words for use in RFCs
-              to Indicate Requirement Levels", BCP 14, RFC 2119,
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-   [RFC3647]  Chokhani, S., Ford, W., Sabett, R., Merrill, C., Wu, S.,
-              and RFC Publisher, "Internet X.509 Public Key
-              Infrastructure Certificate Policy and Certification
-              Practices Framework", RFC 3647, DOI 10.17487/RFC3647,
-              November 2003, <https://www.rfc-editor.org/info/rfc3647>.
+   [RFC3647]  Chokhani, S., Ford, W., Sabett, R., Merrill, C., and S.
+              Wu, "Internet X.509 Public Key Infrastructure Certificate
+              Policy and Certification Practices Framework", RFC 3647,
+              DOI 10.17487/RFC3647, November 2003,
+              <https://www.rfc-editor.org/info/rfc3647>.
 
-   [RFC5198]  Klensin, J., Padlipsky, M., and RFC Publisher, "Unicode
-              Format for Network Interchange", RFC 5198,
-              DOI 10.17487/RFC5198, March 2008,
+   [RFC5198]  Klensin, J. and M. Padlipsky, "Unicode Format for Network
+              Interchange", RFC 5198, DOI 10.17487/RFC5198, March 2008,
               <https://www.rfc-editor.org/info/rfc5198>.
 
    [TAP-3]    Kuppusamy, T., Awwad, S., Cordell, E., Diaz, V., Moshenko,
