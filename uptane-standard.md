@@ -280,7 +280,7 @@ The following topics will not be addressed in this document, as they represent t
 
 * Physical attacks, such as manual tampering with ECUs outside the vehicle.
 * Compromise of the packaged software, such as malware embedded in a trusted package.
-* Compromise of the supply chain (e.g., build system, version control system, packaging process). The focus of Uptane is end device security and secure delivery. It addresses one part of the solution, but it is designed to pair well with more holistic solutions, like in-toto {{IN-TOTO}}, git signing, TPMs, etc. Recently, the Uptane community approved [Scudo](https://github.com/uptane/pures/blob/main/pure3.md) as an Uptane augmentation that may transition to a more formal mention as an Uptane Deployment Best Practice at some point.
+* Compromise of the supply chain (e.g., build system, version control system, packaging process). The focus of Uptane is end device security and secure delivery. It addresses one part of the solution, but it is designed to pair well with more holistic solutions, like in-toto {{IN-TOTO}}, git signing, TPMs, etc. Recently, the Uptane community approved [Scudo](https://github.com/uptane/pures/blob/main/pure3.md) as an Uptane augmentation that could be adopted as a formal recommendation in the Uptane Deployment Best Practices in the future.
 * Problems associated with OBD or UDS programming of ECUs, such as authentication of communications between ECUs.
 * Malicious mirrors of package repositories, which could substitute original packages with malicious packages with matching version numbers {{MERCURY}}.
 
