@@ -139,8 +139,7 @@ informative:
     target: https://in-toto.io/
     title: "in-toto: A framework to secure the integrity of software supply chains"
     date: 2018-10-29
-
-
+     
 --- abstract
 
 This document describes a framework for securing ground vehicle software update systems.
@@ -281,7 +280,7 @@ The following topics will not be addressed in this document, as they represent t
 
 * Physical attacks, such as manual tampering with ECUs outside the vehicle.
 * Compromise of the packaged software, such as malware embedded in a trusted package.
-* Compromise of the supply chain (e.g., build system, version control system, packaging process). A number of strategies (e.g., git signing, TPMs, in-toto {{IN-TOTO}})  already exist to address this problem. Therefore, there is no need to duplicate those techniques here.
+* Compromise of the supply chain (e.g., build system, version control system, packaging process). The focus of Uptane is end device security and secure delivery. It addresses one part of the solution, but it is designed to pair well with more holistic solutions, like in-toto {{IN-TOTO}}, git signing, TPMs, etc. Recently, the Uptane community approved [Scudo](https://github.com/uptane/pures/blob/main/pure3.md) as an Uptane augmentation that could be adopted as a formal recommendation in the Uptane Deployment Best Practices in the future.
 * Problems associated with OBD or UDS programming of ECUs, such as authentication of communications between ECUs.
 * Malicious mirrors of package repositories, which could substitute original packages with malicious packages with matching version numbers {{MERCURY}}.
 
