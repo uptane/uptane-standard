@@ -235,6 +235,7 @@ We assume the following system preconditions for Uptane:
 * ECUs are programmable and provide sufficient performance to be updated.
 * ECUs SHALL be able to perform public key cryptography operations and calculate hashes of images and metadata files.
 * There are state-of-the-art secure servers in place, such as the Director and Image repository servers.
+* The initial Uptane required data, such as Uptane metadata, have been securely provisioned into the ECUs by the time they are installed in the vehicle.
 
 It is important that any bugs detected in Uptane implementations be patched promptly. Failure to do so could interfere with the effectiveness of Uptane's operations.
 
@@ -340,6 +341,8 @@ Attackers seeking to interfere with the functionality of vehicle ECUs in order t
 * *Rollback attack:* Cause an ECU to install a previously valid software revision that is older than the currently installed version.
 * *Endless data attack:* Send a large amount of data to an ECU until it runs out of storage, possibly causing the ECU to fail to operate.
 * *Mix-and-match attack:* Install a malicious software bundle in which some of the updates do not interoperate properly. This could be accomplished even if all of the individual images being installed are valid, as long as valid versions exist that are mutually incompatible.
+* *Arbitrary command injection:* Sending commands through exposed services or unsecure protocols of an ECU to perform malicious actions or cause it to fail.
+* *Arbitrary data injection:* Sending data into communication lines within the vehicle, potentially to spoof as another ECU or to tamper existing data in transit.
 
 ### Control an ECU or vehicle {#control_ecu}
 
@@ -354,7 +357,9 @@ Uptane does not specify implementation details. Instead, this Standard describes
 At a high level, Uptane requires:
 
 * Two software repositories:
-    * An Image repository containing binary images to install and signed metadata about those images.
+    * An Image repository containing:
+	    * binary images
+	    * signed metadata about the binary images
     * A Director repository connected to an inventory database that can sign metadata on demand for images in the Image repository.
 * Repository tools for generating Uptane-specific metadata about images.
 * A public key infrastructure supporting the required metadata production and signing roles on each repository:
@@ -701,7 +706,7 @@ An ECU version report is a metadata structure that SHALL contain the following i
 
 #### Download and check current time {#check_time_primary}
 
-The Primary SHALL load the current time from a secure source.
+The Primary SHALL load and verify the current time from a secure source.
 
 #### Download and verify metadata {#download_meta_primary}
 
