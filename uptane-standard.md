@@ -304,7 +304,7 @@ We assume that attackers could want to achieve one or more of the following goal
 * Read the contents of updates to discover confidential information, reverse-engineer firmware, or compare two firmware images to identify security fixes and hence determine the fixed security vulnerability.
 * Deny installation of updates to prevent vehicles from fixing software problems.
 * Cause one or more ECUs in the vehicle to fail, denying use of the vehicle or of certain functions.
-* Control ECUs within the vehicle, and possibly the vehicle itself, through malicious software.
+* Control ECUs within the vehicle, and possibly the vehicle itself, through malicious software updates and installations.
 
 ## Attacker capabilities {#capabilities}
 
