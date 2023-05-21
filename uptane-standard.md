@@ -304,7 +304,7 @@ We assume that attackers could want to achieve one or more of the following goal
 * Read the contents of updates to discover confidential information, reverse-engineer firmware, or compare two firmware images to identify security fixes and hence determine the fixed security vulnerability.
 * Deny installation of updates to prevent vehicles from fixing software problems.
 * Cause one or more ECUs in the vehicle to fail, denying use of the vehicle or of certain functions.
-* Control ECUs within the vehicle, and possibly the vehicle itself.
+* Control ECUs within the vehicle, and possibly the vehicle itself, through malicious software.
 
 ## Attacker capabilities {#capabilities}
 
@@ -341,8 +341,6 @@ Attackers seeking to interfere with the functionality of vehicle ECUs in order t
 * *Rollback attack:* Cause an ECU to install a previously valid software revision that is older than the currently installed version.
 * *Endless data attack:* Send a large amount of data to an ECU until it runs out of storage, possibly causing the ECU to fail to operate.
 * *Mix-and-match attack:* Install a malicious software bundle in which some of the updates do not interoperate properly. This could be accomplished even if all of the individual images being installed are valid, as long as valid versions exist that are mutually incompatible.
-* *Arbitrary command injection:* Sending commands through exposed services or unsecure protocols of an ECU to perform malicious actions or cause it to fail.
-* *Arbitrary data injection:* Sending data into communication lines within the vehicle, potentially to spoof as another ECU or to tamper existing data in transit.
 
 ### Control an ECU or vehicle {#control_ecu}
 
@@ -706,7 +704,7 @@ An ECU version report is a metadata structure that SHALL contain the following i
 
 #### Download and check current time {#check_time_primary}
 
-The Primary SHALL load and verify the current time from a secure source.
+The Primary SHALL load the current time from a secure source.
 
 #### Download and verify metadata {#download_meta_primary}
 
@@ -812,7 +810,7 @@ If a step in the following workflows does not succeed (e.g., the update is abort
 
 In order to perform partial verification, an ECU SHALL perform the following steps:
 
-1. Load and verify the current time or the most recent securely attested time.
+1. Load the current time or the most recent securely attested time. The time SHOULD be loaded from a source other than the Primary ECU.
 2. Download and check the Targets metadata file from the Director repository, following the procedure in {{check_targets}}.
 
 Note that this verification procedure is the smallest set of Uptane checks permissible for an Uptane Secondary ECU. An ECU can additionally implement more metadata checks.
@@ -831,7 +829,7 @@ Before starting full verification, the repository mapping metadata SHALL be cons
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
-1. Load and verify the current time or the most recent securely attested time.
+1. Load the current time or the most recent securely attested time. Secondary ECUs SHOULD load a time from a source other than the Primary ECU.
 1. Download and check the Root metadata file from the Director repository, following the procedure in {{check_root}}.
 1. Download and check the Timestamp metadata file from the Director repository, following the procedure in {{check_timestamp}}.
 1. Check the previously downloaded Snapshot metadata file from the Directory repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, there are no new updates and the verification process SHALL be stopped and considered complete. Otherwise, download and check the Snapshot metadata file from the Director repository, following the procedure in {{check_snapshot}}.
