@@ -26,8 +26,6 @@ author:
 normative:
   # Keyword def (SHALL, MAY, SHOULD, etc.)
   RFC2119:
-  # X.509 PKI spec
-  RFC3647:
   # Network Unicode for comparing strings
   RFC5198:
   # Unicode Normalization Form C
@@ -373,10 +371,7 @@ A repository contains images and metadata. Each role has a particular type of me
 
 ### The Root role {#root_role}
 
-A repository's Root role SHALL be responsible for a Certificate Authority as defined in {{RFC3647}}.
 A repository's Root role SHALL produce and sign Root metadata as described in {{root_meta}}.
-A repository's Root role SHALL sign the public keys used to verify the metadata produced by the Timestamp, Snapshot, and Targets roles.
-A repository's Root role SHALL revoke keys for the other roles if they are compromised.
 
 ### The Targets role {#targets_role}
 
