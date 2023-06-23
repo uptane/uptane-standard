@@ -21,16 +21,16 @@ open: html ## Create an HTML version from the markdown, then open it in a browse
 	@$(OPEN) $(HTML)
 
 html: xml ## Create an HTML version from the markdown
-	@xml2rfc --html $(XML) $(HTML)
+	@xml2rfc --v2 --html --out=$(RAWHTML) $(XML)
 	@mv $(HTML) $(RAWHTML)
 	@cat $(RAWHTML) |sed '/<table class="header">/,/<\/table>/d;/<h1 id="rfc.status">/,/except as an Internet-Draft.<\/p>/d' > $(HTML)
 	@rm $(RAWHTML)
 
 xml: ## Create an XML version from the markdown
-	@kramdown-rfc2629 $(MKD) > $(XML)
+	@kramdown-rfc2629 -v2 $(MKD) > $(XML)
 
 plaintext: xml ## Create an RFC plaintext version from the markdown
-	@xml2rfc $(XML) $(TXT) --raw
+	@xml2rfc --v2 --out=$(RAWTXT) --raw $(XML)
 	@cat $(RAWTXT) |sed '/Status of This Memo/,/may not be published except as an Internet-Draft/d' |tail -n +10 > $(TXT)
 	@rm $(RAWTXT)
 
@@ -38,15 +38,14 @@ open-docker: html-docker ## Create an HTML version from the markdown using docke
 	@$(OPEN) $(HTML)
 
 html-docker: xml-docker ## Create an HTML version from the markdown, using docker
-	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 xml2rfc --html $(XML) $(HTML)
-	@mv $(HTML) $(RAWHTML)
+	@docker run --rm -it -w /workdir -v $(PWD):/workdir uptane/rfc2629 xml2rfc --v2 --html --out=$(RAWHTML) $(XML)
 	@cat $(RAWHTML) |sed '/<table class="header">/,/<\/table>/d;/<h1 id="rfc.status">/,/except as an Internet-Draft.<\/p>/d' > $(HTML)
 	@rm $(RAWHTML)
 
 xml-docker: ## Create an XML version from the markdown, using docker
-	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 kramdown-rfc2629 $(MKD) > $(XML)
+	@docker run --rm -it -w /workdir -v $(PWD):/workdir uptane/rfc2629 kramdown-rfc2629 -2 $(MKD) > $(XML)
 
 plaintext-docker: xml-docker ## Create an RFC plaintext version from the markdown, using docker
-	@docker run --rm -it -w /workdir -v $(PWD):/workdir advancedtelematic/rfc2629 xml2rfc $(XML) $(TXT) --raw
+	@docker run --rm -it -w /workdir -v $(PWD):/workdir uptane/rfc2629 xml2rfc --v2 --out=$(RAWTXT) --raw $(XML)
 	@cat $(RAWTXT) |sed '/Status of This Memo/,/may not be published except as an Internet-Draft/d' |tail -n +10 > $(TXT)
 	@rm $(RAWTXT)

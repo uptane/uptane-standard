@@ -1,5 +1,5 @@
-FROM ruby:2.5.1-alpine3.7
+FROM ruby:alpine
 
-RUN apk -X http://dl-cdn.alpinelinux.org/alpine/edge/testing add xml2rfc \
-  && apk add py-setuptools py-six py-requests \
+RUN  apk add py-setuptools py-six py-requests py3-pip \
+  && pip install xml2rfc \
   && gem install kramdown-rfc2629
