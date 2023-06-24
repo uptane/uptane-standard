@@ -1,4 +1,4 @@
-FROM advancedtelematic/rfc2629
+FROM uptane/rfc2629
 
 RUN apk add git make
 
