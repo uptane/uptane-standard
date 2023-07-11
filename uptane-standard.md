@@ -233,6 +233,7 @@ We assume the following system preconditions for Uptane:
 * ECUs are programmable and provide sufficient performance to be updated.
 * ECUs SHALL be able to perform public key cryptography operations and calculate hashes of images and metadata files.
 * There are state-of-the-art secure servers in place, such as the Director and Image repository servers.
+* The initial Uptane required data, such as Uptane metadata, have been securely provisioned into the ECUs by the time they are installed in the vehicle.
 
 It is important that any bugs detected in Uptane implementations be patched promptly. Failure to do so could interfere with the effectiveness of Uptane's operations.
 
@@ -301,7 +302,7 @@ We assume that attackers could want to achieve one or more of the following goal
 * Read the contents of updates to discover confidential information, reverse-engineer firmware, or compare two firmware images to identify security fixes and hence determine the fixed security vulnerability.
 * Deny installation of updates to prevent vehicles from fixing software problems.
 * Cause one or more ECUs in the vehicle to fail, denying use of the vehicle or of certain functions.
-* Control ECUs within the vehicle, and possibly the vehicle itself.
+* Control ECUs within the vehicle, and possibly the vehicle itself, through malicious software updates and installations.
 
 ## Attacker capabilities {#capabilities}
 
@@ -352,7 +353,9 @@ Uptane does not specify implementation details. Instead, this Standard describes
 At a high level, Uptane requires:
 
 * Two software repositories:
-    * An Image repository containing binary images to install and signed metadata about those images.
+    * An Image repository containing:
+	    * binary images
+	    * signed metadata about the binary images
     * A Director repository connected to an inventory database that can sign metadata on demand for images in the Image repository.
 * Repository tools for generating Uptane-specific metadata about images.
 * A public key infrastructure supporting the required metadata production and signing roles on each repository:
@@ -635,7 +638,7 @@ For an ECU to be capable of receiving Uptane-secured updates, it SHALL have the 
     * Partial verification Secondary ECUs SHALL have the Root and Targets metadata from the Director repository (to reduce the scope of rollback and replay attacks). These ECUs can also have metadata from other roles or the Image repository if they will be used by the Secondary.
     * Full verification ECUs SHALL have a complete set of metadata (Root, Targets, Snapshot, and Timestamp) from both repositories (to prevent rollback and replay attacks), as well as the repository mapping metadata ({{repo_mapping_meta}}). Delegations are not required.
 2. The current time, or a secure attestation of a sufficiently recent time.
-3. **ECU identity keys**. These keys, which are unique to each ECU, are used to sign ECU version reports and decrypt images. ECU identity keya can be either symmetric asymmetric key. If asymmetric keys are used, there SHOULD be separate keys for encryption and signing. For the purposes of this Standard, the set of keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes. Note that while identity keys are required to be unique to the ECU to avoid replay attacks, the secret keys used to decrypt images need not be unique.
+3. **ECU identity keys**. These keys, which are unique to each ECU, are used to sign ECU version reports and decrypt images. ECU identity keys can be either symmetric asymmetric key. If asymmetric keys are used, there SHOULD be separate keys for encryption and signing. For the purposes of this Standard, the set of keys that an ECU uses is referred to as the ECU key (singular), even if it is actually multiple keys used for different purposes. Note that while identity keys are required to be unique to the ECU to avoid replay attacks, the secret keys used to decrypt images need not be unique.
 
 ### What the Primary does
 
@@ -802,7 +805,7 @@ If a step in the following workflows does not succeed (e.g., the update is abort
 
 In order to perform partial verification, an ECU SHALL perform the following steps:
 
-1. Load and verify the current time or the most recent securely attested time.
+1. Load the current time or the most recent securely attested time. The time SHOULD be loaded from a source other than the Primary ECU.
 2. Download and check the Targets metadata file from the Director repository, following the procedure in {{check_targets}}.
 
 Note that this verification procedure is the smallest set of Uptane checks permissible for an Uptane Secondary ECU. An ECU can additionally implement more metadata checks.
@@ -821,7 +824,7 @@ Before starting full verification, the repository mapping metadata SHALL be cons
 
 In order to perform full verification, an ECU SHALL perform the following steps:
 
-1. Load and verify the current time or the most recent securely attested time.
+1. Load the current time or the most recent securely attested time. Secondary ECUs SHOULD load a time from a source other than the Primary ECU.
 1. Download and check the Root metadata file from the Director repository, following the procedure in {{check_root}}.
 1. Download and check the Timestamp metadata file from the Director repository, following the procedure in {{check_timestamp}}.
 1. Check the previously downloaded Snapshot metadata file from the Directory repository (if available). If the hashes and version number of that file match the hashes and version number listed in the new Timestamp metadata, there are no new updates and the verification process SHALL be stopped and considered complete. Otherwise, download and check the Snapshot metadata file from the Director repository, following the procedure in {{check_snapshot}}.
