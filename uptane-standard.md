@@ -587,7 +587,7 @@ The Director repository SHALL implement storage that permits an automated servic
 
 #### Directing installation of images on vehicles
 
-A Director repository SHALL conform to the following six-step process for directing the installation of software images on a vehicle.
+Here is the process for the Director repository managing the installation of software images on a vehicle.
 
 1. The Director SHOULD first identify the vehicle. This could be done when the Director receives a vehicle version manifest sent by a Primary (as described in {{construct_manifest_primary}}), decodes the manifest, and determines the unique vehicle identifier. Additionally, the Director could utilize other mechanisms to uniquely identify a vehicle (e.g., 2-way TLS with unique client certificates).
 1. Using the vehicle identifier, the Director queries its inventory database (as described in {{inventory_db}}) for relevant information about each ECU in the vehicle.
