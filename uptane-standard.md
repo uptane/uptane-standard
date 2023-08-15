@@ -24,7 +24,7 @@ author:
     code: 11201
 
 normative:
-  # Keyword def (SHALL, MAY, SHOULD, etc.)
+  # Keyword def (SHALL, RECOMMENDED, SHOULD, etc.)
   RFC2119:
   # Network Unicode for comparing strings
   RFC5198:
@@ -160,13 +160,12 @@ With the exception of the Conformance terminology and Uptane role terminology pr
 
 ## Conformance terminology
 
-The keywords REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in {{RFC2119}}. Given the importance of interpreting these terms correctly, we present these definitions here. Note that when referring to actions in the Standard that mandate conformance, the word SHALL will be used, rather than the word MUST. 
+The keywords REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, and RECOMMENDED in this document are to be interpreted as described in {{RFC2119}}. Given the importance of interpreting these terms correctly, we present these definitions here. Note that when referring to actions in the Standard that mandate conformance, the word SHALL will be used, rather than the word MUST. 
 
 *SHALL* This word or the term "REQUIRED" mean that the definition is an absolute requirement of the specification.
 *SHALL NOT* This phrase means that the definition is an absolute prohibition of the specification.
 *SHOULD* This word or the adjective "RECOMMENDED" mean that, in particular circumstances, there could exist valid reasons to ignore a particular item, but the full implications will be understood and carefully weighed before choosing a different course.
 *SHOULD NOT* This phrase or the phrase "NOT RECOMMENDED" mean that there could exist valid reasons in particular circumstances when the particular behavior is acceptable or even useful, but the full implications will be understood and the case carefully weighed before implementing any behavior described with this label.
-*MAY* This word or the adjective "OPTIONAL," mean that an item is truly optional.  
 
 In order to be considered conformant to the Uptane Standard, an implementation SHALL follow all of these rules as specified in the document.
 
