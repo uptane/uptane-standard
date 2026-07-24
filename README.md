@@ -21,3 +21,9 @@ The Uptane Standards document should be considered the authoritative resource fo
 
 We use [kramdown-rfc2629](https://github.com/cabo/kramdown-rfc2629) to render the Markdown source into xml, and [xml2rfc](https://xml2rfc.tools.ietf.org/) to render the XML into HTML or plaintext. A Makefile is included for convenience. You can also render using [Docker](https://www.docker.com/) if you don't wish to install the tools. See `make help` for options.
 
+
+## Governance & Licensing
+- [Scope](governance/02-scope.md)
+- [Notices](governance/03-notices.md)
+- [License](governance/04-license.md)
+- [Governance](governance/05-governance.md)
