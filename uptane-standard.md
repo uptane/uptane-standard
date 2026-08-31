@@ -465,7 +465,7 @@ Custom metadata can also contain a demarcated field or section that SHALL match 
 The information listed below SHOULD be provided for each image on both the Image repository and the Director repository. If a "SHALL match section" is to be implemented, that is where this information SHOULD be placed.
 
 * A release counter, to be incremented each time a new version of the image is released. This can be used to prevent rollback attacks even in cases where the Director repository is compromised.
-* A hardware identifier, or list of hardware identifiers, representing models of ECUs with which the image is compatible. This can be used to ensure that an ECU cannot be ordered to install an incompatible image, even in cases where the Director repository is compromised.
+* A strong hardware identifier (see section 8.0.3 in Uptane Deployment Best Practices), or list of hardware identifiers, representing models of ECUs with which the image is compatible. This can be used to ensure that an ECU cannot be ordered to install an incompatible image, even in cases where the Director repository is compromised.
 
 The following information is CONDITIONALLY REQUIRED for each image on the Director repository IF that image is encrypted:
 
@@ -474,7 +474,7 @@ The following information is CONDITIONALLY REQUIRED for each image on the Direct
 
 The following information SHALL be provided from the Director repository for each image in the Targets metadata:
 
-* An ECU identifier (such as a serial number), specifying the ECU that SHOULD install the image.
+* A strong ECU identifier (see section 8.0.3 in Uptane Deployment Best Practices), specifying the ECU that SHOULD install the image.
 
 The Director repository could provide a download URL for the image file. This may be useful, for example, when the image is on a public CDN and the Director wishes to provide a signed URL.
 
@@ -609,7 +609,7 @@ The inventory database SHALL record the following pieces of information:
 * Per vehicle:
     * A unique identifier (such as a VIN)
 * Per ECU:
-    * A unique identifier (such as a serial number)
+    * A strong unique identifier (see section 8.0.3 in Uptane Deployment Best Practices)
     * The vehicle identifier the ECU is associated with
     * An ECU key (symmetric or asymmetric; for asymmetric keys, only the public part SHOULD be stored)
     * The ECU key identifier (as defined in {{common_metadata}})
@@ -674,7 +674,7 @@ The vehicle version manifest is a metadata structure that SHALL contain the foll
   * The signature of the hash
 * A payload representing the installed versions of each software image on the vehicle. This payload SHALL contain:
   * The vehicle's unique identifier (e.g., the VIN)
-  * The Primary ECU's unique identifier (e.g., the serial number)
+  * The Primary ECU's strong unique identifier (see section 8.0.3 in Uptane Deployment Best Practices)
   * A list of ECU version reports as specified in {{version_report}}
 
 Note that one of the ECU version reports SHOULD be the version report for the Primary itself.
@@ -690,7 +690,7 @@ An ECU version report is a metadata structure that SHALL contain the following i
   * The hashing function used (i.e., SHA3-256, SHA-512/224, etc.)
   * The signature of the hash
 * A payload containing:
-  * The ECU's unique identifier (e.g., the serial number)
+  * The ECU's strong unique identifier (see section 8.0.3 in Uptane Deployment Best Practices)
   * The filename, length, and hashes of its currently installed image (i.e., the non-custom Targets metadata for this particular image)
   * An indicator of any detected security attack
   * The latest time the ECU can verify at the time this version report was generated
